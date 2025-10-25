@@ -1,203 +1,217 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>歐米伽系列規格訓練遊戲（V6.1 完整修正版）</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; background: #f0f0f0; padding: 10px; }
-        #grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 300px; margin: 20px auto; }
-        .cell { background: #007bff; color: white; padding: 20px; font-size: 24px; cursor: pointer; border-radius: 10px; user-select: none; }
-        .cell:hover { background: #0056b3; }
-        .cell.selected { background: #28a745; }
-        #question { font-size: 18px; margin: 20px; padding: 15px; background: white; border-radius: 10px; min-height: 80px; }
-        #answer { margin: 10px; padding: 10px; font-size: 16px; }
-        #score { font-size: 24px; color: #007bff; margin-top: 10px; }
-        #progress { width: 100%; height: 20px; background: #ddd; border-radius: 10px; margin-top: 5px; }
-        #progress-bar { height: 100%; background: #28a745; width: 0%; transition: width 0.3s; }
-        button { background: #007bff; color: white; border: none; padding: 10px 20px; margin: 10px; border-radius: 5px; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        #report { display: none; background: white; padding: 20px; margin: 20px; border-radius: 10px; }
-        @media (max-width: 600px) { .cell { padding: 15px; font-size: 20px; } #question { font-size: 16px; } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>歐米伽系列規格訓練遊戲（V7 不重複題版）</title>
+<style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #f0f0f0; padding: 10px; }
+    #grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 300px; margin: 20px auto; }
+    .cell { background: #007bff; color: white; padding: 20px; font-size: 24px; cursor: pointer; border-radius: 10px; user-select: none; transition: 0.2s; }
+    .cell:hover { background: #0056b3; transform: scale(1.05); }
+    .cell.selected { background: #28a745; }
+    #question { font-size: 18px; margin: 20px; padding: 15px; background: white; border-radius: 10px; min-height: 80px; }
+    #answer { margin: 10px; padding: 10px; font-size: 16px; width: 80%; }
+    #score { font-size: 24px; color: #007bff; margin-top: 10px; }
+    #progress { width: 100%; height: 20px; background: #ddd; border-radius: 10px; margin-top: 5px; }
+    #progress-bar { height: 100%; background: #28a745; width: 0%; transition: width 0.3s; }
+    button { background: #007bff; color: white; border: none; padding: 10px 20px; margin: 10px; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    @media (max-width: 600px) { .cell { padding: 15px; font-size: 20px; } #question { font-size: 16px; } }
+</style>
 </head>
 <body>
-    <h1>歐米伽系列規格訓練遊戲（V6.1 - 修正版）</h1>
-    <p>🎯 點擊九宮格抽 5 題，全對即可進入下一輪；答錯會重來！（輸入 A 或 B）</p>
+<h1>歐米伽系列規格訓練遊戲（V7 不重複題）</h1>
+<p>🎯 點九宮格抽五題，全對進下一輪；答錯重來！（輸入 A 或 B）</p>
 
-    <div id="grid">
-        <div class="cell" data-cell="1">1</div>
-        <div class="cell" data-cell="2">2</div>
-        <div class="cell" data-cell="3">3</div>
-        <div class="cell" data-cell="4">4</div>
-        <div class="cell" data-cell="5">5</div>
-        <div class="cell" data-cell="6">6</div>
-        <div class="cell" data-cell="7">7</div>
-        <div class="cell" data-cell="8">8</div>
-        <div class="cell" data-cell="9">9</div>
-    </div>
+<div id="grid">
+    <div class="cell" data-cell="1">1</div>
+    <div class="cell" data-cell="2">2</div>
+    <div class="cell" data-cell="3">3</div>
+    <div class="cell" data-cell="4">4</div>
+    <div class="cell" data-cell="5">5</div>
+    <div class="cell" data-cell="6">6</div>
+    <div class="cell" data-cell="7">7</div>
+    <div class="cell" data-cell="8">8</div>
+    <div class="cell" data-cell="9">9</div>
+</div>
 
-    <div id="question"></div>
-    <input type="text" id="answer" placeholder="輸入 A 或 B..." style="width: 80%; padding: 10px;">
-    <button onclick="submitAnswer()">提交答案</button>
+<div id="question"></div>
+<input type="text" id="answer" placeholder="輸入 A 或 B..." />
+<button onclick="submitAnswer()">提交答案</button>
 
-    <div id="score">本輪分數: 0/5</div>
-    <div id="progress"><div id="progress-bar"></div></div>
+<div id="score">本輪分數: 0/5</div>
+<div id="progress"><div id="progress-bar"></div></div>
 
-    <button onclick="downloadReport()">📄 下載錯題報告</button>
+<button onclick="downloadReport()">📄 下載錯題報告</button>
 
-    <script>
-    // === 九宮格配置 ===
-    const gridConfig = {
-        1: 'series_name', 2: 'caliber', 3: 'power_reserve',
-        4: 'features', 5: 'application', 6: 'certification',
-        7: 'series_name', 8: 'power_reserve', 9: 'features'
-    };
-    const ROUND_GOAL = 5;
+<script>
+// === 題庫設定 ===
+const gridConfig = {
+    1: 'series_name', 2: 'caliber', 3: 'power_reserve',
+    4: 'features', 5: 'application', 6: 'certification',
+    7: 'series_name', 8: 'power_reserve', 9: 'features'
+};
 
-    // === 題庫 ===
-    const questionBank = {
-        series_name: [
-            {q: '哪個系列是歐米伽的經典正裝錶？A. 超霸 B. 蝶飛', a: 'B'},
-            {q: '哪個系列以登月故事聞名？A. 海馬 B. 超霸', a: 'B'},
-            {q: '哪個系列擁有托爪設計？A. 星座 B. 蝶飛', a: 'A'},
-            {q: '潛水系列是？A. 星座 B. 海馬', a: 'B'},
-            {q: 'Aqua Terra 子系列屬於？A. 超霸 B. 海馬', a: 'B'}
-        ],
-        caliber: [
-            {q: '超霸新版手動機芯是？A. 8800 B. 3861', a: 'B'},
-            {q: '海馬 Diver 300M 自動機芯是？A. 3861 B. 8800', a: 'B'},
-            {q: '星座雙發條機芯是？A. 3861 B. 8900', a: 'B'},
-            {q: '蝶飛主流機芯是手動？A. 是 B. 否', a: 'B'},
-            {q: '海馬 Planet Ocean 機芯是？A. 3861 B. 8900', a: 'B'}
-        ],
-        power_reserve: [
-            {q: '海馬 8800 機芯儲能是？A. 50 小時 B. 55 小時', a: 'B'},
-            {q: '超霸 3861 儲能是？A. 55 小時 B. 50 小時', a: 'B'},
-            {q: '海馬 Aqua Terra 8900 儲能是？A. 50 小時 B. 60 小時', a: 'B'},
-            {q: '蝶飛 8926 儲能最接近？A. 50 小時 B. 60 小時', a: 'B'},
-            {q: '超霸 1861 儲能是？A. 60 小時 B. 48 小時', a: 'B'}
-        ],
-        features: [
-            {q: '海馬潛水功能是？A. 測速圈 B. 排氦閥門', a: 'B'},
-            {q: '超霸錶圈刻度是？A. 排氦閥門 B. 測速圈', a: 'B'},
-            {q: '星座標誌性特徵是？A. 排氦閥門 B. 托爪', a: 'B'},
-            {q: '蝶飛適合場合是？A. 潛水 B. 正裝', a: 'B'},
-            {q: '超霸防水深度是？A. 300 米 B. 50 米', a: 'B'}
-        ],
-        certification: [
-            {q: '最高抗磁認證是？A. COSC B. METAS', a: 'B'},
-            {q: 'METAS 抗磁要求是？A. 5,000 高斯 B. 15,000 高斯', a: 'B'},
-            {q: '蝶飛入門款有 METAS？A. 是 B. 否', a: 'B'},
-            {q: '最早 METAS 系列是？A. 超霸 B. 海馬', a: 'B'},
-            {q: 'METAS 測試項目是？A. 3 項 B. 8 項', a: 'B'}
-        ],
-        application: [
-            {q: '超霸適合客戶是？A. 正裝愛好者 B. 運動太空迷', a: 'B'},
-            {q: '海馬潛水適合場合是？A. 商務會議 B. 水上活動', a: 'B'},
-            {q: '星座適合穿搭是？A. 運動裝 B. 優雅商務', a: 'B'},
-            {q: '蝶飛適合商務會議？A. 否 B. 是', a: 'B'},
-            {q: '超霸客戶故事是？A. 潛水英雄 B. 登月太空人', a: 'B'}
-        ]
-    };
+const questionBank = {
+    series_name: [
+        {q:'哪個系列是歐米伽的經典正裝錶？A. 超霸 B. 蝶飛',a:'B'},
+        {q:'哪個系列以登月故事聞名？A. 海馬 B. 超霸',a:'B'},
+        {q:'哪個系列擁有托爪設計？A. 星座 B. 蝶飛',a:'A'},
+        {q:'潛水系列是？A. 星座 B. 海馬',a:'B'},
+        {q:'Aqua Terra 子系列屬於？A. 超霸 B. 海馬',a:'B'},
+        {q:'太空探險代表作是？A. 星座 B. 超霸',a:'B'},
+        {q:'優雅女士錶多屬於？A. 超霸 B. 星座',a:'B'}
+    ],
+    caliber: [
+        {q:'超霸新版手動機芯是？A. 8800 B. 3861',a:'B'},
+        {q:'海馬 Diver 300M 機芯是？A. 3861 B. 8800',a:'B'},
+        {q:'星座雙發條機芯是？A. 3861 B. 8900',a:'B'},
+        {q:'蝶飛主流機芯是手動？A. 是 B. 否',a:'B'},
+        {q:'Planet Ocean 機芯是？A. 3861 B. 8900',a:'B'}
+    ],
+    power_reserve: [
+        {q:'海馬 8800 機芯儲能是？A. 50 小時 B. 55 小時',a:'B'},
+        {q:'超霸 3861 儲能是？A. 55 小時 B. 50 小時',a:'B'},
+        {q:'Aqua Terra 8900 儲能是？A. 50 小時 B. 60 小時',a:'B'},
+        {q:'蝶飛 8926 儲能是？A. 50 小時 B. 60 小時',a:'B'},
+        {q:'超霸 1861 儲能是？A. 60 小時 B. 48 小時',a:'B'}
+    ],
+    features: [
+        {q:'海馬潛水功能是？A. 測速圈 B. 排氦閥門',a:'B'},
+        {q:'超霸錶圈刻度是？A. 排氦閥門 B. 測速圈',a:'B'},
+        {q:'星座標誌特徵是？A. 排氦閥門 B. 托爪',a:'B'},
+        {q:'蝶飛適合場合是？A. 潛水 B. 正裝',a:'B'},
+        {q:'超霸防水深度是？A. 300 米 B. 50 米',a:'B'}
+    ],
+    certification: [
+        {q:'最高抗磁認證是？A. COSC B. METAS',a:'B'},
+        {q:'METAS 抗磁要求是？A. 5,000 高斯 B. 15,000 高斯',a:'B'},
+        {q:'蝶飛入門款有 METAS？A. 是 B. 否',a:'B'},
+        {q:'最早 METAS 系列是？A. 超霸 B. 海馬',a:'B'},
+        {q:'METAS 測試項目是？A. 3 項 B. 8 項',a:'B'}
+    ],
+    application: [
+        {q:'超霸適合客戶是？A. 正裝愛好者 B. 運動太空迷',a:'B'},
+        {q:'海馬潛水適合場合是？A. 商務會議 B. 水上活動',a:'B'},
+        {q:'星座適合穿搭是？A. 運動裝 B. 優雅商務',a:'B'},
+        {q:'蝶飛適合商務會議？A. 否 B. 是',a:'B'},
+        {q:'超霸客戶故事是？A. 潛水英雄 B. 登月太空人',a:'B'}
+    ]
+};
 
-    // === 遊戲狀態 ===
-    let currentRound = [];
-    let score = 0;
-    let totalRounds = 0;
-    let wrongLog = [];
-    let currentQuestionData = null;
-    let currentCell = null;
+// === 狀態變數 ===
+let usedQuestions = {}; // 每類已抽索引記錄
+let currentRound = [];
+let score = 0;
+let totalRounds = 0;
+let wrongLog = [];
+let currentQuestionData = null;
+let currentCell = null;
+const ROUND_GOAL = 5;
 
-    // 點格抽題
-    document.querySelectorAll('.cell').forEach(cell => {
-        cell.addEventListener('click', () => {
-            if (currentRound.length >= ROUND_GOAL) return;
-            const num = parseInt(cell.dataset.cell);
-            if (currentRound.includes(num)) return;
+// 初始化題目紀錄
+for (let key in questionBank) usedQuestions[key] = [];
 
-            currentCell = num;
-            currentRound.push(num);
-            cell.classList.add('selected');
+// === 抽題邏輯（不重複） ===
+function getUniqueQuestion(type) {
+    const used = usedQuestions[type];
+    const pool = questionBank[type];
+    if (used.length === pool.length) usedQuestions[type] = []; // 重置該類
+    let idx;
+    do { idx = Math.floor(Math.random() * pool.length); } while (usedQuestions[type].includes(idx));
+    usedQuestions[type].push(idx);
+    return pool[idx];
+}
 
-            const qType = gridConfig[num];
-            const qIdx = Math.floor(Math.random() * questionBank[qType].length);
-            currentQuestionData = questionBank[qType][qIdx];
-            document.getElementById('question').innerHTML = `<strong>格子 ${num}</strong><br><br>${currentQuestionData.q}`;
-            document.getElementById('answer').value = '';
-            document.getElementById('answer').focus();
-        });
+// === 點格抽題 ===
+document.querySelectorAll('.cell').forEach(cell=>{
+    cell.addEventListener('click',()=>{
+        if(currentRound.length>=ROUND_GOAL) return;
+        const num=parseInt(cell.dataset.cell);
+        if(currentRound.includes(num)) return;
+
+        currentCell=num;
+        currentRound.push(num);
+        cell.classList.add('selected');
+
+        const qType=gridConfig[num];
+        currentQuestionData=getUniqueQuestion(qType);
+
+        document.getElementById('question').innerHTML=`<strong>格子 ${num}</strong><br><br>${currentQuestionData.q}`;
+        document.getElementById('answer').value='';
+        document.getElementById('answer').focus();
     });
+});
 
-    // 提交答案
-    function submitAnswer() {
-        if (!currentQuestionData) return;
-        const ans = document.getElementById('answer').value.trim().toUpperCase();
-        const feedback = document.getElementById('question');
+// === 提交答案 ===
+function submitAnswer(){
+    if(!currentQuestionData) return;
+    const ans=document.getElementById('answer').value.trim().toUpperCase();
+    const feedback=document.getElementById('question');
 
-        if (ans === currentQuestionData.a) {
-            score++;
-            feedback.innerHTML += `<br><span style="color:green;">✅ 正確！</span>`;
-        } else {
-            wrongLog.push({ cell: currentCell, q: currentQuestionData.q, a: currentQuestionData.a });
-            feedback.innerHTML += `<br><span style="color:red;">❌ 錯誤！正確答案: ${currentQuestionData.a}</span>`;
-        }
-
-        document.getElementById('score').textContent = `本輪分數: ${score}/${ROUND_GOAL}`;
-        document.getElementById('progress-bar').style.width = `${(currentRound.length / ROUND_GOAL) * 100}%`;
-
-        currentQuestionData = null;
-
-        if (currentRound.length === ROUND_GOAL) {
-            setTimeout(() => {
-                if (score === ROUND_GOAL) {
-                    totalRounds++;
-                    alert(`🎉 恭喜全對！進入第 ${totalRounds} 輪！`);
-                    startNewRound();
-                } else {
-                    alert(`本輪 ${score}/5，未全對！重置重來。`);
-                    resetRound();
-                }
-            }, 500);
-        }
+    if(ans===currentQuestionData.a){
+        score++;
+        feedback.innerHTML+=`<br><span style="color:green;">✅ 正確！</span>`;
+    }else{
+        wrongLog.push({cell:currentCell,q:currentQuestionData.q,a:currentQuestionData.a});
+        feedback.innerHTML+=`<br><span style="color:red;">❌ 錯誤！正確答案: ${currentQuestionData.a}</span>`;
     }
 
-    // 重置本輪
-    function resetRound() {
-        currentRound = [];
-        score = 0;
-        document.querySelectorAll('.cell').forEach(c => c.classList.remove('selected'));
-        document.getElementById('question').innerHTML = '';
-        document.getElementById('answer').value = '';
-        document.getElementById('score').textContent = '本輪分數: 0/5';
-        document.getElementById('progress-bar').style.width = '0%';
-        currentQuestionData = null;
-    }
+    document.getElementById('score').textContent=`本輪分數: ${score}/${ROUND_GOAL}`;
+    document.getElementById('progress-bar').style.width=`${(currentRound.length/ROUND_GOAL)*100}%`;
 
-    // 全對後新輪
-    function startNewRound() {
-        resetRound();
-        document.getElementById('question').innerHTML = `<span style="color:#007bff;">請重新選擇五格開始挑戰</span>`;
-    }
+    currentQuestionData=null;
 
-    // 下載報告
-    function downloadReport() {
-        const now = new Date().toLocaleString('zh-TW');
-        let txt = `歐米伽訓練報告 - ${now}\n\n總輪次: ${totalRounds}\n\n錯題清單:\n`;
-        if (wrongLog.length === 0) txt += '無錯題！完美！';
-        else wrongLog.forEach((w, i) => txt += `${i + 1}. [格 ${w.cell}] ${w.q}\n正解: ${w.a}\n\n`);
-        const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `omega_training_report_${Date.now()}.txt`;
-        a.click();
-        URL.revokeObjectURL(a.href);
+    if(currentRound.length===ROUND_GOAL){
+        setTimeout(()=>{
+            if(score===ROUND_GOAL){
+                totalRounds++;
+                alert(`🎉 全對！進入第 ${totalRounds} 輪！`);
+                startNewRound();
+            }else{
+                alert(`本輪 ${score}/5，未全對，重來！`);
+                resetRound();
+            }
+        },400);
     }
+}
 
-    // Enter 提交
-    document.getElementById('answer').addEventListener('keypress', e => {
-        if (e.key === 'Enter') submitAnswer();
-    });
-    </script>
+// === 重置 ===
+function resetRound(){
+    currentRound=[];
+    score=0;
+    document.querySelectorAll('.cell').forEach(c=>c.classList.remove('selected'));
+    document.getElementById('question').innerHTML='';
+    document.getElementById('answer').value='';
+    document.getElementById('score').textContent='本輪分數: 0/5';
+    document.getElementById('progress-bar').style.width='0%';
+}
+
+// === 新輪 ===
+function startNewRound(){
+    resetRound();
+    document.getElementById('question').innerHTML=`<span style="color:#007bff;">請重新選擇五格開始挑戰</span>`;
+}
+
+// === 下載報告 ===
+function downloadReport(){
+    const now=new Date().toLocaleString('zh-TW');
+    let txt=`歐米伽訓練報告 - ${now}\n\n總輪次: ${totalRounds}\n\n錯題清單:\n`;
+    if(wrongLog.length===0) txt+='無錯題！完美！';
+    else wrongLog.forEach((w,i)=>txt+=`${i+1}. [格 ${w.cell}] ${w.q}\n正解:${w.a}\n\n`);
+    const blob=new Blob([txt],{type:'text/plain;charset=utf-8'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=`omega_training_report_${Date.now()}.txt`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+
+// Enter提交
+document.getElementById('answer').addEventListener('keypress',e=>{
+    if(e.key==='Enter') submitAnswer();
+});
+</script>
 </body>
 </html>
