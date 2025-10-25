@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>歐米伽系列規格訓練 </title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #f0f0f0; padding: 10px; }
+        #grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 300px; margin: 20px auto; }
+        .cell { background: #007bff; color: white; padding: 20px; font-size: 24px; cursor: pointer; border-radius: 10px; user-select: none; }
+        .cell:hover { background: #0056b3; }
+        .cell.selected { background: #28a745; }
+        #question { font-size: 18px; margin: 20px; padding: 15px; background: white; border-radius: 10px; }
+        #answer { margin: 10px; padding: 10px; font-size: 16px; }
+        #score { font-size: 24px; color: #007bff; }
+        #progress { width: 100%; height: 20px; background: #ddd; border-radius: 10px; }
+        #progress-bar { height: 100%; background: #28a745; width: 0%; transition: width 0.3s; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; margin: 10px; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        #report { display: none; background: white; padding: 20px; margin: 20px; border-radius: 10px; }
+        @media (max-width: 600px) { .cell { padding: 15px; font-size: 20px; } #question { font-size: 16px; } }
+    </style>
+</head>
+<body>
+    <h1>歐米伽系列規格訓練 </h1>
+    <p>點擊九宮格抽題，輸入答案挑戰自己！</p>
+    
+    <div id="grid">
+        <div class="cell" data-cell="1">1</div>
+        <div class="cell" data-cell="2">2</div>
+        <div class="cell" data-cell="3">3</div>
+        <div class="cell" data-cell="4">4</div>
+        <div class="cell" data-cell="5">5</div>
+        <div class="cell" data-cell="6">6</div>
+        <div class="cell" data-cell="7">7</div>
+        <div class="cell" data-cell="8">8</div>
+        <div class="cell" data-cell="9">9</div>
+    </div>
+    
+    <div id="question"></div>
+    <input type="text" id="answer" placeholder="輸入你的答案..." style="width: 80%; padding: 10px; margin: 10px;">
+    <button onclick="submitAnswer()">提交答案</button>
+    
+    <div id="score">分數: 0/9</div>
+    <div id="progress"><div id="progress-bar"></div></div>
+    
+    <button onclick="startNewRound()" style="display: none;" id="newRoundBtn">新的一輪</button>
+    <button onclick="downloadReport()">下載報告</button>
+    
+    <div id="report"></div>
+
+    <script>
+        // 九宮格配置
+        const gridConfig = {1: 'series_name', 2: 'caliber', 3: 'power_reserve', 4: 'features', 5: 'combo', 6: 'certification', 7: 'series_name', 8: 'power_reserve', 9: 'features'};
+        
+        // 擴大題庫（90題，無提示）
+        const questionBank = {
+            series_name: [
+                {q: '請問哪一個系列是歐米伽的經典正裝錶，強調簡約與複雜功能？', a: '蝶飛 (De Ville)'},
+                {q: '哪個系列以「登月」故事和計時功能聞名，常見黑盤與測速圈？', a: '超霸 (Speedmaster)'},
+                {q: '哪個系列擁有著名的「托爪」(Griffes)設計與星徽標誌？', a: '星座 (Constellation)'},
+                {q: '以下哪個是潛水系列？A. 星座 B. 海馬 C. 蝶飛', a: 'B. 海馬 (Seamaster)'},
+                {q: '哪個系列適合日常運動與辦公，擁有Aqua Terra子系列？', a: '海馬 (Seamaster)'},
+                {q: '歐米伽的太空探險代表作是哪個系列？', a: '超霸 (Speedmaster)'},
+                {q: '哪個系列以四顆星徽和羅馬數字錶圈為特色？', a: '星座 (Constellation)'},
+                {q: '以下哪個系列不強調防水功能？A. 海馬 B. 超霸 C. 蝶飛', a: 'C. 蝶飛 (De Ville)'},
+                {q: '哪個系列常見年曆或中央陀飛輪複雜功能？', a: '蝶飛 (De Ville)'},
+                {q: '歐米伽的優雅女士錶多屬於哪個系列？', a: '星座 (Constellation)'},
+                {q: '哪個系列有Professional計時碼錶版本？', a: '超霸 (Speedmaster)'},
+                {q: '以下哪個是海洋探險系列？A. 超霸 B. 海馬 C. 星座', a: 'B. 海馬 (Seamaster)'},
+                {q: '哪個系列的錶殼有爪狀延展設計？', a: '星座 (Constellation)'},
+                {q: '歐米伽的簡約三針日期錶多見於哪系列？', a: '蝶飛 (De Ville)'},
+                {q: '哪個系列防水僅50米，但專注計時？(真/假題：是超霸)', a: '真'}
+            ],
+            caliber: [
+                {q: '超霸Moonwatch Professional（新版）主要搭載的手動上鍊機芯型號是？', a: '3861'},
+                {q: '海馬Diver 300M系列常搭載的自動上鍊大師天文台機芯型號是？', a: '8800 或 8806'},
+                {q: '星座或Aqua Terra款常見的雙發條自動機芯是？', a: '8900'},
+                {q: '蝶飛系列主流機芯是手動上鍊的3861？(輸入真/假)', a: '假 (是自動上鍊，如8800)'},
+                {q: '海馬Planet Ocean的潛水機芯常見型號？', a: '8900 或 8800'},
+                {q: '超霸\'57計時錶搭載的手動機芯是？', a: '1861 或 3861'},
+                {q: '星座小秒針款的機芯型號？', a: '8800'},
+                {q: '蝶飛Trinity三針機芯是？', a: '8800'},
+                {q: '以下哪個機芯是手動上鍊？A. 8800 B. 3861 C. 8900', a: 'B. 3861'},
+                {q: '海馬300小時動力機芯型號？', a: '8900'},
+                {q: '超霸Dark Side of the Moon陶瓷款機芯？', a: '9300'},
+                {q: '星座Globemaster的代表機芯？', a: '8900'},
+                {q: '蝶飛Prestige系列入門機芯？', a: '2500 或 8800'},
+                {q: '哪個機芯支援60小時儲能？', a: '8900'},
+                {q: '超霸手動機芯有月相功能？(真/假)', a: '假 (主流無，但有特殊款)'}
+            ],
+            power_reserve: [
+                {q: '海馬或星座系列搭載8800機芯，標準動力儲存是多少小時？', a: '55 小時'},
+                {q: '超霸專業登月錶搭載3861機芯，其動力儲存是多少小時？', a: '50 小時'},
+                {q: '2025年海馬Aqua Terra款(8900機芯)的動力儲存為？', a: '60 小時'},
+                {q: '蝶飛複雜款(8926)的動力儲存最接近：A. 50h B. 55h C. 60h', a: 'C. 60 小時'},
+                {q: '超霸手動機芯3861的儲能時間？', a: '50 小時'},
+                {q: '海馬Diver 300M 8806機芯儲能？', a: '55 小時'},
+                {q: '星座Manhattan的8900儲能？', a: '60 小時'},
+                {q: '蝶飛中央陀飛輪的儲能？', a: '60 小時'},
+                {q: '以下哪系列機芯儲能最短？A. 海馬 B. 超霸 C. 星座', a: 'B. 超霸 (50h)'},
+                {q: '海馬Planet Ocean 600m的儲能？', a: '60 小時'},
+                {q: '超霸\'57的1861機芯儲能？', a: '48 小時'},
+                {q: '星座小尺寸款8800儲能？', a: '55 小時'},
+                {q: '蝶飛年曆款的儲能？', a: '55 小時'},
+                {q: '8900機芯儲能超過55小時？(真/假)', a: '真 (60h)'},
+                {q: '超霸自動計時款9300的儲能？', a: '60 小時'}
+            ],
+            features: [
+                {q: '海馬系列潛水錶除了高防水，還有什麼實用功能？', a: '排氦閥門 (Helium Escape Valve)'},
+                {q: '超霸系列錶圈上常見的刻度是哪種功能？', a: '測速圈 (Tachymeter)'},
+                {q: '星座系列設計上最容易識別的標誌性特徵是？', a: '「托爪」(Griffes) 和/或四顆星徽'},
+                {q: '蝶飛系列適合什麼場合？(簡述)', a: '正裝/商務，強調優雅與多功能如年曆'},
+                {q: '海馬Diver 300M有300米防水，但無抗磁功能？(輸入真/假)', a: '假 (有15,000高斯抗磁)'},
+                {q: '超霸的Hesalite水晶玻璃用於什麼版本？', a: 'Professional登月版'},
+                {q: '星座的錶圈材質常見什麼？', a: '陶瓷或金屬羅馬數字'},
+                {q: '蝶飛的無日期窗款強調什麼？', a: '純淨美學'},
+                {q: '海馬Aqua Terra的錶圈有什麼獨特？', a: 'Teak木紋刻度'},
+                {q: '超霸有測速圈，但防水深度？', a: '50米'},
+                {q: '星座尺寸範圍主要為？', a: '25-41mm'},
+                {q: '蝶飛有動力儲存顯示功能？(真/假)', a: '真'},
+                {q: '海馬的旋入式錶冠用於？', a: '提升防水'},
+                {q: '超霸計時按鈕位置？', a: '2點與4點'},
+                {q: '星座的爪狀延展有何作用？', a: '固定錶帶，提升舒適'}
+            ],
+            certification: [
+                {q: '歐米伽現今主流高端機械錶所追求的最高抗磁與精準認證是？', a: '大師天文台認證 (Master Chronometer / METAS)'},
+                {q: '大師天文台認證要求腕錶具備多少高斯(Gauss)以上的抗磁能力？', a: '15,000 高斯 以上'},
+                {q: '蝶飛系列部分入門款僅有COSC認證，而非METAS？(輸入真/假)', a: '真 (但高端款多為METAS)'},
+                {q: '哪系列最早獲得METAS認證？A. 超霸 B. 海馬 C. 星座', a: 'B. 海馬 (Seamaster)'},
+                {q: 'METAS認證的精準標準是多少秒/天？', a: '0/+5 秒/天'},
+                {q: 'COSC認證的每日誤差範圍？', a: '-4/+6 秒/天'},
+                {q: '超霸3861機芯有METAS？(真/假)', a: '真'},
+                {q: '星座Globemaster的全新認證是？', a: 'METAS'},
+                {q: '蝶飛部分石英款有何認證？', a: '無 (機械款有COSC/METAS)'},
+                {q: '海馬抗磁高斯值？', a: '15,000 高斯以上'},
+                {q: 'METAS測試包括什麼？(簡述)', a: '精準、抗磁、防水等8項'},
+                {q: '超霸舊版861無METAS？(真/假)', a: '真 (新版有)'},
+                {q: '哪認證不包括抗磁？A. COSC B. METAS', a: 'A. COSC'},
+                {q: '星座的METAS從何年開始？', a: '2015年'},
+                {q: '蝶飛高端款抗磁值？', a: '15,000 高斯 (METAS款)'}
+            ],
+            combo: [
+                {q: '請問超霸系列的主流上鍊方式、機芯型號、和動力儲存是多少？', a: '手動上鍊、3861、50 小時'},
+                {q: '請問海馬潛水系列的主流認證、機芯抗磁能力、與防水深度？', a: '大師天文台、15,000 高斯以上、300米'},
+                {q: '星座系列的托爪設計、機芯(8900)、與尺寸範圍？', a: '托爪(Griffes)、8900自動、25-41mm'},
+                {q: '2025青銅金海馬Diver的特點、機芯、與認證？', a: '青銅金材質、8806、METAS (15,000高斯)'},
+                {q: '蝶飛=正裝+自動+55h+METAS？(輸入真/假，解釋差異)', a: '真 (主流，但部分COSC)'},
+                {q: '超霸：計時+手動+50h+50m防水？(真/假)', a: '真'},
+                {q: '海馬Aqua Terra：150m防水+8900+60h？', a: '150米防水、8900、60 小時'},
+                {q: '星座：托爪+8800+55h+100m防水？', a: '托爪、8800、55 小時、100米防水'},
+                {q: '蝶飛年曆：自動+8926+60h+METAS？', a: '自動、8926、60 小時、METAS'},
+                {q: '超霸陶瓷款：9300自動+60h+100m？', a: '9300、60 小時、100米防水'},
+                {q: '海馬Planet Ocean：600m+8800+55h？', a: '600米、8800、55 小時'},
+                {q: '星座女士款：25mm+8800+55h+30m？', a: '25mm、8800、55 小時、30米防水'},
+                {q: '蝶飛陀飛輪：60h+METAS+50m？', a: '60 小時、METAS、50米防水'},
+                {q: '超霸Moonphase：手動+50h+月相？(真/假)', a: '真 (特殊款)'},
+                {q: '海馬+星座共同點：METAS+同軸擒縱？', a: '大師天文台、同軸擒縱'}
+            ]
+        };
+        
+        let currentRound = [], score = 0, currentQ = -1, wrongQuestions = [], currentQuestionData = null;
+        
+        // 點擊格子抽題（修復版：加防重複觸發與調試log）
+        document.querySelectorAll('.cell').forEach(cell => {
+            cell.addEventListener('click', (e) => {
+                e.preventDefault(); // 避免重複觸發
+                console.log('點擊格子:', cell.dataset.cell); // 調試log
+                if (currentRound.length < 9) {
+                    const cellNum = parseInt(cell.dataset.cell);
+                    if (!currentRound.includes(cellNum)) {
+                        currentRound.push(cellNum);
+                        cell.classList.add('selected');
+                        const qType = gridConfig[cellNum];
+                        console.log('抽取類型:', qType); // 調試
+                        try {
+                            const qIndex = Math.floor(Math.random() * questionBank[qType].length);
+                            currentQuestionData = questionBank[qType][qIndex];
+                            document.getElementById('question').innerHTML = `<strong>格子 ${cellNum} (${qType})</strong><br><br>${currentQuestionData.q}`;
+                            currentQ = currentRound.length - 1;
+                            document.getElementById('answer').value = '';
+                            document.getElementById('answer').focus();
+                            console.log('題目載入成功'); // 調試
+                        } catch (error) {
+                            console.error('題目載入錯誤:', error); // 錯誤捕捉
+                            document.getElementById('question').innerHTML = '錯誤：請重載頁面';
+                        }
+                    } else {
+                        console.log('格子已選'); // 調試
+                    }
+                } else {
+                    console.log('一輪已滿'); // 調試
+                }
+            });
+        });
+        
+        // 提交答案
+        function submitAnswer() {
+            if (currentQ === -1 || !currentQuestionData) {
+                console.log('無題目可提交'); // 調試
+                return;
+            }
+            const userAnswer = document.getElementById('answer').value.toLowerCase().trim();
+            const correctAnswer = currentQuestionData.a.toLowerCase();
+            const isCorrect = correctAnswer.includes(userAnswer) || userAnswer.includes(correctAnswer.split(' (')[0].trim()) || userAnswer.includes('真') && correctAnswer.includes('真') || userAnswer.includes('假') && correctAnswer.includes('假') || (userAnswer.includes('a') || userAnswer.includes('b') || userAnswer.includes('c')) && correctAnswer.includes(userAnswer.toUpperCase());
+            
+            const feedback = document.getElementById('question');
+            if (isCorrect) {
+                score++;
+                feedback.innerHTML += '<br><span style="color:green;">✅ 正確！練習: 口述這系列給客戶的應用場景。</span>';
+                console.log('答對'); // 調試
+            } else {
+                wrongQuestions.push({cell: currentRound[currentQ], q: currentQuestionData.q, a: currentQuestionData.a});
+                feedback.innerHTML += `<br><span style="color:red;">❌ 錯誤！正確答案: ${currentQuestionData.a}</span>`;
+                console.log('答錯'); // 調試
+            }
+            
+            document.getElementById('score').textContent = `分數: ${score}/${currentRound.length}`;
+            document.getElementById('progress-bar').style.width = `${(currentRound.length / 9) * 100}%`;
+            
+            if (currentRound.length === 9) {
+                document.getElementById('newRoundBtn').style.display = 'inline';
+                const accuracy = (score / 9 * 100).toFixed(1);
+                document.getElementById('report').innerHTML = `<h3>遊戲結束！正確率: ${accuracy}%</h3><p>錯題數: ${wrongQuestions.length}</p>`;
+                document.getElementById('report').style.display = 'block';
+            }
+            
+            document.getElementById('answer').disabled = true;
+            setTimeout(() => { 
+                document.getElementById('answer').disabled = false; 
+                document.getElementById('answer').value = ''; 
+            }, 2000);
+        }
+        
+        // 新的一輪
+        function startNewRound() {
+            currentRound = [];
+            score = 0;
+            currentQ = -1;
+            wrongQuestions = [];
+            currentQuestionData = null;
+            document.querySelectorAll('.cell').forEach(c => c.classList.remove('selected'));
+            document.getElementById('question').innerHTML = '';
+            document.getElementById('answer').value = '';
+            document.getElementById('answer').disabled = false;
+            document.getElementById('score').textContent = '分數: 0/9';
+            document.getElementById('progress-bar').style.width = '0%';
+            document.getElementById('newRoundBtn').style.display = 'none';
+            document.getElementById('report').style.display = 'none';
+            console.log('新輪開始'); // 調試
+        }
+        
+        // 下載報告
+        function downloadReport() {
+            const now = new Date().toLocaleString('zh-TW');
+            let reportContent = `歐米伽訓練報告 - ${now}\n分數: ${score}/9 (正確率: ${(score/9*100).toFixed(1)}%)\n\n錯題清單（重點複習）:\n`;
+            if (wrongQuestions.length === 0) {
+                reportContent += '全對！完美表現！\n';
+            } else {
+                wrongQuestions.forEach(w => {
+                    reportContent += `格子 ${w.cell}: ${w.q}\n正確答案: ${w.a}\n\n`;
+                });
+            }
+            const blob = new Blob([reportContent], {type: 'text/plain;charset=utf-8'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `omega_training_report_${Date.now()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Enter鍵提交
+        document.getElementById('answer').addEventListener('keypress', (e) => { 
+            if (e.key === 'Enter') submitAnswer(); 
+        });
+    </script>
+</body>
+</html>
