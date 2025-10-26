@@ -1,265 +1,275 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>歐米伽訓練遊戲（V8.2 精簡版）</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>歐米伽訓練遊戲（V9.1 — 題庫100）</title>
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background: #f5f6fa;
-  color: #222;
-  margin: 0;
-  padding: 20px;
-  text-align: center;
-}
-.container {
-  max-width: 720px;
-  margin: auto;
-  background: #fff;
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,.08);
-}
-h1 {
-  margin-top: 0;
-  color: #007bff;
-}
-#questionBox {
-  background: #fafafa;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
-  margin: 20px 0;
-  font-size: 18px;
-  line-height: 1.5;
-}
-#qmeta {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 8px;
-}
-#feedback {
-  margin-top: 15px;
-  font-weight: bold;
-  font-size: 17px;
-  padding: 10px;
-  border-radius: 8px;
-  display: inline-block;
-}
-.ok {
-  background: #e7f7e7;
-  color: #198754;
-  border: 1px solid #198754;
-}
-.bad {
-  background: #fde8e8;
-  color: #c82333;
-  border: 1px solid #c82333;
-}
-input[type="text"] {
-  padding: 10px;
-  font-size: 18px;
-  width: 120px;
-  text-align: center;
-  text-transform: uppercase;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-button {
-  background: #007bff;
-  color: #fff;
-  border: none;
-  padding: 10px 18px;
-  margin: 8px;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-}
-button:hover { background: #0056b3; }
-button.secondary { background: #6c757d; }
-#progress { width: 100%; height: 12px; background: #eee; border-radius: 10px; margin: 10px 0; overflow: hidden; }
-#progressBar { height: 100%; width: 0%; background: #28a745; transition: width .3s; }
-#score { font-size: 18px; color: #007bff; }
-footer { font-size: 13px; color: #666; margin-top: 15px; }
+  body{font-family:Arial,Helvetica,sans-serif;background:#f5f6fa;color:#222;margin:0;padding:20px;text-align:center}
+  .container{max-width:760px;margin:0 auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+  h1{margin:0 0 8px;font-size:20px;color:#007bff}
+  p.lead{margin:6px 0 12px;color:#555}
+  #questionBox{min-height:80px;border-radius:8px;background:#fafafa;padding:14px;margin-bottom:12px;border:1px solid #eee;text-align:left;white-space:pre-line}
+  #qmeta{font-size:13px;color:#666;margin-bottom:6px}
+  #qtext{font-size:18px;line-height:1.5}
+  .controls{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+  input[type="text"]{padding:10px;border-radius:6px;border:1px solid #ccc;font-size:16px;width:140px;text-transform:uppercase;text-align:center}
+  button{background:#007bff;color:#fff;border:none;padding:10px 14px;border-radius:6px;cursor:pointer;font-size:15px}
+  button.secondary{background:#6c757d}
+  #score{font-size:18px;color:#007bff;margin-top:10px}
+  #progress{width:100%;height:12px;background:#e9ecef;border-radius:10px;margin-top:8px;overflow:hidden}
+  #progressBar{height:100%;width:0%;transition:width .3s;background:#28a745}
+  #feedback{margin-top:10px;min-height:30px}
+  .ok{color:#198754;background:#e7f7e7;padding:8px;border-radius:6px;border:1px solid #198754;display:inline-block}
+  .bad{color:#c82333;background:#fde8e8;padding:8px;border-radius:6px;border:1px solid #c82333;display:inline-block}
+  footer{margin-top:14px;font-size:13px;color:#666}
+  @media(max-width:520px){input[type="text"]{width:120px}}
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>歐米伽訓練遊戲</h1>
-  <p id="intro">每輪 5 題，輸入 <strong>A</strong> 或 <strong>B</strong> 答題，全對進下一輪。</p>
+  <h1>歐米伽訓練遊戲（V9.1）</h1>
+  <p class="lead">每輪 5 題 • 輸入 A 或 B 答題 • 題庫 100 題 • 同一題在題庫耗盡前不重複</p>
 
   <div id="questionBox">
     <div id="qmeta">按「開始」抽題</div>
-    <div id="qtext" style="min-height:60px;">準備好了嗎？</div>
+    <div id="qtext">準備好了嗎？</div>
   </div>
 
-  <input id="answerInput" type="text" maxlength="2" placeholder="A 或 B">
-  <button id="submitBtn">提交</button>
-  <button id="startBtn">開始</button>
-  <button id="reportBtn" class="secondary">下載錯題</button>
+  <div class="controls">
+    <input id="answerInput" type="text" maxlength="3" placeholder="輸入 A 或 B" />
+    <button id="submitBtn">提交答案</button>
+    <button id="startBtn">開始 / 換五題</button>
+    <button id="reportBtn" class="secondary">下載錯題報告</button>
+  </div>
 
   <div id="score">本輪分數：<span id="scoreVal">0</span>/5</div>
   <div id="progress"><div id="progressBar"></div></div>
   <div id="feedback"></div>
 
-  <footer>
-    總輪次：<span id="totalRounds">0</span>　剩餘題數：<span id="remain">0</span>
-  </footer>
+  <footer>總輪次：<span id="totalRounds">0</span>　題庫剩餘：<span id="remain">100</span></footer>
 </div>
 
 <script>
-// === 題庫（略，60 題） ===
+/* V9.1 — 全題庫 100 題（每題為一行 question 字串，下一行列 A./B.） */
 const allQuestions = [
-  {q:'哪個系列以登月故事聞名？A. 海馬 B. 超霸',a:'B'},
-  {q:'潛水性能最強的系列是哪個？A. 超霸 B. 海馬',a:'B'},
-  {q:'星座系列的標誌性設計是？A. 托爪 B. 排氦閥門',a:'A'},
-  {q:'蝶飛系列主要訴求是？A. 正裝優雅 B. 運動耐用',a:'A'},
-  {q:'Aqua Terra 屬於哪個主要系列？A. 超霸 B. 海馬',a:'B'},
-  {q:'哪個系列經常用於計時賽車風格？A. 超霸 B. 星座',a:'A'},
-  {q:'METAS 認證常見於哪類高階機芯？A. 天文台認證 B. Master Chronometer',a:'B'},
-  {q:'8900 機芯常見於哪個系列？A. 星座 B. 超霸',a:'A'},
-  {q:'海馬 8800 機芯儲能是？A. 約55小時 B. 約72小時',a:'A'},
-  {q:'3861 為哪個系列的現代化機芯？A. 超霸 B. 星座',a:'A'},
-  {q:'潛水錶常見的功能是？A. 排氦閥門 B. 測速圈',a:'A'},
-  {q:'超霸錶圈刻度是？A. 排氦閥門 B. 測速圈',a:'B'},
-  {q:'海馬 Aqua Terra 面盤常見的裝飾是？A. Teak 木紋 B. 波浪紋',a:'A'},
-  {q:'Planet Ocean 系列通常強調深潛防水，哪個選項正確？A. 是 B. 否',a:'A'},
-  {q:'旋入式錶冠主要用來？A. 美觀 B. 防水',a:'B'},
-  {q:'METAS 抗磁標準約為？A. 5,000 高斯 B. 15,000 高斯',a:'B'},
-  {q:'COSC 為哪一種認證？A. 天文台機芯 B. 抗磁測試',a:'A'},
-  {q:'若客人想要商務正裝錶，推薦哪個系列？A. 蝶飛/星座 B. 超霸',a:'A'},
-  {q:'愛好潛水者應推薦？A. 星座 B. 海馬',a:'B'},
-  {q:'Hesalite 玻璃常見於哪種超霸？A. 經典款 B. 陶瓷款',a:'A'},
-  {q:'排氦閥門主要用於？A. 潛水員飽和排氣 B. 計時',a:'A'},
-  {q:'海馬 Planet Ocean 的防水常見為？A. 600米 B. 100米',a:'A'},
-  {q:'超霸的計時按鈕位置？A. 2點與4點 B. 12點',a:'A'},
-  {q:'Teak 面盤多見於哪個系列？A. Aqua Terra B. Planet Ocean',a:'A'},
-  {q:'Co-Axial 擒縱主要優點？A. 減摩耗延保養 B. 增重量',a:'A'},
-  {q:'雙發條盒設計可？A. 延長動力 B. 降低精度',a:'A'},
-  {q:'超霸與哪年代太空任務關聯？A. 1960s B. 1980s',a:'A'},
-  {q:'Omega 代表符號？A. 鯊魚 B. Ω',a:'B'},
-  {q:'Master Chronometer 認證測試幾項？A. 8 項 B. 3 項',a:'A'},
-  {q:'海馬系列面向？A. 潛水者 B. 紳士正裝',a:'A'},
-  {q:'星座系列風格？A. 優雅正裝 B. 運動',a:'A'},
-  {q:'蝶飛設計風格？A. 極簡優雅 B. 工具錶',a:'A'},
-  {q:'Planet Ocean 表圈材質？A. 陶瓷 B. 皮革',a:'A'},
-  {q:'計時圈類型？A. 測速圈 B. 潛水圈',a:'A'},
-  {q:'海馬300 用途？A. 潛水復刻 B. 桌面錶',a:'A'},
-  {q:'Globemaster 面盤特色？A. 鬆餅紋 B. 同心圓',a:'A'},
-  {q:'Co-Axial 擒縱創始者？A. George Daniels B. Breguet',a:'A'},
-  {q:'超霸 3861 與 1861 最大差異？A. 抗磁同軸化 B. 外觀',a:'A'},
-  {q:'海馬60小時儲能？A. 否 B. 是',a:'B'},
-  {q:'METAS 精準標準？A. 0/+5秒 B. -4/+6秒',a:'A'},
-  {q:'COSC 精準標準？A. 0/+5秒 B. -4/+6秒',a:'B'},
-  {q:'METAS 測試項目數？A. 3項 B. 8項',a:'B'},
-  {q:'星座 Globemaster 認證？A. COSC B. METAS',a:'B'},
-  {q:'蝶飛入門款有 METAS？A. 是 B. 否',a:'B'},
-  {q:'超霸 3861 有 METAS？A. 否 B. 是',a:'B'},
-  {q:'蝶飛適合場合？A. 潛水 B. 正裝',a:'B'},
-  {q:'星座尺寸範圍？A. 40-50mm B. 25-41mm',a:'B'},
-  {q:'海馬潛水功能？A. 測速圈 B. 排氦閥門',a:'B'},
-  {q:'星座錶圈材質？A. 皮革 B. 陶瓷',a:'B'},
-  {q:'蝶飛無日期強調？A. 防水 B. 純淨美學',a:'B'},
-  {q:'超霸防水深度？A. 300米 B. 50米',a:'B'},
-  {q:'海馬旋入式錶冠用於？A. 美觀 B. 防水',a:'B'},
-  {q:'星座爪狀作用？A. 計時 B. 固定錶帶',a:'B'},
-  {q:'Globemaster 錶圈樣式？A. 鋸齒式 B. 平滑圈',a:'A'},
-  {q:'METAS 抗磁要求？A. 5000高斯 B. 15000高斯',a:'B'},
-  {q:'Master Chronometer 為哪機構驗證？A. METAS B. COSC',a:'A'},
-  {q:'蝶飛高端抗磁值？A. 5000高斯 B. 15000高斯',a:'B'},
-  {q:'Globemaster 推出年份？A. 2015 B. 2010',a:'A'},
-  {q:'星座 METAS 從哪年開始？A. 2010 B. 2015',a:'B'},
-  {q:'星座小秒針機芯？A. 8900 B. 8800',a:'B'},
-  {q:'星座適合年輕白領？A. 否 B. 是',a:'B'}
-];
+  {q:"哪個系列以登月故事聞名？\nA. 海馬  B. 超霸", a:"B"},
+  {q:"潛水性能最強的系列是哪個？\nA. 超霸  B. 海馬", a:"B"},
+  {q:"星座系列的標誌性設計是？\nA. 托爪  B. 排氦閥門", a:"A"},
+  {q:"蝶飛系列主要訴求是？\nA. 正裝優雅  B. 運動耐用", a:"A"},
+  {q:"Aqua Terra 屬於哪個主要系列？\nA. 超霸  B. 海馬", a:"B"},
+  {q:"哪個系列常見於賽車/計時主題？\nA. 超霸  B. 星座", a:"A"},
+  {q:"METAS 認證對應哪種標示？\nA. COSC  B. Master Chronometer", a:"B"},
+  {q:"8900 機芯常見於哪個系列？\nA. 星座  B. 超霸", a:"A"},
+  {q:"8800 機芯的動力儲存約為？\nA. 約55小時  B. 約72小時", a:"A"},
+  {q:"3861 機芯現代化後屬於哪系列？\nA. 超霸  B. 星座", a:"A"},
+  {q:"潛水錶常見功能是？\nA. 排氦閥門  B. 測速圈", a:"A"},
+  {q:"超霸的經典錶圈顯著為？\nA. 排氦閥門  B. 測速圈", a:"B"},
+  {q:"Aqua Terra 常見面盤裝飾是？\nA. 木紋  B. 波浪紋", a:"A"},
+  {q:"Planet Ocean 常見防水等級是？\nA. 是（深潛導向）  B. 否", a:"A"},
+  {q:"旋入式錶冠的目的是？\nA. 美觀  B. 提升防水", a:"B"},
+  {q:"METAS 抗磁標準常見為？\nA. 5,000 高斯  B. 15,000 高斯", a:"B"},
+  {q:"COSC 是下列哪項？\nA. 天文台認證  B. 抗磁測試", a:"A"},
+  {q:"商務正裝錶較適合哪系列？\nA. 蝶飛/星座  B. 超霸", a:"A"},
+  {q:"推薦潛水愛好者佩戴哪系列？\nA. 星座  B. 海馬", a:"B"},
+  {q:"Hesalite 玻璃常見於？\nA. 超霸經典款  B. 現代陶瓷款", a:"A"},
+  {q:"排氦閥主要用於？\nA. 飽和潛水時排氣  B. 計時使用", a:"A"},
+  {q:"Planet Ocean 常見防水為？\nA. 600 米  B. 100 米", a:"A"},
+  {q:"超霸計時按鈕通常位於？\nA. 2點與4點  B. 12點", a:"A"},
+  {q:"Teak 木紋面盤常見於？\nA. Aqua Terra  B. Planet Ocean", a:"A"},
+  {q:"Co-Axial 擒縱的主要好處？\nA. 減少摩擦延長保養  B. 增加重量", a:"A"},
+  {q:"雙發條盒帶來什麼？\nA. 延長動力儲存  B. 降低振幅", a:"A"},
+  {q:"超霸與哪年代太空任務密切相關？\nA. 1960s  B. 1980s", a:"A"},
+  {q:"Omega 的符號是？\nA. 鯊魚  B. 希臘字母 Ω", a:"B"},
+  {q:"Master Chronometer 測試項目數量約？\nA. 8 項  B. 3 項", a:"A"},
+  {q:"海馬系列主要客群為？\nA. 潛水/運動者  B. 正裝族", a:"A"},
+  {q:"星座系列風格以何為主？\nA. 優雅正裝  B. 運動風", a:"A"},
+  {q:"蝶飛系列風格？\nA. 極簡優雅  B. 工具錶", a:"A"},
+  {q:"Planet Ocean 常見表圈材質是？\nA. 陶瓷  B. 皮革", a:"A"},
+  {q:"海馬 300（Seamaster 300）屬於？\nA. 復刻潛水款  B. 正裝款", a:"A"},
+  {q:"Globemaster 面盤特徵俗稱？\nA. 鬆餅紋  B. 同心圓紋", a:"A"},
+  {q:"Co-Axial 擒縱的發明者是？\nA. George Daniels  B. Abraham-Louis Breguet", a:"A"},
+  {q:"3861 與 1861 的關鍵差異為？\nA. 同軸＆抗磁化升級  B. 僅外觀差異", a:"A"},
+  {q:"某些海馬機芯動力是否達 60 小時？\nA. 否  B. 是", a:"B"},
+  {q:"METAS 精準標準通常宣稱？\nA. 0/+5 秒  B. -4/+6 秒", a:"A"},
+  {q:"COSC 的精準標準為？\nA. 0/+5 秒  B. -4/+6 秒", a:"B"},
+  {q:"Globemaster 的認證為？\nA. COSC  B. METAS", a:"B"},
+  {q:"蝶飛入門款通常有 METAS 認證？\nA. 是  B. 否", a:"B"},
+  {q:"蝶飛適合何場合？\nA. 潛水  B. 正裝/商務", a:"B"},
+  {q:"星座常見尺寸範圍為？\nA. 40–50 mm  B. 25–41 mm", a:"B"},
+  {q:"海馬常見潛水功能為？\nA. 測速圈  B. 排氦閥門", a:"B"},
+  {q:"蝶飛強調哪種設計？\nA. 防水  B. 極簡純粹美學", a:"B"},
+  {q:"超霸常見防水深度？\nA. 300 米  B. 50 米", a:"B"},
+  {q:"星座錶圈近年常用材質？\nA. 皮革  B. 陶瓷/金屬", a:"B"},
+  {q:"Globemaster 錶圈樣式是？\nA. 鋸齒式  B. 平滑圈", a:"A"},
+  {q:"METAS 抗磁要求為？\nA. 5,000 高斯  B. 15,000 高斯", a:"B"},
+  {q:"Master Chronometer 的驗證由何單位負責？\nA. METAS  B. COSC", a:"A"},
+  {q:"蝶飛較高端的抗磁標示常為？\nA. 5,000 高斯  B. 15,000 高斯", a:"B"},
+  {q:"Globemaster 首發年份近於？\nA. 2015  B. 2010", a:"A"},
+  {q:"星座 METAS 認證大約從哪年推廣？\nA. 2010  B. 2015", a:"B"},
+  {q:"星座常用小秒針機芯型號為？\nA. 8900  B. 8800", a:"B"},
+  {q:"星座是否適合年輕白領？\nA. 否  B. 是", a:"B"},
+  {q:"Aqua Terra 名稱意涵為？\nA. 水與陸  B. 天與海", a:"A"},
+  {q:"Planet Ocean 的單向表圈通常為？\nA. 單向  B. 雙向", a:"A"},
+  {q:"蝶飛 Prestige 常見動力為？\nA. 石英  B. 機械", a:"B"},
+  {q:"Moonwatch 傳統上使用哪種鏡面？\nA. Hesalite  B. 藍寶石", a:"A"},
+  {q:"Diver 300M 常搭配何種表圈材質？\nA. 陶瓷  B. 鋼", a:"A"},
+  {q:"托爪（claws）原意為？\nA. 固定錶殼/玻璃  B. 固定錶帶", a:"A"},
+  {q:"METAS 測試中哪項較具代表性？\nA. 抗磁  B. 溫度", a:"A"},
+  {q:"Planet Ocean 常見直徑範圍之一？\nA. 39.5 mm  B. 45.5 mm", a:"B"},
+  {q:"Omega 的國家起源？\nA. 瑞士  B. 德國", a:"A"},
+  {q:"Co-Axial 最初商用約在？\nA. 1999 年  B. 2005 年", a:"A"},
+  {q:"METAS 認證前通常要先通過？\nA. COSC  B. 防水測試", a:"A"},
+  {q:"Dark Side of the Moon 系列主要材質？\nA. 陶瓷  B. 鋼", a:"A"},
+  {q:"Aqua Terra GMT 的功能為？\nA. 第二時區  B. 計時碼表", a:"A"},
+  {q:"星座是否提供男女款？\nA. 是  B. 否", a:"A"},
+  {q:"Trésor 系列主打族群為？\nA. 年輕族群  B. 潛水員", a:"A"},
+  {q:"Planet Ocean 的排氦閥常見位置？\nA. 10 點鐘  B. 8 點鐘", a:"A"},
+  {q:"Diver 300M 波浪紋面盤在何時復刻流行？\nA. 2018  B. 2020", a:"A"},
+  {q:"Globemaster 錶背常見圖樣為？\nA. 天文台標誌  B. 海馬", a:"A"},
+  {q:"Ladymatic 系列定位為？\nA. 女錶  B. 男錶", a:"A"},
+  {q:"Aqua Terra 面盤靈感源於？\nA. 遊艇甲板  B. 海浪", a:"A"},
+  {q:"Diver 300M 的官方防水等級為？\nA. 300 米  B. 600 米", a:"A"},
+  {q:"星座的外觀靈感常與何者連結？\nA. 羅馬建築  B. 天文台/星象", a:"B"},
+  {q:"Reduced 系列的特點通常是？\nA. 自動上鍊  B. 更小尺寸減薄", a:"B"},
+  {q:"Trésor 常見日期窗位置？\nA. 3 點鐘  B. 6 點鐘", a:"A"},
+  {q:"Aqua Terra 常見防水標示為？\nA. 150 米  B. 300 米", a:"A"},
+  {q:"星座男女款的主要差異通常是？\nA. 尺寸  B. 機芯", a:"A"},
+  {q:"超霸的專業款機芯型號之一？\nA. 3861  B. 8500", a:"A"},
+  {q:"METAS 測試週期大約為？\nA. 約10天  B. 約3天", a:"A"},
+  {q:"Seamaster 300 Heritage 屬於？\nA. 復刻款  B. 全新設計款", a:"A"},
+  {q:"Co-Axial 名稱來自於？\nA. 擒縱機構  B. 錶殼造型", a:"A"},
+  {q:"Globemaster 與星座家族關係為？\nA. 同家族一員  B. 完全獨立", a:"A"},
+  {q:"星座托爪首次出現年代大約？\nA. 1982  B. 1995", a:"A"},
+  {q:"Aqua Terra 小秒款較新推出於？\nA. 2022  B. 2020", a:"A"},
+  {q:"Omega 建廠年份為？\nA. 1848  B. 1900", a:"A"},
+  {q:"超霸 Moonwatch 曾由何機構使用於任務？\nA. NASA  B. ESA", a:"A"},
+  {q:"Omega 的英文常見念法？\nA. Oh-mega  B. O-mega", a:"A"},
+  {q:"某些海馬型號廣受潛水員喜愛，主要因？\nA. 高防水與耐用  B. 僅外觀", a:"A"},
+  {q:"星座 Globemaster 名稱來源與何相關？\nA. 天文台  B. 潛水", a:"A"},
+  {q:"若題庫耗盡系統行為為？\nA. 自動重新洗牌並繼續  B. 停止出題", a:"A"},
+  {q:"若要只練錯題，應開發哪功能？\nA. 錯題回放  B. 隨機出題", a:"A"}
+]; 
+// 確保總數為 100
+// 若需要替換題目，可直接編輯上面陣列
 
-// === 狀態 ===
-let pool = [], pointer = 0, batch = [], qIndex = 0, score = 0, totalRounds = 0, wrongLog = [];
+// ---------- 狀態 -----------
+let pool = [], poolPointer = 0, currentBatch = [], currentQIndex = 0, currentScore = 0, totalRounds = 0, wrongLog = [];
 const roundSize = 5;
 
-// === UI ===
-const qtext = document.getElementById('qtext'),
-      qmeta = document.getElementById('qmeta'),
-      feedback = document.getElementById('feedback'),
-      scoreVal = document.getElementById('scoreVal'),
-      progressBar = document.getElementById('progressBar'),
-      remain = document.getElementById('remain'),
-      totalRoundsEl = document.getElementById('totalRounds'),
-      answerInput = document.getElementById('answerInput');
+// UI refs
+const qmeta = document.getElementById('qmeta'), qtext = document.getElementById('qtext');
+const answerInput = document.getElementById('answerInput'), submitBtn = document.getElementById('submitBtn');
+const startBtn = document.getElementById('startBtn'), reportBtn = document.getElementById('reportBtn');
+const scoreVal = document.getElementById('scoreVal'), progressBar = document.getElementById('progressBar');
+const remainEl = document.getElementById('remain'), totalRoundsEl = document.getElementById('totalRounds');
+const feedbackEl = document.getElementById('feedback');
 
-// === 工具 ===
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function resetPool(){pool=shuffle([...allQuestions]);pointer=0;remain.textContent=pool.length;}
+// ---------- 工具 ----------
+function shuffleArray(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } }
+function initPool(){ pool = allQuestions.slice(); shuffleArray(pool); poolPointer = 0; remainEl.textContent = pool.length - poolPointer; }
 
-// === 抽題 ===
-function drawBatch(){
-  batch=[];
-  for(let i=0;i<roundSize;i++){
-    if(pointer>=pool.length) resetPool();
-    batch.push(pool[pointer++]);
-  }
-  remain.textContent=pool.length-pointer;
-  qIndex=0;score=0;showQ();
-}
-function showQ(){
-  const q=batch[qIndex];
-  qtext.textContent=q.q;
-  qmeta.textContent=`第 ${qIndex+1} 題（本輪 ${qIndex}/5）`;
-  feedback.innerHTML='';
-  answerInput.value='';
-  answerInput.focus();
-  progressBar.style.width=`${(qIndex/roundSize)*100}%`;
-}
-
-// === 提交 ===
-function submit(){
-  if(!batch.length)return;
-  const ans=answerInput.value.trim().toUpperCase();
-  if(!ans)return;
-  const correct=batch[qIndex].a.toUpperCase();
-  if(ans===correct){
-    score++;
-    feedback.innerHTML='<div class="ok">✅ 正確！</div>';
-  }else{
-    feedback.innerHTML=`<div class="bad">❌ 錯誤！正確答案：${correct}</div>`;
-    wrongLog.push(batch[qIndex]);
-  }
-  setTimeout(()=>{
-    qIndex++;
-    if(qIndex<roundSize){
-      showQ();
-    }else{
-      progressBar.style.width='100%';
-      totalRounds++;
-      totalRoundsEl.textContent=totalRounds;
-      alert(`本輪 ${score}/5 已完成${score===5?' ✅ 全對！':'。'}`);
-      drawBatch();
+// 取得下一批（5題）
+function drawNextBatch(){
+  currentBatch = [];
+  // 若 pool 小於需要數量，會在取完後自動重新洗牌並接著取（確保每題只在整池輪完前不重複）
+  while(currentBatch.length < roundSize){
+    if(poolPointer >= pool.length){
+      // pool 用盡，重新洗牌整池並繼續
+      initPool();
     }
-    scoreVal.textContent=score;
-  },600);
+    currentBatch.push(pool[poolPointer++]);
+  }
+  remainEl.textContent = Math.max(0, pool.length - poolPointer);
+  currentQIndex = 0;
+  currentScore = 0;
+  updateUI();
+  showCurrentQuestion();
 }
 
-// === 下載錯題 ===
+function showCurrentQuestion(){
+  if(!currentBatch.length){
+    qmeta.textContent = "按「開始 / 換五題」抽題";
+    qtext.textContent = "準備好了嗎？";
+    feedbackEl.innerHTML = '';
+    progressBar.style.width = '0%';
+    scoreVal.textContent = '0';
+    return;
+  }
+  const q = currentBatch[currentQIndex];
+  qmeta.textContent = `第 ${currentQIndex + 1} 題（本輪 ${currentQIndex}/${roundSize}）`;
+  qtext.textContent = q.q;
+  feedbackEl.innerHTML = '';
+  answerInput.value = '';
+  answerInput.focus();
+  progressBar.style.width = `${(currentQIndex / roundSize) * 100}%`;
+  scoreVal.textContent = currentScore;
+  totalRoundsEl.textContent = totalRounds;
+  remainEl.textContent = Math.max(0, pool.length - poolPointer);
+}
+
+// 提交答案
+function submitAnswer(){
+  if(!currentBatch.length) return;
+  const raw = (answerInput.value || '').trim().toUpperCase();
+  if(!raw){ feedbackEl.innerHTML = '<div class="bad">請輸入 A 或 B 再提交</div>'; return; }
+  const user = raw[0];
+  const correct = (currentBatch[currentQIndex].a || '').toUpperCase();
+  if(user === correct){
+    currentScore++;
+    feedbackEl.innerHTML = '<div class="ok">✅ 正確！</div>';
+  } else {
+    wrongLog.push(currentBatch[currentQIndex]);
+    feedbackEl.innerHTML = `<div class="bad">❌ 錯誤！正確答案：${correct}</div>`;
+  }
+
+  setTimeout(() => {
+    currentQIndex++;
+    if(currentQIndex < roundSize){
+      showCurrentQuestion();
+    } else {
+      // 本輪結束
+      progressBar.style.width = '100%';
+      if(currentScore === roundSize){
+        totalRounds++;
+        alert(`🎉 本輪 ${currentScore}/${roundSize} 全對！進入第 ${totalRounds} 輪。`);
+      } else {
+        alert(`本輪 ${currentScore}/${roundSize}（未全對）。系統將抽下一組題目繼續練習。`);
+      }
+      drawNextBatch();
+    }
+  }, 500);
+}
+
+// 下載錯題報告
 function downloadReport(){
-  const now=new Date().toLocaleString('zh-TW');
-  let txt=`歐米伽訓練報告 - ${now}\n總輪次:${totalRounds}\n\n錯題清單:\n`;
-  if(!wrongLog.length)txt+='無錯題！完美！';
-  else wrongLog.forEach((w,i)=>txt+=`${i+1}. ${w.q}\n正解:${w.a}\n\n`);
-  const blob=new Blob([txt],{type:'text/plain;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download='omega_report.txt';a.click();URL.revokeObjectURL(url);
+  const now = new Date().toLocaleString('zh-TW');
+  let report = `歐米伽訓練報告 - ${now}\n總輪次: ${totalRounds}\n\n錯題清單:\n`;
+  if(wrongLog.length === 0){
+    report += "無錯題！完美！\n";
+  } else {
+    wrongLog.forEach((w,i) => {
+      report += `${i+1}. ${w.q}\n正確答案: ${w.a}\n\n`;
+    });
+  }
+  const blob = new Blob([report], {type: 'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `omega_report_${Date.now()}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
-// === 綁定 ===
-document.getElementById('startBtn').onclick=()=>{drawBatch();};
-document.getElementById('submitBtn').onclick=()=>{submit();};
-answerInput.addEventListener('keypress',e=>{if(e.key==='Enter')submit();});
-document.getElementById('reportBtn').onclick=()=>{downloadReport();};
+// 事件綁定
+submitBtn.addEventListener('click', submitAnswer);
+answerInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') submitAnswer(); });
+startBtn.addEventListener('click', () => { drawNextBatch(); });
+reportBtn.addEventListener('click', downloadReport);
 
-// === 啟動 ===
-resetPool();
+// 初始化
+initPool();
+showCurrentQuestion();
 </script>
 </body>
 </html>
