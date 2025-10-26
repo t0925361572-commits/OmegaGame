@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>歐米伽訓練遊戲（V9.8）</title>
+<title>歐米伽訓練遊戲（V9.9）</title>
 <style>
   body{font-family:Arial,Helvetica,sans-serif;background:#f5f6fa;color:#222;margin:0;padding:20px;text-align:center}
   .container{max-width:760px;margin:0 auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
@@ -13,7 +13,7 @@
   #qmeta{font-size:13px;color:#666;margin-bottom:6px}
   #qtext{font-size:18px;line-height:1.5}
   .controls{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
-  .answer-btn{background:#17a2b8;color:#fff;border:none;padding:12px 24px;border-radius:6px;cursor:pointer;font-size:18px;font-weight:bold;min-width: 80px;}
+  .answer-btn{background:#17a2b8;color:#fff;border:none;padding:12px 24px;border-radius:6px;cursor:pointer;font-size:18px;font-weight:bold;min-width:80px;}
   .answer-btn:hover{background:#138496}
   .answer-btn:disabled{background:#6c757d;cursor:not-allowed;}
   
@@ -34,7 +34,7 @@
 </head>
 <body>
 <div class="container">
-  <h1>歐米伽訓練遊戲（V9.8）</h1>
+  <h1>歐米伽訓練遊戲（V9.9）</h1>
   <p class="lead">每輪 5 題 • 點擊 A 或 B 按鈕答題 • **5 題全對才算通過一輪**</p>
 
   <div id="questionBox">
@@ -56,14 +56,14 @@
   <div id="feedback"></div>
 
   <footer>
-    總輪次：<span id="totalRounds">0</span>
+    總輪次（已通過）：<span id="totalRounds">0</span>
   </footer>
 </div>
 
 <script>
-/* V9.7 — 簡化版：移除「已通過批次」顯示，僅保留總輪次 */
+/* V9.8 — 修正：總輪次僅在 5 題全對時 +1 */
 const allQuestions = [
-  // === 原100題（維持）===
+  // === 原100題 + 新增200題（共300題，維持不變）===
   {q:"哪個系列以登月故事聞名？\nA. 海馬  B. 超霸", a:"B"},
   {q:"潛水性能最強的系列是哪個？\nA. 超霸  B. 海馬", a:"B"},
   {q:"星座系列的標誌性設計是？\nA. 托爪  B. 排氦閥門", a:"A"},
@@ -160,8 +160,7 @@ const allQuestions = [
   {q:"星座 Globemaster 名稱來源與何相關？\nA. 天文台  B. 潛水", a:"A"},
   {q:"Snoopy Award 超霸錶是為了紀念哪次任務？\nA. 阿波羅13號  B. 阿波羅11號", a:"A"},
   {q:"Omega 是哪個集團旗下的品牌？\nA. Swatch Group  B. LVMH", a:"A"},
-
-  // === 新增200題（基於教材完整生成）===
+  // === 新增200題（完整保留）===
   {q:"OMEGA 前身工作室創立於何年？\nA. 1848  B. 1894", a:"A"},
   {q:"命名 'Omega' 的機芯為？\nA. 19令機芯  B. 1861機芯", a:"A"},
   {q:"希臘字母 Ω 象徵什麼？\nA. 完美與成就  B. 速度與海洋", a:"A"},
@@ -411,7 +410,6 @@ function submitAnswer(userAnswer){
     } else {
       gameActive = false;
       progressBar.style.width = '100%';
-      totalRounds++;
 
       let finalMessage = `本輪結束！您的分數是 ${currentScore}/${roundSize}。`;
       
@@ -422,7 +420,8 @@ function submitAnswer(userAnswer){
           feedbackEl.innerHTML = `<div class="bad">${finalMessage}</div>`;
           qtext.textContent = "挑戰失敗！點擊「開始 / 抽新題」重新挑戰這 5 題。";
       } else {
-          finalMessage += " 恭喜！本批次 5 題已成功通過！";
+          totalRounds++;  // 只有全對才 +1
+          finalMessage += ` 恭喜！本批次 5 題已成功通過！總輪次：${totalRounds}`;
           feedbackEl.innerHTML = `<div class="ok">${finalMessage}</div>`;
           qtext.textContent = "挑戰成功！點擊「開始 / 抽新題」挑戰下一批次。";
       }
@@ -435,7 +434,7 @@ function submitAnswer(userAnswer){
 
 function downloadReport(){
   const now = new Date().toLocaleString('zh-TW');
-  let report = `歐米伽訓練報告 - ${now}\n總完成輪次: ${totalRounds}\n\n錯題清單 (不重複):\n`;
+  let report = `歐米伽訓練報告 - ${now}\n總輪次（已通過）：${totalRounds}\n\n錯題清單 (不重複):\n`;
   if(wrongLog.size === 0){
     report += "無錯題！完美！\n";
   } else {
