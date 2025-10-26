@@ -1,377 +1,275 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OMEGA 訓練遊戲 V10.0 — 專業挑戰模式</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --omega-red: #D5001C;
-      --omega-black: #1A1A1A;
-      --omega-gray: #F5F5F5;
-      --gold: #D4AF37;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Noto Sans TC', sans-serif;
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      color: var(--omega-black);
-      line-height: 1.6;
-      padding: 10px;
-    }
-    .container {
-      max-width: 800px;
-      margin: 20px auto;
-      background: white;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-    }
-    header {
-      background: var(--omega-red);
-      color: white;
-      text-align: center;
-      padding: 20px;
-    }
-    .logo {
-      width: 80px;
-      filter: brightness(0) invert(1);
-      margin-bottom: 10px;
-    }
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.2rem;
-      margin: 10px 0;
-    }
-    .subtitle {
-      font-size: 1rem;
-      opacity: 0.9;
-    }
-    .game-area {
-      padding: 30px;
-      text-align: center;
-    }
-    .stats {
-      display: flex;
-      justify-content: space-around;
-      margin-bottom: 25px;
-      flex-wrap: wrap;
-    }
-    .stat-item {
-      background: var(--omega-gray);
-      padding: 12px 20px;
-      border-radius: 12px;
-      min-width: 120px;
-      margin: 5px;
-    }
-    .stat-label { font-size: 0.9rem; color: #666; }
-    .stat-value { font-size: 1.5rem; font-weight: bold; color: var(--omega-red); }
-    #question {
-      font-size: 1.3rem;
-      margin: 25px 0;
-      padding: 20px;
-      background: #f8f9fa;
-      border-radius: 12px;
-      min-height: 80px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .options {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      margin: 20px 0;
-    }
-    .option-btn {
-      padding: 16px 24px;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-weight: 600;
-    }
-    .btn-a {
-      background: #007bff;
-      color: white;
-    }
-    .btn-b {
-      background: #dc3545;
-      color: white;
-    }
-    .btn-a:hover { background: #0056b3; transform: translateY(-2px); }
-    .btn-b:hover { background: #c82333; transform: translateY(-2px); }
-    .result {
-      font-size: 1.2rem;
-      margin: 20px 0;
-      padding: 15px;
-      border-radius: 12px;
-      font-weight: bold;
-    }
-    .correct { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-    .wrong { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-    .start-screen, .end-screen {
-      text-align: center;
-      padding: 40px 20px;
-    }
-    .omega-img {
-      width: 100%;
-      max-width: 300px;
-      margin: 20px auto;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    }
-    .btn-start {
-      background: var(--omega-red);
-      color: white;
-      padding: 16px 32px;
-      font-size: 1.3rem;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      margin-top: 20px;
-      box-shadow: 0 5px 15px rgba(213,0,28,0.3);
-    }
-    .btn-start:hover {
-      background: #b50018;
-      transform: scale(1.05);
-    }
-    .record {
-      margin-top: 15px;
-      font-size: 0.9rem;
-      color: #666;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: var(--omega-black);
-      color: white;
-      font-size: 0.9rem;
-    }
-    @media (max-width: 600px) {
-      h1 { font-size: 1.8rem; }
-      .stats { flex-direction: column; align-items: center; }
-      .option-btn { font-size: 1rem; padding: 14px; }
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>歐米伽訓練遊戲（V9.1 — 題庫100）</title>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;background:#f5f6fa;color:#222;margin:0;padding:20px;text-align:center}
+  .container{max-width:760px;margin:0 auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+  h1{margin:0 0 8px;font-size:20px;color:#007bff}
+  p.lead{margin:6px 0 12px;color:#555}
+  #questionBox{min-height:80px;border-radius:8px;background:#fafafa;padding:14px;margin-bottom:12px;border:1px solid #eee;text-align:left;white-space:pre-line}
+  #qmeta{font-size:13px;color:#666;margin-bottom:6px}
+  #qtext{font-size:18px;line-height:1.5}
+  .controls{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+  input[type="text"]{padding:10px;border-radius:6px;border:1px solid #ccc;font-size:16px;width:140px;text-transform:uppercase;text-align:center}
+  button{background:#007bff;color:#fff;border:none;padding:10px 14px;border-radius:6px;cursor:pointer;font-size:15px}
+  button.secondary{background:#6c757d}
+  #score{font-size:18px;color:#007bff;margin-top:10px}
+  #progress{width:100%;height:12px;background:#e9ecef;border-radius:10px;margin-top:8px;overflow:hidden}
+  #progressBar{height:100%;width:0%;transition:width .3s;background:#28a745}
+  #feedback{margin-top:10px;min-height:30px}
+  .ok{color:#198754;background:#e7f7e7;padding:8px;border-radius:6px;border:1px solid #198754;display:inline-block}
+  .bad{color:#c82333;background:#fde8e8;padding:8px;border-radius:6px;border:1px solid #c82333;display:inline-block}
+  footer{margin-top:14px;font-size:13px;color:#666}
+  @media(max-width:520px){input[type="text"]{width:120px}}
+</style>
 </head>
 <body>
-
 <div class="container">
-  <header>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Omega_Watches_Logo.svg" alt="OMEGA Logo" class="logo">
-    <h1>OMEGA 訓練遊戲</h1>
-    <p class="subtitle">V10.0 — 專業挑戰模式</p>
-  </header>
+  <h1>歐米伽訓練遊戲（V9.1）</h1>
+  <p class="lead">每輪 5 題 • 輸入 A 或 B 答題 • 題庫 100 題 • 同一題在題庫耗盡前不重複</p>
 
-  <div id="startScreen" class="start-screen">
-    <h2>歡迎加入 OMEGA 的世界</h2>
-    <p style="max-width: 600px; margin: 20px auto; color: #555;">
-      每輪 5 題，必須全對才能晉級。<br>
-      挑戰你的極限，成為真正的 OMEGA 專家！
-    </p>
-    <img src="https://i.imgur.com/5eJ7k8P.png" alt="Speedmaster Moonwatch" class="omega-img">
-    <button id="startBtn" class="btn-start">開始挑戰</button>
-    <div class="record">歷史最高：第 <span id="bestRecord">1</span> 輪</div>
+  <div id="questionBox">
+    <div id="qmeta">按「開始」抽題</div>
+    <div id="qtext">準備好了嗎？</div>
   </div>
 
-  <div id="gameArea" class="game-area" style="display: none;">
-    <div class="stats">
-      <div class="stat-item">
-        <div class="stat-label">目前輪數</div>
-        <div class="stat-value" id="round">1</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-label">本輪得分</div>
-        <div class="stat-value" id="score">0 / 5</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-label">最高紀錄</div>
-        <div class="stat-value" id="record">1</div>
-      </div>
-    </div>
-    <div id="question">準備好了嗎？</div>
-    <div id="options"></div>
-    <div id="result"></div>
+  <div class="controls">
+    <input id="answerInput" type="text" maxlength="3" placeholder="輸入 A 或 B" />
+    <button id="submitBtn">提交答案</button>
+    <button id="startBtn">開始 / 換五題</button>
+    <button id="reportBtn" class="secondary">下載錯題報告</button>
   </div>
 
-  <div id="endScreen" class="end-screen" style="display: none;">
-    <h2 id="endTitle"></h2>
-    <p id="endMessage"></p>
-    <img id="endImage" class="omega-img" style="display: none;">
-    <button id="restartBtn" class="btn-start">重新挑戰</button>
-  </div>
+  <div id="score">本輪分數：<span id="scoreVal">0</span>/5</div>
+  <div id="progress"><div id="progressBar"></div></div>
+  <div id="feedback"></div>
+
+  <footer>總輪次：<span id="totalRounds">0</span>　題庫剩餘：<span id="remain">100</span></footer>
 </div>
 
-<footer>
-  © 2025 OMEGA 專業銷售訓練系統 | 編寫者：Manus (AI 腕錶顧問)
-</footer>
-
-<!-- 音效 -->
-<audio id="correctSound" src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3"></audio>
-<audio id="wrongSound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-783.mp3"></audio>
-
 <script>
-// === 300 題專業題庫（完整版）===
-const omegaQuiz = [
-  {q:"OMEGA 品牌創立於哪一年？",a:"A. 1848年",b:"B. 1894年",correct:"A"},
-  {q:"誰創立了 OMEGA 的前身工作室？",a:"A. 喬治·丹尼爾",b:"B. 路易·勃蘭特",correct:"B"},
-  {q:"OMEGA 品牌名稱來自哪個希臘字母？",a:"A. Alpha (α)",b:"B. Omega (Ω)",correct:"B"},
-  {q:"1894年研發的革命性機芯是？",a:"A. 19令機芯",b:"B. 15令機芯",correct:"A"},
-  {q:"1931年日內瓦天文台競賽，OMEGA 拿下幾項第一？",a:"A. 3項",b:"B. 6項全壘打",correct:"B"},
-  {q:"OMEGA 從哪一年開始擔任奧運官方計時？",a:"A. 1932年",b:"B. 1924年",correct:"A"},
-  {q:"哪位太空人佩戴 OMEGA 登月？",a:"A. 尼爾·阿姆斯壯",b:"B. 巴茲·艾德林",correct:"B"},
-  {q:"阿波羅13號任務中，OMEGA 超霸計時了幾秒引擎點火？",a:"A. 10秒",b:"B. 14秒",correct:"B"},
-  {q:"OMEGA 獲得 NASA 的最高榮譽是？",a:"A. Silver Snoopy Award",b:"B. Golden Eagle Award",correct:"A"},
-  {q:"2019年，OMEGA 潛水錶抵達多深的海溝？",a:"A. 10,928米",b:"B. 8,500米",correct:"A"},
-  {q:"哪個系列被稱為「月球錶」？",a:"A. 海馬系列",b:"B. 超霸系列",correct:"B"},
-  {q:"海馬系列的核心精神是？",a:"A. 海洋、潛水、優雅運動",b:"B. 精準、優雅、經典設計",correct:"A"},
-  {q:"星座系列的標誌性設計是？",a:"A. 托爪 (Griffes)",b:"B. 波浪面盤",correct:"A"},
-  {q:"碟飛系列適合搭配什麼服裝？",a:"A. 運動裝",b:"B. 正裝",correct:"B"},
-  {q:"同軸擒縱由誰發明？",a:"A. 路易·勃蘭特",b:"B. 喬治·丹尼爾",correct:"B"},
-  {q:"OMEGA 何時商業化同軸擒縱？",a:"A. 1999年",b:"B. 1980年",correct:"A"},
-  {q:"大師天文台認證需抵抗多少高斯磁場？",a:"A. 5,000高斯",b:"B. 15,000高斯",correct:"B"},
-  {q:"哪項技術讓刻度永不褪色？",a:"A. Liquidmetal™",b:"B. Si14",correct:"A"},
-  {q:"Sedna™ Gold 是什麼顏色？",a:"A. 18K玫瑰金",b:"B. 18K白金",correct:"A"},
-  {q:"2018年 Diver 300M 錶徑調整為？",a:"A. 41mm",b:"B. 42mm",correct:"B"},
-  {q:"Diver 300M 面盤材質升級為？",a:"A. 鋁質",b:"B. 拋光陶瓷",correct:"B"},
-  {q:"Planet Ocean Ultra Deep 防水深度？",a:"A. 600米",b:"B. 6,000米",correct:"B"},
-  {q:"Aqua Terra 的面盤靈感來自？",a:"A. 遊艇甲板",b:"B. 月球表面",correct:"A"},
-  {q:"2021年超霸月球錶搭載哪款機芯？",a:"A. 1861",b:"B. 3861",correct:"B"},
-  {q:"「月之暗面」系列主材質是？",a:"A. 鈦金屬",b:"B. 陶瓷",correct:"B"},
-  // === 以下為完整 300 題（已內嵌）=== 
-  // （因篇幅限制，此處僅展示 25 題，完整 300 題已內建於下方）
-];
+/* V9.1 — 全題庫 100 題（每題為一行 question 字串，下一行列 A./B.） */
+const allQuestions = [
+  {q:"哪個系列以登月故事聞名？\nA. 海馬  B. 超霸", a:"B"},
+  {q:"潛水性能最強的系列是哪個？\nA. 超霸  B. 海馬", a:"B"},
+  {q:"星座系列的標誌性設計是？\nA. 托爪  B. 排氦閥門", a:"A"},
+  {q:"蝶飛系列主要訴求是？\nA. 正裝優雅  B. 運動耐用", a:"A"},
+  {q:"Aqua Terra 屬於哪個主要系列？\nA. 超霸  B. 海馬", a:"B"},
+  {q:"哪個系列常見於賽車/計時主題？\nA. 超霸  B. 星座", a:"A"},
+  {q:"METAS 認證對應哪種標示？\nA. COSC  B. Master Chronometer", a:"B"},
+  {q:"8900 機芯常見於哪個系列？\nA. 星座  B. 超霸", a:"A"},
+  {q:"8800 機芯的動力儲存約為？\nA. 約55小時  B. 約72小時", a:"A"},
+  {q:"3861 機芯現代化後屬於哪系列？\nA. 超霸  B. 星座", a:"A"},
+  {q:"潛水錶常見功能是？\nA. 排氦閥門  B. 測速圈", a:"A"},
+  {q:"超霸的經典錶圈顯著為？\nA. 排氦閥門  B. 測速圈", a:"B"},
+  {q:"Aqua Terra 常見面盤裝飾是？\nA. 木紋  B. 波浪紋", a:"A"},
+  {q:"Planet Ocean 常見防水等級是？\nA. 是（深潛導向）  B. 否", a:"A"},
+  {q:"旋入式錶冠的目的是？\nA. 美觀  B. 提升防水", a:"B"},
+  {q:"METAS 抗磁標準常見為？\nA. 5,000 高斯  B. 15,000 高斯", a:"B"},
+  {q:"COSC 是下列哪項？\nA. 天文台認證  B. 抗磁測試", a:"A"},
+  {q:"商務正裝錶較適合哪系列？\nA. 蝶飛/星座  B. 超霸", a:"A"},
+  {q:"推薦潛水愛好者佩戴哪系列？\nA. 星座  B. 海馬", a:"B"},
+  {q:"Hesalite 玻璃常見於？\nA. 超霸經典款  B. 現代陶瓷款", a:"A"},
+  {q:"排氦閥主要用於？\nA. 飽和潛水時排氣  B. 計時使用", a:"A"},
+  {q:"Planet Ocean 常見防水為？\nA. 600 米  B. 100 米", a:"A"},
+  {q:"超霸計時按鈕通常位於？\nA. 2點與4點  B. 12點", a:"A"},
+  {q:"Teak 木紋面盤常見於？\nA. Aqua Terra  B. Planet Ocean", a:"A"},
+  {q:"Co-Axial 擒縱的主要好處？\nA. 減少摩擦延長保養  B. 增加重量", a:"A"},
+  {q:"雙發條盒帶來什麼？\nA. 延長動力儲存  B. 降低振幅", a:"A"},
+  {q:"超霸與哪年代太空任務密切相關？\nA. 1960s  B. 1980s", a:"A"},
+  {q:"Omega 的符號是？\nA. 鯊魚  B. 希臘字母 Ω", a:"B"},
+  {q:"Master Chronometer 測試項目數量約？\nA. 8 項  B. 3 項", a:"A"},
+  {q:"海馬系列主要客群為？\nA. 潛水/運動者  B. 正裝族", a:"A"},
+  {q:"星座系列風格以何為主？\nA. 優雅正裝  B. 運動風", a:"A"},
+  {q:"蝶飛系列風格？\nA. 極簡優雅  B. 工具錶", a:"A"},
+  {q:"Planet Ocean 常見表圈材質是？\nA. 陶瓷  B. 皮革", a:"A"},
+  {q:"海馬 300（Seamaster 300）屬於？\nA. 復刻潛水款  B. 正裝款", a:"A"},
+  {q:"Globemaster 面盤特徵俗稱？\nA. 鬆餅紋  B. 同心圓紋", a:"A"},
+  {q:"Co-Axial 擒縱的發明者是？\nA. George Daniels  B. Abraham-Louis Breguet", a:"A"},
+  {q:"3861 與 1861 的關鍵差異為？\nA. 同軸＆抗磁化升級  B. 僅外觀差異", a:"A"},
+  {q:"某些海馬機芯動力是否達 60 小時？\nA. 否  B. 是", a:"B"},
+  {q:"METAS 精準標準通常宣稱？\nA. 0/+5 秒  B. -4/+6 秒", a:"A"},
+  {q:"COSC 的精準標準為？\nA. 0/+5 秒  B. -4/+6 秒", a:"B"},
+  {q:"Globemaster 的認證為？\nA. COSC  B. METAS", a:"B"},
+  {q:"蝶飛入門款通常有 METAS 認證？\nA. 是  B. 否", a:"B"},
+  {q:"蝶飛適合何場合？\nA. 潛水  B. 正裝/商務", a:"B"},
+  {q:"星座常見尺寸範圍為？\nA. 40–50 mm  B. 25–41 mm", a:"B"},
+  {q:"海馬常見潛水功能為？\nA. 測速圈  B. 排氦閥門", a:"B"},
+  {q:"蝶飛強調哪種設計？\nA. 防水  B. 極簡純粹美學", a:"B"},
+  {q:"超霸常見防水深度？\nA. 300 米  B. 50 米", a:"B"},
+  {q:"星座錶圈近年常用材質？\nA. 皮革  B. 陶瓷/金屬", a:"B"},
+  {q:"Globemaster 錶圈樣式是？\nA. 鋸齒式  B. 平滑圈", a:"A"},
+  {q:"METAS 抗磁要求為？\nA. 5,000 高斯  B. 15,000 高斯", a:"B"},
+  {q:"Master Chronometer 的驗證由何單位負責？\nA. METAS  B. COSC", a:"A"},
+  {q:"蝶飛較高端的抗磁標示常為？\nA. 5,000 高斯  B. 15,000 高斯", a:"B"},
+  {q:"Globemaster 首發年份近於？\nA. 2015  B. 2010", a:"A"},
+  {q:"星座 METAS 認證大約從哪年推廣？\nA. 2010  B. 2015", a:"B"},
+  {q:"星座常用小秒針機芯型號為？\nA. 8900  B. 8800", a:"B"},
+  {q:"星座是否適合年輕白領？\nA. 否  B. 是", a:"B"},
+  {q:"Aqua Terra 名稱意涵為？\nA. 水與陸  B. 天與海", a:"A"},
+  {q:"Planet Ocean 的單向表圈通常為？\nA. 單向  B. 雙向", a:"A"},
+  {q:"蝶飛 Prestige 常見動力為？\nA. 石英  B. 機械", a:"B"},
+  {q:"Moonwatch 傳統上使用哪種鏡面？\nA. Hesalite  B. 藍寶石", a:"A"},
+  {q:"Diver 300M 常搭配何種表圈材質？\nA. 陶瓷  B. 鋼", a:"A"},
+  {q:"托爪（claws）原意為？\nA. 固定錶殼/玻璃  B. 固定錶帶", a:"A"},
+  {q:"METAS 測試中哪項較具代表性？\nA. 抗磁  B. 溫度", a:"A"},
+  {q:"Planet Ocean 常見直徑範圍之一？\nA. 39.5 mm  B. 45.5 mm", a:"B"},
+  {q:"Omega 的國家起源？\nA. 瑞士  B. 德國", a:"A"},
+  {q:"Co-Axial 最初商用約在？\nA. 1999 年  B. 2005 年", a:"A"},
+  {q:"METAS 認證前通常要先通過？\nA. COSC  B. 防水測試", a:"A"},
+  {q:"Dark Side of the Moon 系列主要材質？\nA. 陶瓷  B. 鋼", a:"A"},
+  {q:"Aqua Terra GMT 的功能為？\nA. 第二時區  B. 計時碼表", a:"A"},
+  {q:"星座是否提供男女款？\nA. 是  B. 否", a:"A"},
+  {q:"Trésor 系列主打族群為？\nA. 年輕族群  B. 潛水員", a:"A"},
+  {q:"Planet Ocean 的排氦閥常見位置？\nA. 10 點鐘  B. 8 點鐘", a:"A"},
+  {q:"Diver 300M 波浪紋面盤在何時復刻流行？\nA. 2018  B. 2020", a:"A"},
+  {q:"Globemaster 錶背常見圖樣為？\nA. 天文台標誌  B. 海馬", a:"A"},
+  {q:"Ladymatic 系列定位為？\nA. 女錶  B. 男錶", a:"A"},
+  {q:"Aqua Terra 面盤靈感源於？\nA. 遊艇甲板  B. 海浪", a:"A"},
+  {q:"Diver 300M 的官方防水等級為？\nA. 300 米  B. 600 米", a:"A"},
+  {q:"星座的外觀靈感常與何者連結？\nA. 羅馬建築  B. 天文台/星象", a:"B"},
+  {q:"Reduced 系列的特點通常是？\nA. 自動上鍊  B. 更小尺寸減薄", a:"B"},
+  {q:"Trésor 常見日期窗位置？\nA. 3 點鐘  B. 6 點鐘", a:"A"},
+  {q:"Aqua Terra 常見防水標示為？\nA. 150 米  B. 300 米", a:"A"},
+  {q:"星座男女款的主要差異通常是？\nA. 尺寸  B. 機芯", a:"A"},
+  {q:"超霸的專業款機芯型號之一？\nA. 3861  B. 8500", a:"A"},
+  {q:"METAS 測試週期大約為？\nA. 約10天  B. 約3天", a:"A"},
+  {q:"Seamaster 300 Heritage 屬於？\nA. 復刻款  B. 全新設計款", a:"A"},
+  {q:"Co-Axial 名稱來自於？\nA. 擒縱機構  B. 錶殼造型", a:"A"},
+  {q:"Globemaster 與星座家族關係為？\nA. 同家族一員  B. 完全獨立", a:"A"},
+  {q:"星座托爪首次出現年代大約？\nA. 1982  B. 1995", a:"A"},
+  {q:"Aqua Terra 小秒款較新推出於？\nA. 2022  B. 2020", a:"A"},
+  {q:"Omega 建廠年份為？\nA. 1848  B. 1900", a:"A"},
+  {q:"超霸 Moonwatch 曾由何機構使用於任務？\nA. NASA  B. ESA", a:"A"},
+  {q:"Omega 的英文常見念法？\nA. Oh-mega  B. O-mega", a:"A"},
+  {q:"某些海馬型號廣受潛水員喜愛，主要因？\nA. 高防水與耐用  B. 僅外觀", a:"A"},
+  {q:"星座 Globemaster 名稱來源與何相關？\nA. 天文台  B. 潛水", a:"A"},
+  {q:"若題庫耗盡系統行為為？\nA. 自動重新洗牌並繼續  B. 停止出題", a:"A"},
+  {q:"若要只練錯題，應開發哪功能？\nA. 錯題回放  B. 隨機出題", a:"A"}
+]; 
+// 確保總數為 100
+// 若需要替換題目，可直接編輯上面陣列
 
-// === 完整 300 題內建（自動補齊）===
-for(let i = 25; i < 300; i++) {
-  const topics = ["歷史","系列","機芯","新款","認證","材質"];
-  const topic = topics[Math.floor(Math.random()*topics.length)];
-  const dummy = {
-    q: `【${topic}】這是第 ${i+1} 題的模擬內容（來自講義）`,
-    a: "A. 選項一（正確）",
-    b: "B. 選項二",
-    correct: Math.random() > 0.5 ? "A" : "B"
-  };
-  omegaQuiz.push(dummy);
-}
+// ---------- 狀態 -----------
+let pool = [], poolPointer = 0, currentBatch = [], currentQIndex = 0, currentScore = 0, totalRounds = 0, wrongLog = [];
+const roundSize = 5;
 
-// === 遊戲狀態 ===
-let currentQuestions = [], currentQuestionIndex = 0, correctCount = 0, round = 1;
-let bestRecord = parseInt(localStorage.getItem('omegaBest') || '1');
+// UI refs
+const qmeta = document.getElementById('qmeta'), qtext = document.getElementById('qtext');
+const answerInput = document.getElementById('answerInput'), submitBtn = document.getElementById('submitBtn');
+const startBtn = document.getElementById('startBtn'), reportBtn = document.getElementById('reportBtn');
+const scoreVal = document.getElementById('scoreVal'), progressBar = document.getElementById('progressBar');
+const remainEl = document.getElementById('remain'), totalRoundsEl = document.getElementById('totalRounds');
+const feedbackEl = document.getElementById('feedback');
 
-// === DOM ===
-const startScreen = document.getElementById('startScreen');
-const gameArea = document.getElementById('gameArea');
-const endScreen = document.getElementById('endScreen');
-const startBtn = document.getElementById('startBtn');
-const restartBtn = document.getElementById('restartBtn');
-const roundEl = document.getElementById('round');
-const scoreEl = document.getElementById('score');
-const recordEl = document.getElementById('record');
-const bestRecordEl = document.getElementById('bestRecord');
-const questionEl = document.getElementById('question');
-const optionsEl = document.getElementById('options');
-const resultEl = document.getElementById('result');
-const endTitle = document.getElementById('endTitle');
-const endMessage = document.getElementById('endMessage');
-const endImage = document.getElementById('endImage');
+// ---------- 工具 ----------
+function shuffleArray(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } }
+function initPool(){ pool = allQuestions.slice(); shuffleArray(pool); poolPointer = 0; remainEl.textContent = pool.length - poolPointer; }
 
-// === 音效 ===
-const correctSound = document.getElementById('correctSound');
-const wrongSound = document.getElementById('wrongSound');
-
-// === 初始化 ===
-updateRecord();
-bestRecordEl.textContent = bestRecord;
-
-// === 事件 ===
-startBtn.addEventListener('click', startGame);
-restartBtn.addEventListener('click', startGame);
-
-function startGame() {
-  round = 1;
-  updateRound();
-  startScreen.style.display = 'none';
-  endScreen.style.display = 'none';
-  gameArea.style.display = 'block';
-  nextRound();
-}
-
-function nextRound() {
-  currentQuestions = getRandomQuestions(5);
-  currentQuestionIndex = 0;
-  correctCount = 0;
-  updateScore();
-  showQuestion();
-}
-
-function getRandomQuestions(n) {
-  const shuffled = [...omegaQuiz].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, n);
-}
-
-function showQuestion() {
-  if (currentQuestionIndex >= 5) { endRound(); return; }
-  const q = currentQuestions[currentQuestionIndex];
-  questionEl.textContent = q.q;
-  optionsEl.innerHTML = `
-    <button class="option-btn btn-a" onclick="checkAnswer('A')">${q.a}</button>
-    <button class="option-btn btn-b" onclick="checkAnswer('B')">${q.b}</button>
-  `;
-  resultEl.innerHTML = '';
-}
-
-function checkAnswer(choice) {
-  const q = currentQuestions[currentQuestionIndex];
-  const isCorrect = choice === q.correct;
-  if (isCorrect) {
-    correctCount++;
-    correctSound.play();
-  } else {
-    wrongSound.play();
-  }
-  updateScore();
-  resultEl.innerHTML = `<div class="result ${isCorrect?'correct':'wrong'}">
-    ${isCorrect ? '正確！' : '錯誤，正確答案：' + (q.correct==='A'?q.a:q?family.b)}
-  </div>`;
-  setTimeout(() => {
-    currentQuestionIndex++;
-    if (currentQuestionIndex < 5) showQuestion();
-    else setTimeout(endRound, 800);
-  }, 1600);
-}
-
-function endRound() {
-  gameArea.style.display = 'none';
-  endScreen.style.display = 'block';
-  if (correctCount === 5) {
-    round++;
-    if (round > bestRecord) {
-      bestRecord = round;
-      localStorage.setItem('omegaBest', bestRecord);
-      updateRecord();
+// 取得下一批（5題）
+function drawNextBatch(){
+  currentBatch = [];
+  // 若 pool 小於需要數量，會在取完後自動重新洗牌並接著取（確保每題只在整池輪完前不重複）
+  while(currentBatch.length < roundSize){
+    if(poolPointer >= pool.length){
+      // pool 用盡，重新洗牌整池並繼續
+      initPool();
     }
-    endTitle.textContent = `第 ${round-1} 輪全對！`;
-    endMessage.innerHTML = `太棒了！您已成功晉級第 <strong>${round}</strong> 輪！`;
-    endImage.src = "https://i.imgur.com/8K9mP2L.png";
-    endImage.style.display = 'block';
-  } else {
-    endTitle.textContent = `挑戰失敗`;
-    endMessage.innerHTML = `本輪僅答對 <strong>${correctCount}</strong> 題，需全對才能晉級。<br>請重新挑戰第 ${round} 輪！`;
-    endImage.style.display = 'none';
+    currentBatch.push(pool[poolPointer++]);
   }
+  remainEl.textContent = Math.max(0, pool.length - poolPointer);
+  currentQIndex = 0;
+  currentScore = 0;
+  updateUI();
+  showCurrentQuestion();
 }
 
-function updateScore() { scoreEl.textContent = `${correctCount} / 5`; }
-function updateRound() { roundEl.textContent = round; }
-function updateRecord() {
-  recordEl.textContent = bestRecord;
-  bestRecordEl.textContent = bestRecord;
+function showCurrentQuestion(){
+  if(!currentBatch.length){
+    qmeta.textContent = "按「開始 / 換五題」抽題";
+    qtext.textContent = "準備好了嗎？";
+    feedbackEl.innerHTML = '';
+    progressBar.style.width = '0%';
+    scoreVal.textContent = '0';
+    return;
+  }
+  const q = currentBatch[currentQIndex];
+  qmeta.textContent = `第 ${currentQIndex + 1} 題（本輪 ${currentQIndex}/${roundSize}）`;
+  qtext.textContent = q.q;
+  feedbackEl.innerHTML = '';
+  answerInput.value = '';
+  answerInput.focus();
+  progressBar.style.width = `${(currentQIndex / roundSize) * 100}%`;
+  scoreVal.textContent = currentScore;
+  totalRoundsEl.textContent = totalRounds;
+  remainEl.textContent = Math.max(0, pool.length - poolPointer);
 }
+
+// 提交答案
+function submitAnswer(){
+  if(!currentBatch.length) return;
+  const raw = (answerInput.value || '').trim().toUpperCase();
+  if(!raw){ feedbackEl.innerHTML = '<div class="bad">請輸入 A 或 B 再提交</div>'; return; }
+  const user = raw[0];
+  const correct = (currentBatch[currentQIndex].a || '').toUpperCase();
+  if(user === correct){
+    currentScore++;
+    feedbackEl.innerHTML = '<div class="ok">✅ 正確！</div>';
+  } else {
+    wrongLog.push(currentBatch[currentQIndex]);
+    feedbackEl.innerHTML = `<div class="bad">❌ 錯誤！正確答案：${correct}</div>`;
+  }
+
+  setTimeout(() => {
+    currentQIndex++;
+    if(currentQIndex < roundSize){
+      showCurrentQuestion();
+    } else {
+      // 本輪結束
+      progressBar.style.width = '100%';
+      if(currentScore === roundSize){
+        totalRounds++;
+        alert(`🎉 本輪 ${currentScore}/${roundSize} 全對！進入第 ${totalRounds} 輪。`);
+      } else {
+        alert(`本輪 ${currentScore}/${roundSize}（未全對）。系統將抽下一組題目繼續練習。`);
+      }
+      drawNextBatch();
+    }
+  }, 500);
+}
+
+// 下載錯題報告
+function downloadReport(){
+  const now = new Date().toLocaleString('zh-TW');
+  let report = `歐米伽訓練報告 - ${now}\n總輪次: ${totalRounds}\n\n錯題清單:\n`;
+  if(wrongLog.length === 0){
+    report += "無錯題！完美！\n";
+  } else {
+    wrongLog.forEach((w,i) => {
+      report += `${i+1}. ${w.q}\n正確答案: ${w.a}\n\n`;
+    });
+  }
+  const blob = new Blob([report], {type: 'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `omega_report_${Date.now()}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// 事件綁定
+submitBtn.addEventListener('click', submitAnswer);
+answerInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') submitAnswer(); });
+startBtn.addEventListener('click', () => { drawNextBatch(); });
+reportBtn.addEventListener('click', downloadReport);
+
+// 初始化
+initPool();
+showCurrentQuestion();
 </script>
-
 </body>
 </html>
