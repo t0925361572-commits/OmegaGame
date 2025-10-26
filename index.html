@@ -1,294 +1,265 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>歐米伽訓練遊戲</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>歐米伽訓練遊戲（V8.2 精簡版）</title>
 <style>
-  body{font-family:Arial,Helvetica,sans-serif;background:#f6f8fa;color:#222;margin:0;padding:20px;text-align:center}
-  .container{max-width:760px;margin:0 auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
-  h1{margin:0 0 8px;font-size:20px}
-  p.lead{margin:6px 0 18px;color:#555}
-  #questionBox{min-height:100px;border-radius:8px;background:#fafafa;padding:16px;margin-bottom:12px;border:1px solid #eee;text-align:left}
-  #qmeta{font-size:13px;color:#666;margin-bottom:8px}
-  #qtext{font-size:18px;line-height:1.4}
-  .controls{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
-  input[type="text"]{padding:10px;border-radius:6px;border:1px solid #ccc;font-size:16px;width:160px;text-transform:uppercase;text-align:center}
-  button{background:#007bff;color:#fff;border:none;padding:10px 14px;border-radius:6px;cursor:pointer;font-size:15px}
-  button.secondary{background:#6c757d}
-  #score{font-size:18px;color:#007bff;margin-top:10px}
-  #progress{width:100%;height:12px;background:#e9ecef;border-radius:10px;margin-top:8px;overflow:hidden}
-  #progressBar{height:100%;width:0%;transition:width .3s;background:#28a745}
-  #feedback{margin-top:8px;min-height:28px}
-  .ok{color:green}
-  .bad{color:red}
-  footer{margin-top:18px;font-size:13px;color:#666}
-  @media(max-width:520px){input[type="text"]{width:120px}}
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f6fa;
+  color: #222;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+}
+.container {
+  max-width: 720px;
+  margin: auto;
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,.08);
+}
+h1 {
+  margin-top: 0;
+  color: #007bff;
+}
+#questionBox {
+  background: #fafafa;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  font-size: 18px;
+  line-height: 1.5;
+}
+#qmeta {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+#feedback {
+  margin-top: 15px;
+  font-weight: bold;
+  font-size: 17px;
+  padding: 10px;
+  border-radius: 8px;
+  display: inline-block;
+}
+.ok {
+  background: #e7f7e7;
+  color: #198754;
+  border: 1px solid #198754;
+}
+.bad {
+  background: #fde8e8;
+  color: #c82333;
+  border: 1px solid #c82333;
+}
+input[type="text"] {
+  padding: 10px;
+  font-size: 18px;
+  width: 120px;
+  text-align: center;
+  text-transform: uppercase;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+button {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  margin: 8px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+button:hover { background: #0056b3; }
+button.secondary { background: #6c757d; }
+#progress { width: 100%; height: 12px; background: #eee; border-radius: 10px; margin: 10px 0; overflow: hidden; }
+#progressBar { height: 100%; width: 0%; background: #28a745; transition: width .3s; }
+#score { font-size: 18px; color: #007bff; }
+footer { font-size: 13px; color: #666; margin-top: 15px; }
 </style>
 </head>
 <body>
 <div class="container">
   <h1>歐米伽訓練遊戲</h1>
-  <p class="lead">保留「輸入 A / B」答題方式 • 每輪 5 題 • 題庫 60 題 • 同一題在題庫耗盡前不會重複出現</p>
+  <p id="intro">每輪 5 題，輸入 <strong>A</strong> 或 <strong>B</strong> 答題，全對進下一輪。</p>
 
   <div id="questionBox">
-    <div id="qmeta">第 <span id="qIndex">-</span> 題（本輪 <span id="roundProgress">0</span>/5）</div>
-    <div id="qtext">按「開始」抽題</div>
+    <div id="qmeta">按「開始」抽題</div>
+    <div id="qtext" style="min-height:60px;">準備好了嗎？</div>
   </div>
 
-  <div class="controls">
-    <input id="answerInput" type="text" maxlength="3" placeholder="輸入 A 或 B" />
-    <button id="submitBtn">提交答案</button>
-    <button id="startBtn">開始 / 換五題</button>
-    <button id="reportBtn" class="secondary">下載錯題報告</button>
-  </div>
+  <input id="answerInput" type="text" maxlength="2" placeholder="A 或 B">
+  <button id="submitBtn">提交</button>
+  <button id="startBtn">開始</button>
+  <button id="reportBtn" class="secondary">下載錯題</button>
 
   <div id="score">本輪分數：<span id="scoreVal">0</span>/5</div>
   <div id="progress"><div id="progressBar"></div></div>
   <div id="feedback"></div>
 
   <footer>
-    <div>總輪次：<span id="totalRounds">0</span> • 題庫剩餘：<span id="remain">60</span></div>
+    總輪次：<span id="totalRounds">0</span>　剩餘題數：<span id="remain">0</span>
   </footer>
 </div>
 
 <script>
-/*
- V8: 全域題庫不重複（A/B 輸入）
-  - 全題庫一次洗牌 (shuffleAllQuestions)
-  - 使用 pointer 指向下一題 (poolPointer)，取出 5 題為一組
-  - 當 pool 用盡，會自動重新洗牌並從頭開始
-  - 答題方式保留輸入 A 或 B（不區分大小寫）
-  - 錯題加入 wrongLog（可下載）
-*/
-
-// ------------- 題庫（60 題） -------------
+// === 題庫（略，60 題） ===
 const allQuestions = [
-  // series / branding
-  {q:'哪個系列以登月故事聞名？A. 海馬 B. 超霸', a:'B'},
-  {q:'潛水性能最強的系列是哪個？A. 超霸 B. 海馬', a:'B'},
-  {q:'星座系列的標誌性設計是？A. 托爪 B. 排氦閥門', a:'A'},
-  {q:'蝶飛系列主要訴求是？A. 正裝優雅 B. 運動耐用', a:'A'},
-  {q:'Aqua Terra 屬於哪個主要系列？A. 超霸 B. 海馬', a:'B'},
-  {q:'哪個系列經常用於計時賽車風格？A. 超霸 B. 星座', a:'A'},
-
-  // caliber / 機芯
-  {q:'METAS 認證常見於哪類高階機芯？A. 天文台認證 B. Master Chronometer', a:'B'},
-  {q:'8900 機芯常見於哪個系列？A. 星座/Globemaster B. 超霸', a:'A'},
-  {q:'某些海馬款式採用 8800 機芯，儲能大約是？A. ~55 小時 B. ~72 小時', a:'A'},
-  {q:'3861 為哪個系列的現代化機芯？A. 超霸 B. 星座', a:'A'},
-  {q:'1861 機芯常見於哪些復刻款？A. 超霸經典/復古 B. 海馬', a:'A'},
-
-  // power_reserve / 動力儲能
-  {q:'8900 類型機芯的儲能大約是？A. 50-55 小時 B. 60 小時左右', a:'B'},
-  {q:'常見 Master Co-Axial 機芯約有多少小時儲能？A. 48-55 B. 60', a:'A'},
-  {q:'早期手動機芯普遍儲能較短，哪個選項更貼近？A. 40 小時 B. 72 小時', a:'A'},
-
-  // features / 功能
-  {q:'潛水錶常見的功能是？A. 排氦閥門 B. 計時測速圈', a:'A'},
-  {q:'超霸系列的經典特徵常見於？A. 測速圈 B. 蒙皮錶殼', a:'A'},
-  {q:'海馬 Aqua Terra 面盤常見的裝飾是？A. Teak 木紋 B. 波浪紋', a:'A'}, // note: some versions use teak
-  {q:'Planet Ocean 系列通常強調深潛防水，哪個選項正確？A. 是 B. 否', a:'A'},
-  {q:'旋入式錶冠主要用來？A. 增加美觀 B. 改善防水', a:'B'},
-
-  // certification / 認證
-  {q:'METAS 認證的抗磁標準常以多少高斯為代表？A. 5,000 B. 15,000', a:'B'},
-  {q:'COSC 為哪一種認證？A. 機芯天文台認證 B. 耐磁測試', a:'A'},
-  {q:'Master Chronometer 是由哪兩個機構共同驗證？A. Omega + METAS B. COSC + ISO', a:'A'},
-
-  // application / 應用推薦
-  {q:'若客人想要商務正裝錶，推薦哪個系列？A. 蝶飛/星座 B. 超霸潛水款', a:'A'},
-  {q:'愛好潛水者應推薦？A. 星座 B. 海馬', a:'B'},
-
-  // more mixed questions to reach 60
-  {q:'哪個系列與 NASA 登月任務有關？A. 超霸 B. 星座', a:'A'},
-  {q:'海馬 Diver 300M 常見功能包含？A. 波浪紋面盤 B. 計時碼表', a:'A'},
-  {q:'星座 Globemaster 有名的特徵是？A. 扭索錶帶 B. 鬆餅圈', a:'B'},
-  {q:'有 METAS 認證的錶其精準度宣稱通常為？A. 0/+5 秒 B. -4/+6 秒', a:'A'},
-  {q:'Hesalite（壓克力）玻璃常見於哪種超霸版本？A. 經典款/復刻 B. 現代陶瓷款', a:'A'},
-  {q:'排氦閥門主要用於？A. 潛水員在飽和潛水時排氣 B. 計時用途', a:'A'},
-  {q:'海馬 Planet Ocean 的防水數值常見為？A. 600 米 B. 100 米', a:'A'},
-  {q:'超霸的計時按鈕通常位於哪個位置？A. 2 點 & 4 點 B. 12 點', a:'A'},
-  {q:'Teak 木紋面盤多見於哪個子系列？A. Aqua Terra B. Planet Ocean', a:'A'},
-  {q:'Globemaster 使用的錶圈通常是？A. 平滑月牙圈 B. 鋸齒式貝殼圈', a:'A'},
-
-  // more: calibration, history, usage
-  {q:'Omega 的代表性符號是？A. 鯊魚 B. 希臘字母 Ω', a:'B'},
-  {q:'Co-Axial 擒縱系統的主要優點是？A. 減少摩擦延長保養間隔 B. 增加重量', a:'A'},
-  {q:'某些高階 Omega 機芯具備雙發條盒，這會帶來？A. 更長的動力儲能 B. 減少振幅', a:'A'},
-  {q:'超霸 3861 與 1861 的關鍵差異通常在於？A. 與現代升級 (例如同軸 & 抗磁) B. 外觀尺寸', a:'A'},
-
-  // additions to reach 60 total (fill with plausible training Qs)
-  {q:'海馬系列常用於哪種客群？A. 需要潛水功能者 B. 喜歡正裝者', a:'A'},
-  {q:'星座系列最早以哪項為主打？A. 優雅正裝 B. 深潛專業', a:'A'},
-  {q:'蝶飛設計風格偏向？A. 極簡優雅 B. 工具錶', a:'A'},
-  {q:'Planet Ocean 系列常搭配的表圈材質為？A. 陶瓷 B. 皮革', a:'A'},
-  {q:'Master Chronometer 認證包含哪種測試項目？A. 抗磁、準確性等多項 B. 只有防水', a:'A'},
-  {q:'某些 Omega 計時碼錶使用哪種計時圈？A. 測速圈 (Tachymeter) B. 潛水圈', a:'A'},
-  {q:'海馬 300（Seamaster 300）更偏向哪種用途？A. 古典潛水/復刻 B. 桌面佩戴', a:'A'},
-  {q:'超霸 Moonwatch 傳統上配備何種玻璃？A. Hesalite B. 藍寶石', a:'A'},
-  {q:'Globemaster 有一項特殊的「餅乾紋」面盤，這是？A. 鬆餅紋 (Pie Pan) B. 同心圓紋', a:'A'},
-  {q:'Co-Axial 擒縱最初由誰提出？A. George Daniels B. Abraham-Louis Breguet', a:'A'},
-  {q:'OMEGA 的英文發音通常怎麼讀？A. Oh-mega B. O-mega', a:'A'},
-  {q:'有些海馬型號為潛水用途而有旋入式錶冠，作用是？A. 改善防水性 B. 改善佩戴舒適度', a:'A'},
-  {q:'某些高階 Omega 機芯的抗磁數值常見標示為？A. 15,000 高斯 B. 500 高斯', a:'A'},
-  {q:'超霸的歷史與哪個年代的航太任務最相關？A. 1960s B. 1980s', a:'A'}
+  {q:'哪個系列以登月故事聞名？A. 海馬 B. 超霸',a:'B'},
+  {q:'潛水性能最強的系列是哪個？A. 超霸 B. 海馬',a:'B'},
+  {q:'星座系列的標誌性設計是？A. 托爪 B. 排氦閥門',a:'A'},
+  {q:'蝶飛系列主要訴求是？A. 正裝優雅 B. 運動耐用',a:'A'},
+  {q:'Aqua Terra 屬於哪個主要系列？A. 超霸 B. 海馬',a:'B'},
+  {q:'哪個系列經常用於計時賽車風格？A. 超霸 B. 星座',a:'A'},
+  {q:'METAS 認證常見於哪類高階機芯？A. 天文台認證 B. Master Chronometer',a:'B'},
+  {q:'8900 機芯常見於哪個系列？A. 星座 B. 超霸',a:'A'},
+  {q:'海馬 8800 機芯儲能是？A. 約55小時 B. 約72小時',a:'A'},
+  {q:'3861 為哪個系列的現代化機芯？A. 超霸 B. 星座',a:'A'},
+  {q:'潛水錶常見的功能是？A. 排氦閥門 B. 測速圈',a:'A'},
+  {q:'超霸錶圈刻度是？A. 排氦閥門 B. 測速圈',a:'B'},
+  {q:'海馬 Aqua Terra 面盤常見的裝飾是？A. Teak 木紋 B. 波浪紋',a:'A'},
+  {q:'Planet Ocean 系列通常強調深潛防水，哪個選項正確？A. 是 B. 否',a:'A'},
+  {q:'旋入式錶冠主要用來？A. 美觀 B. 防水',a:'B'},
+  {q:'METAS 抗磁標準約為？A. 5,000 高斯 B. 15,000 高斯',a:'B'},
+  {q:'COSC 為哪一種認證？A. 天文台機芯 B. 抗磁測試',a:'A'},
+  {q:'若客人想要商務正裝錶，推薦哪個系列？A. 蝶飛/星座 B. 超霸',a:'A'},
+  {q:'愛好潛水者應推薦？A. 星座 B. 海馬',a:'B'},
+  {q:'Hesalite 玻璃常見於哪種超霸？A. 經典款 B. 陶瓷款',a:'A'},
+  {q:'排氦閥門主要用於？A. 潛水員飽和排氣 B. 計時',a:'A'},
+  {q:'海馬 Planet Ocean 的防水常見為？A. 600米 B. 100米',a:'A'},
+  {q:'超霸的計時按鈕位置？A. 2點與4點 B. 12點',a:'A'},
+  {q:'Teak 面盤多見於哪個系列？A. Aqua Terra B. Planet Ocean',a:'A'},
+  {q:'Co-Axial 擒縱主要優點？A. 減摩耗延保養 B. 增重量',a:'A'},
+  {q:'雙發條盒設計可？A. 延長動力 B. 降低精度',a:'A'},
+  {q:'超霸與哪年代太空任務關聯？A. 1960s B. 1980s',a:'A'},
+  {q:'Omega 代表符號？A. 鯊魚 B. Ω',a:'B'},
+  {q:'Master Chronometer 認證測試幾項？A. 8 項 B. 3 項',a:'A'},
+  {q:'海馬系列面向？A. 潛水者 B. 紳士正裝',a:'A'},
+  {q:'星座系列風格？A. 優雅正裝 B. 運動',a:'A'},
+  {q:'蝶飛設計風格？A. 極簡優雅 B. 工具錶',a:'A'},
+  {q:'Planet Ocean 表圈材質？A. 陶瓷 B. 皮革',a:'A'},
+  {q:'計時圈類型？A. 測速圈 B. 潛水圈',a:'A'},
+  {q:'海馬300 用途？A. 潛水復刻 B. 桌面錶',a:'A'},
+  {q:'Globemaster 面盤特色？A. 鬆餅紋 B. 同心圓',a:'A'},
+  {q:'Co-Axial 擒縱創始者？A. George Daniels B. Breguet',a:'A'},
+  {q:'超霸 3861 與 1861 最大差異？A. 抗磁同軸化 B. 外觀',a:'A'},
+  {q:'海馬60小時儲能？A. 否 B. 是',a:'B'},
+  {q:'METAS 精準標準？A. 0/+5秒 B. -4/+6秒',a:'A'},
+  {q:'COSC 精準標準？A. 0/+5秒 B. -4/+6秒',a:'B'},
+  {q:'METAS 測試項目數？A. 3項 B. 8項',a:'B'},
+  {q:'星座 Globemaster 認證？A. COSC B. METAS',a:'B'},
+  {q:'蝶飛入門款有 METAS？A. 是 B. 否',a:'B'},
+  {q:'超霸 3861 有 METAS？A. 否 B. 是',a:'B'},
+  {q:'蝶飛適合場合？A. 潛水 B. 正裝',a:'B'},
+  {q:'星座尺寸範圍？A. 40-50mm B. 25-41mm',a:'B'},
+  {q:'海馬潛水功能？A. 測速圈 B. 排氦閥門',a:'B'},
+  {q:'星座錶圈材質？A. 皮革 B. 陶瓷',a:'B'},
+  {q:'蝶飛無日期強調？A. 防水 B. 純淨美學',a:'B'},
+  {q:'超霸防水深度？A. 300米 B. 50米',a:'B'},
+  {q:'海馬旋入式錶冠用於？A. 美觀 B. 防水',a:'B'},
+  {q:'星座爪狀作用？A. 計時 B. 固定錶帶',a:'B'},
+  {q:'Globemaster 錶圈樣式？A. 鋸齒式 B. 平滑圈',a:'A'},
+  {q:'METAS 抗磁要求？A. 5000高斯 B. 15000高斯',a:'B'},
+  {q:'Master Chronometer 為哪機構驗證？A. METAS B. COSC',a:'A'},
+  {q:'蝶飛高端抗磁值？A. 5000高斯 B. 15000高斯',a:'B'},
+  {q:'Globemaster 推出年份？A. 2015 B. 2010',a:'A'},
+  {q:'星座 METAS 從哪年開始？A. 2010 B. 2015',a:'B'},
+  {q:'星座小秒針機芯？A. 8900 B. 8800',a:'B'},
+  {q:'星座適合年輕白領？A. 否 B. 是',a:'B'}
 ];
-// 確保題庫大小為 60（如需更多題可擴充此陣列）
 
-// ------------- 遊戲狀態 -------------
-let pool = [];           // 洗牌後的題庫
-let poolPointer = 0;     // 指向下一題的 index
-let currentBatch = [];   // 本輪 5 題（物件陣列）
-let currentQIndex = 0;   // 在本輪內題目的 pointer (0..4)
-let currentScore = 0;
-let totalRounds = 0;
-let wrongLog = [];       // 全遊戲錯題累積
-let roundSize = 5;
+// === 狀態 ===
+let pool = [], pointer = 0, batch = [], qIndex = 0, score = 0, totalRounds = 0, wrongLog = [];
+const roundSize = 5;
 
-// UI 元素
-const qtext = document.getElementById('qtext');
-const qIndexEl = document.getElementById('qIndex');
-const roundProgressEl = document.getElementById('roundProgress');
-const scoreVal = document.getElementById('scoreVal');
-const progressBar = document.getElementById('progressBar');
-const remainEl = document.getElementById('remain');
-const totalRoundsEl = document.getElementById('totalRounds');
-const feedbackEl = document.getElementById('feedback');
-const answerInput = document.getElementById('answerInput');
-const submitBtn = document.getElementById('submitBtn');
-const startBtn = document.getElementById('startBtn');
-const reportBtn = document.getElementById('reportBtn');
+// === UI ===
+const qtext = document.getElementById('qtext'),
+      qmeta = document.getElementById('qmeta'),
+      feedback = document.getElementById('feedback'),
+      scoreVal = document.getElementById('scoreVal'),
+      progressBar = document.getElementById('progressBar'),
+      remain = document.getElementById('remain'),
+      totalRoundsEl = document.getElementById('totalRounds'),
+      answerInput = document.getElementById('answerInput');
 
-// ------------- 工具函式 -------------
-function shuffleArray(arr){
-  for(let i=arr.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [arr[i],arr[j]]=[arr[j],arr[i]];
+// === 工具 ===
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function resetPool(){pool=shuffle([...allQuestions]);pointer=0;remain.textContent=pool.length;}
+
+// === 抽題 ===
+function drawBatch(){
+  batch=[];
+  for(let i=0;i<roundSize;i++){
+    if(pointer>=pool.length) resetPool();
+    batch.push(pool[pointer++]);
   }
+  remain.textContent=pool.length-pointer;
+  qIndex=0;score=0;showQ();
 }
-
-// 初始化池（洗牌）
-function initPool(){
-  pool = allQuestions.slice(); // 複製
-  shuffleArray(pool);
-  poolPointer = 0;
-  remainEl.textContent = pool.length - poolPointer;
-}
-
-// 取得下一批題（5 題），若不足自動重洗（重新建立 pool 並繼續）
-function drawNextBatch(){
-  currentBatch = [];
-  while(currentBatch.length < roundSize){
-    if(poolPointer >= pool.length){
-      // pool 用盡，重新洗牌並接著抽（同一輪內不會重複，除非整個題庫輪過一遍）
-      initPool();
-    }
-    currentBatch.push(pool[poolPointer]);
-    poolPointer++;
-  }
-  remainEl.textContent = pool.length - poolPointer;
-  currentQIndex = 0;
-  currentScore = 0;
-  updateUI();
-}
-
-// 顯示目前題目
-function showCurrentQuestion(){
-  if(!currentBatch.length){ qtext.textContent = '請按「開始 / 換五題」抽題'; qIndexEl.textContent='-'; roundProgressEl.textContent='0'; return; }
-  const idx = currentQIndex + 1;
-  qIndexEl.textContent = idx;
-  roundProgressEl.textContent = currentQIndex + '/' + roundSize;
-  qtext.textContent = currentBatch[currentQIndex].q;
-  feedbackEl.innerHTML = '';
-  answerInput.value = '';
+function showQ(){
+  const q=batch[qIndex];
+  qtext.textContent=q.q;
+  qmeta.textContent=`第 ${qIndex+1} 題（本輪 ${qIndex}/5）`;
+  feedback.innerHTML='';
+  answerInput.value='';
   answerInput.focus();
-  updateProgress();
+  progressBar.style.width=`${(qIndex/roundSize)*100}%`;
 }
 
-// 更新進度條與分數顯示
-function updateProgress(){
-  scoreVal.textContent = currentScore;
-  const pct = ((currentQIndex) / roundSize) * 100;
-  progressBar.style.width = pct + '%';
-  totalRoundsEl.textContent = totalRounds;
-  remainEl.textContent = pool.length - poolPointer;
-}
-
-// 處理提交答案
-function submitAnswer(){
-  if(!currentBatch.length) return;
-  const raw = answerInput.value.trim().toUpperCase();
-  if(!raw) { feedbackEl.innerHTML = '<span class="bad">請輸入 A 或 B 再提交</span>'; return; }
-  const user = raw[0];
-  const correct = currentBatch[currentQIndex].a.toUpperCase();
-
-  if(user === correct){
-    currentScore++;
-    feedbackEl.innerHTML = '<span class="ok">✅ 正確！</span>';
-  } else {
-    wrongLog.push({
-      q: currentBatch[currentQIndex].q,
-      a: currentBatch[currentQIndex].a
-    });
-    feedbackEl.innerHTML = `<span class="bad">❌ 錯誤！正確答案：${currentBatch[currentQIndex].a}</span>`;
+// === 提交 ===
+function submit(){
+  if(!batch.length)return;
+  const ans=answerInput.value.trim().toUpperCase();
+  if(!ans)return;
+  const correct=batch[qIndex].a.toUpperCase();
+  if(ans===correct){
+    score++;
+    feedback.innerHTML='<div class="ok">✅ 正確！</div>';
+  }else{
+    feedback.innerHTML=`<div class="bad">❌ 錯誤！正確答案：${correct}</div>`;
+    wrongLog.push(batch[qIndex]);
   }
-
-  // 小延遲讓使用者看到回饋，再進入下一題或結算
-  setTimeout(() => {
-    currentQIndex++;
-    if(currentQIndex < roundSize){
-      showCurrentQuestion();
-    } else {
-      // 本輪結束
-      progressBar.style.width = '100%';
-      if(currentScore === roundSize){
-        totalRounds++;
-        alert(`🎉 本輪 ${currentScore}/${roundSize} 全對！進入第 ${totalRounds} 輪。`);
-      } else {
-        alert(`本輪 ${currentScore}/${roundSize}（未全對）。系統將抽下一組題目，繼續練習。`);
-      }
-      // 自動抽下一批（遊戲規則：不論是否全對都換下一批題）
-      drawNextBatch();
-      showCurrentQuestion();
+  setTimeout(()=>{
+    qIndex++;
+    if(qIndex<roundSize){
+      showQ();
+    }else{
+      progressBar.style.width='100%';
+      totalRounds++;
+      totalRoundsEl.textContent=totalRounds;
+      alert(`本輪 ${score}/5 已完成${score===5?' ✅ 全對！':'。'}`);
+      drawBatch();
     }
-    updateProgress();
-  }, 500);
+    scoreVal.textContent=score;
+  },600);
 }
 
-// 下載錯題報告
+// === 下載錯題 ===
 function downloadReport(){
-  const now = new Date().toLocaleString('zh-TW');
-  let content = `歐米伽訓練報告 - ${now}\n總輪次: ${totalRounds}\n\n錯題清單:\n`;
-  if(wrongLog.length === 0){
-    content += '無錯題，完美！\n';
-  } else {
-    wrongLog.forEach((w,i) => {
-      content += `${i+1}. ${w.q}\n正確答案: ${w.a}\n\n`;
-    });
-  }
-  const blob = new Blob([content], {type: 'text/plain;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `omega_report_${Date.now()}.txt`;
-  a.click();
-  URL.revokeObjectURL(url);
+  const now=new Date().toLocaleString('zh-TW');
+  let txt=`歐米伽訓練報告 - ${now}\n總輪次:${totalRounds}\n\n錯題清單:\n`;
+  if(!wrongLog.length)txt+='無錯題！完美！';
+  else wrongLog.forEach((w,i)=>txt+=`${i+1}. ${w.q}\n正解:${w.a}\n\n`);
+  const blob=new Blob([txt],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='omega_report.txt';a.click();URL.revokeObjectURL(url);
 }
 
-// ------------- 事件綁定 -------------
-submitBtn.addEventListener('click', submitAnswer);
-answerInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') submitAnswer(); });
-startBtn.addEventListener('click', () => {
-  drawNextBatch();
-  showCurrentQuestion();
-});
-reportBtn.addEventListener('click', downloadReport);
+// === 綁定 ===
+document.getElementById('startBtn').onclick=()=>{drawBatch();};
+document.getElementById('submitBtn').onclick=()=>{submit();};
+answerInput.addEventListener('keypress',e=>{if(e.key==='Enter')submit();});
+document.getElementById('reportBtn').onclick=()=>{downloadReport();};
 
-// 初始化
-initPool();
-updateProgress();
-qtext.textContent = '按「開始 / 換五題」抽 5 題開始練習';
+// === 啟動 ===
+resetPool();
 </script>
 </body>
 </html>
