@@ -65,7 +65,7 @@
 </div>
 
 <script>
-/* V9.6 — 挑戰模式 */
+/* V9.6 — 挑戰模式（修正：總輪次僅統計已完成輪數） */
 const allQuestions = [
   {q:"哪個系列以登月故事聞名？\nA. 海馬  B. 超霸", a:"B"},
   {q:"潛水性能最強的系列是哪個？\nA. 超霸  B. 海馬", a:"B"},
@@ -167,11 +167,11 @@ const allQuestions = [
 
 // ---------- 狀態 -----------
 let pool = [], currentBatch = [], currentQIndex = 0, currentScore = 0, totalRounds = 0;
-let passedBatches = 0; // 新增：已通過的批次數
-let currentBatchFailed = false; // 新增：追蹤本輪是否失敗
+let passedBatches = 0;
+let currentBatchFailed = false;
 const wrongLog = new Map();
 const roundSize = 5;
-const totalBatches = allQuestions.length / roundSize; // 總批次數：100 / 5 = 20
+const totalBatches = allQuestions.length / roundSize; // 20
 let gameActive = false;
 
 // UI refs
@@ -180,14 +180,14 @@ const btnA = document.getElementById('btnA'), btnB = document.getElementById('bt
 const startBtn = document.getElementById('startBtn'), reportBtn = document.getElementById('reportBtn');
 const scoreVal = document.getElementById('scoreVal'), progressBar = document.getElementById('progressBar');
 const totalRoundsEl = document.getElementById('totalRounds');
-const passedBatchesEl = document.getElementById('passedBatches'); // 新增：通過批次 UI
+const passedBatchesEl = document.getElementById('passedBatches');
 const feedbackEl = document.getElementById('feedback');
 
 // ---------- 工具 ----------
 function shuffleArray(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } }
-function initPool(){ pool = allQuestions.slice(); shuffleArray(pool); } // 初始或重置題庫
+function initPool(){ pool = allQuestions.slice(); shuffleArray(pool); }
 
-// 開始新一輪
+// 開始新一輪（不計數）
 function startNewRound(){
   if(passedBatches === totalBatches) {
       alert("恭喜您！已成功完成所有 20 個批次（100 題）的挑戰！");
@@ -200,21 +200,15 @@ function startNewRound(){
     }
   }
   
-  // 檢查題庫是否足夠，不足則重新洗牌
   if(pool.length < roundSize){
-      // 理論上，如果 passedBatches < totalBatches，pool 就不會為空
-      // 但為了保險，我們將未通過的題目重新加入
       initPool();
       alert("題庫不足！已將所有未通過的題目重新洗牌。");
   }
   
-  totalRounds++;
   gameActive = true;
-  currentBatchFailed = false; // 重置本輪失敗狀態
+  currentBatchFailed = false;
   
-  // 1. 從 pool 中抽取 roundSize 數量題目作為 currentBatch
-  currentBatch = pool.splice(0, roundSize); // 暫時從 pool 中移除
-  
+  currentBatch = pool.splice(0, roundSize);
   currentQIndex = 0;
   currentScore = 0;
   updateUIForNewRound();
@@ -254,17 +248,17 @@ function submitAnswer(userAnswer){
   
   if(userAnswer === correct){
     currentScore++;
-    feedbackEl.innerHTML = '<div class="ok">✅ 正確！</div>';
+    feedbackEl.innerHTML = '<div class="ok">正確！</div>';
   } else {
-    currentBatchFailed = true; // 本輪失敗標記
+    currentBatchFailed = true;
     if(!wrongLog.has(currentQuestion.q)){
         wrongLog.set(currentQuestion.q, currentQuestion);
     }
-    feedbackEl.innerHTML = `<div class="bad">❌ 錯誤！正確答案：${correct}</div>`;
+    feedbackEl.innerHTML = `<div class="bad">錯誤！正確答案：${correct}</div>`;
   }
   
   updateUI();
-  btnA.disabled = true; // 答題後暫時禁用按鈕
+  btnA.disabled = true;
   btnB.disabled = true;
 
   setTimeout(() => {
@@ -272,42 +266,40 @@ function submitAnswer(userAnswer){
     if(currentQIndex < roundSize){
       showCurrentQuestion();
     } else {
-      // 本輪結束處理
+      // 本輪結束：答完 5 題才 +1 總輪次
       gameActive = false;
       progressBar.style.width = '100%';
-      
+      totalRounds++;  // 僅在此處計數：已完成輪數
+
       let finalMessage = `本輪結束！您的分數是 ${currentScore}/${roundSize}。`;
       
       if(currentBatchFailed){
-          // 失敗：將本批次題目退回 pool
           pool.push(...currentBatch);
-          shuffleArray(pool); // 重新洗牌，讓題目下次隨機出現
-          
-          finalMessage += " ❌ 本輪失敗！5 題將重新進入題庫。";
+          shuffleArray(pool);
+          finalMessage += " 本輪失敗！5 題將重新進入題庫。";
           feedbackEl.innerHTML = `<div class="bad">${finalMessage}</div>`;
           qtext.textContent = "挑戰失敗！點擊「開始 / 抽新題」重新挑戰這 5 題。";
       } else {
-          // 成功：題目已從 pool 中永久移除（因為 splice(0, 5)）
           passedBatches++;
-          finalMessage += " 🎉 恭喜！本批次 5 題已成功通過，從題庫中移除！";
+          finalMessage += " 恭喜！本批次 5 題已成功通過，從題庫中移除！";
           feedbackEl.innerHTML = `<div class="ok">${finalMessage}</div>`;
           qtext.textContent = "挑戰成功！點擊「開始 / 抽新題」挑戰下一批次。";
           
           if(passedBatches === totalBatches) {
-              qtext.textContent = "🏆 恭喜您！已成功完成所有 20 個批次（100 題）的挑戰！";
+              qtext.textContent = "恭喜您！已成功完成所有 20 個批次（100 題）的挑戰！";
               startBtn.disabled = true;
           }
       }
       
       qmeta.textContent = "本輪已完成";
-      updateUI(); // 更新 passedBatches UI
+      updateUI();
     }
   }, 800);
 }
 
 function downloadReport(){
   const now = new Date().toLocaleString('zh-TW');
-  let report = `歐米伽訓練報告 - ${now}\n總嘗試輪次: ${totalRounds}\n已通過批次: ${passedBatches}/${totalBatches}\n\n錯題清單 (不重複):\n`;
+  let report = `歐米伽訓練報告 - ${now}\n總完成輪次: ${totalRounds}\n已通過批次: ${passedBatches}/${totalBatches}\n\n錯題清單 (不重複):\n`;
   if(wrongLog.size === 0){
     report += "無錯題！完美！\n";
   } else {
