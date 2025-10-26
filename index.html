@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>歐米伽訓練遊戲（V9.4 — 題庫修正）</title>
+<title>歐米伽訓練遊戲（V9.6 — 挑戰模式）</title>
 <style>
   body{font-family:Arial,Helvetica,sans-serif;background:#f5f6fa;color:#222;margin:0;padding:20px;text-align:center}
   .container{max-width:760px;margin:0 auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
@@ -29,14 +29,14 @@
   #feedback{margin-top:10px;min-height:30px}
   .ok{color:#198754;background:#e7f7e7;padding:8px;border-radius:6px;border:1px solid #198754;display:inline-block}
   .bad{color:#c82333;background:#fde8e8;padding:8px;border-radius:6px;border:1px solid #c82333;display:inline-block}
-  footer{margin-top:14px;font-size:13px;color:#666}
+  footer{margin-top:14px;font-size:13px;color:#666;display:flex;justify-content:space-around;}
   @media(max-width:520px){.answer-btn{padding:10px 20px;font-size:16px;}}
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>歐米伽訓練遊戲（V9.4）</h1>
-  <p class="lead">每輪 5 題 • 點擊 A 或 B 按鈕答題 </p>
+  <h1>歐米伽訓練遊戲（V9.6 挑戰模式）</h1>
+  <p class="lead">每輪 5 題 • 點擊 A 或 B 按鈕答題 • **5 題全對才算通過一輪**</p>
 
   <div id="questionBox">
     <div id="qmeta">按「開始」抽題</div>
@@ -50,7 +50,7 @@
   </div>
   <div class="controls" style="margin-top: 16px;">
     <!-- 功能按鈕 -->
-    <button id="startBtn">開始 / 換五題</button>
+    <button id="startBtn">開始 / 抽新題</button>
     <button id="reportBtn" class="secondary">下載錯題報告</button>
   </div>
 
@@ -58,11 +58,14 @@
   <div id="progress"><div id="progressBar"></div></div>
   <div id="feedback"></div>
 
-  <footer>總輪次：<span id="totalRounds">0</span>　題庫剩餘：<span id="remain">100</span></footer>
+  <footer>
+    <div>總輪次：<span id="totalRounds">0</span></div>
+    <div>已通過批次：<span id="passedBatches">0</span>/20</div>
+  </footer>
 </div>
 
 <script>
-/* V9.4 — 題庫修正 */
+/* V9.6 — 挑戰模式 */
 const allQuestions = [
   {q:"哪個系列以登月故事聞名？\nA. 海馬  B. 超霸", a:"B"},
   {q:"潛水性能最強的系列是哪個？\nA. 超霸  B. 海馬", a:"B"},
@@ -158,15 +161,17 @@ const allQuestions = [
   {q:"Omega 的英文常見念法？\nA. Oh-mega  B. O-mega", a:"A"},
   {q:"某些海馬型號廣受潛水員喜愛，主要因？\nA. 高防水與耐用  B. 僅外觀", a:"A"},
   {q:"星座 Globemaster 名稱來源與何相關？\nA. 天文台  B. 潛水", a:"A"},
-  // 以下為新增的題目
   {q:"Snoopy Award 超霸錶是為了紀念哪次任務？\nA. 阿波羅13號  B. 阿波羅11號", a:"A"},
   {q:"Omega 是哪個集團旗下的品牌？\nA. Swatch Group  B. LVMH", a:"A"}
 ];
 
 // ---------- 狀態 -----------
-let pool = [], poolPointer = 0, currentBatch = [], currentQIndex = 0, currentScore = 0, totalRounds = 0;
+let pool = [], currentBatch = [], currentQIndex = 0, currentScore = 0, totalRounds = 0;
+let passedBatches = 0; // 新增：已通過的批次數
+let currentBatchFailed = false; // 新增：追蹤本輪是否失敗
 const wrongLog = new Map();
 const roundSize = 5;
+const totalBatches = allQuestions.length / roundSize; // 總批次數：100 / 5 = 20
 let gameActive = false;
 
 // UI refs
@@ -174,28 +179,42 @@ const qmeta = document.getElementById('qmeta'), qtext = document.getElementById(
 const btnA = document.getElementById('btnA'), btnB = document.getElementById('btnB');
 const startBtn = document.getElementById('startBtn'), reportBtn = document.getElementById('reportBtn');
 const scoreVal = document.getElementById('scoreVal'), progressBar = document.getElementById('progressBar');
-const remainEl = document.getElementById('remain'), totalRoundsEl = document.getElementById('totalRounds');
+const totalRoundsEl = document.getElementById('totalRounds');
+const passedBatchesEl = document.getElementById('passedBatches'); // 新增：通過批次 UI
 const feedbackEl = document.getElementById('feedback');
 
 // ---------- 工具 ----------
 function shuffleArray(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } }
-function initPool(){ pool = allQuestions.slice(); shuffleArray(pool); poolPointer = 0; }
+function initPool(){ pool = allQuestions.slice(); shuffleArray(pool); } // 初始或重置題庫
 
 // 開始新一輪
 function startNewRound(){
+  if(passedBatches === totalBatches) {
+      alert("恭喜您！已成功完成所有 20 個批次（100 題）的挑戰！");
+      return;
+  }
+  
   if(gameActive && currentQIndex < roundSize) {
     if(!confirm("目前這輪還沒答完，確定要直接開始新的一輪嗎？")) {
         return;
     }
   }
+  
+  // 檢查題庫是否足夠，不足則重新洗牌
+  if(pool.length < roundSize){
+      // 理論上，如果 passedBatches < totalBatches，pool 就不會為空
+      // 但為了保險，我們將未通過的題目重新加入
+      initPool();
+      alert("題庫不足！已將所有未通過的題目重新洗牌。");
+  }
+  
   totalRounds++;
   gameActive = true;
-  if(pool.length - poolPointer < roundSize){
-      initPool();
-      alert("題庫已耗盡，將重新洗牌並開始新的一輪！");
-  }
-  currentBatch = pool.slice(poolPointer, poolPointer + roundSize);
-  poolPointer += roundSize;
+  currentBatchFailed = false; // 重置本輪失敗狀態
+  
+  // 1. 從 pool 中抽取 roundSize 數量題目作為 currentBatch
+  currentBatch = pool.splice(0, roundSize); // 暫時從 pool 中移除
+  
   currentQIndex = 0;
   currentScore = 0;
   updateUIForNewRound();
@@ -217,7 +236,7 @@ function updateUI(){
   scoreVal.textContent = currentScore;
   progressBar.style.width = `${(currentQIndex / roundSize) * 100}%`;
   totalRoundsEl.textContent = totalRounds;
-  remainEl.textContent = Math.max(0, pool.length - poolPointer);
+  passedBatchesEl.textContent = `${passedBatches}/${totalBatches}`;
   btnA.disabled = !gameActive;
   btnB.disabled = !gameActive;
 }
@@ -237,6 +256,7 @@ function submitAnswer(userAnswer){
     currentScore++;
     feedbackEl.innerHTML = '<div class="ok">✅ 正確！</div>';
   } else {
+    currentBatchFailed = true; // 本輪失敗標記
     if(!wrongLog.has(currentQuestion.q)){
         wrongLog.set(currentQuestion.q, currentQuestion);
     }
@@ -252,22 +272,42 @@ function submitAnswer(userAnswer){
     if(currentQIndex < roundSize){
       showCurrentQuestion();
     } else {
+      // 本輪結束處理
       gameActive = false;
       progressBar.style.width = '100%';
+      
       let finalMessage = `本輪結束！您的分數是 ${currentScore}/${roundSize}。`;
-      if(currentScore === roundSize){
-        finalMessage += " 🎉 表現優異！";
+      
+      if(currentBatchFailed){
+          // 失敗：將本批次題目退回 pool
+          pool.push(...currentBatch);
+          shuffleArray(pool); // 重新洗牌，讓題目下次隨機出現
+          
+          finalMessage += " ❌ 本輪失敗！5 題將重新進入題庫。";
+          feedbackEl.innerHTML = `<div class="bad">${finalMessage}</div>`;
+          qtext.textContent = "挑戰失敗！點擊「開始 / 抽新題」重新挑戰這 5 題。";
+      } else {
+          // 成功：題目已從 pool 中永久移除（因為 splice(0, 5)）
+          passedBatches++;
+          finalMessage += " 🎉 恭喜！本批次 5 題已成功通過，從題庫中移除！";
+          feedbackEl.innerHTML = `<div class="ok">${finalMessage}</div>`;
+          qtext.textContent = "挑戰成功！點擊「開始 / 抽新題」挑戰下一批次。";
+          
+          if(passedBatches === totalBatches) {
+              qtext.textContent = "🏆 恭喜您！已成功完成所有 20 個批次（100 題）的挑戰！";
+              startBtn.disabled = true;
+          }
       }
-      feedbackEl.innerHTML = `<div class="ok">${finalMessage}</div>`;
+      
       qmeta.textContent = "本輪已完成";
-      qtext.textContent = "點擊「開始 / 換五題」進行下一輪練習。";
+      updateUI(); // 更新 passedBatches UI
     }
   }, 800);
 }
 
 function downloadReport(){
   const now = new Date().toLocaleString('zh-TW');
-  let report = `歐米伽訓練報告 - ${now}\n總完成輪次: ${totalRounds}\n\n錯題清單 (不重複):\n`;
+  let report = `歐米伽訓練報告 - ${now}\n總嘗試輪次: ${totalRounds}\n已通過批次: ${passedBatches}/${totalBatches}\n\n錯題清單 (不重複):\n`;
   if(wrongLog.size === 0){
     report += "無錯題！完美！\n";
   } else {
@@ -297,14 +337,15 @@ reportBtn.addEventListener('click', downloadReport);
 function initializeGame() {
     initPool();
     totalRounds = 0;
-    remainEl.textContent = pool.length;
+    passedBatches = 0;
+    passedBatchesEl.textContent = `${passedBatches}/${totalBatches}`;
     totalRoundsEl.textContent = totalRounds;
     scoreVal.textContent = '0';
     progressBar.style.width = '0%';
+    startBtn.disabled = false;
 }
 
 initializeGame();
 </script>
 </body>
 </html>
-
