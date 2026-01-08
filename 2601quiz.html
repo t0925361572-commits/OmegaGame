@@ -3,31 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>馬上 RICH 吉運來 - 2026馬年精緻版</title>
+<title>馬上 RICH 吉運來 - 2026極致版</title>
 <style>
     :root {
-        --primary-red: #c9182b; /* 中國紅 */
-        --dark-red: #8a0a16;
-        --gold: #ffd700;
-        --gold-dark: #ccac00;
-        --bg-color: #fff5f5;
-        --text-color: #2b2d42;
-        --success-color: #2a9d8f;
-        --error-color: #ef233c;
+        --primary-red: #c0392b; /* 較深沈的質感紅 */
+        --vivid-red: #e74c3c;   /* 亮紅 */
+        --bg-red: #922b21;      /* 背景深紅 */
+        --gold: #f1c40f;
+        --gold-dark: #d4ac0d;
+        --text-color: #2c3e50;
         --boutique-color: #1a3c6e; 
-        --domestic-color: #c9182b;
+        --domestic-color: #c0392b;
     }
     body {
         font-family: "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
-        background-color: var(--bg-color);
-        /* 祥雲背景紋理 */
+        background-color: var(--bg-red);
+        /* 背景紋理：金色圓點與祥雲意象 */
         background-image: 
-            radial-gradient(var(--gold) 15%, transparent 16%),
-            radial-gradient(var(--gold) 15%, transparent 16%);
-        background-size: 30px 30px;
-        background-position: 0 0, 15px 15px;
-        background-blend-mode: overlay;
-        background-attachment: fixed;
+            radial-gradient(var(--gold) 1px, transparent 1px),
+            radial-gradient(var(--gold) 1px, transparent 1px);
+        background-size: 40px 40px;
+        background-position: 0 0, 20px 20px;
         margin: 0;
         padding: 0;
         color: var(--text-color);
@@ -36,78 +32,70 @@
         min-height: 100vh;
         overflow-x: hidden;
     }
-    /* 降低背景干擾 */
-    body::after {
-        content: "";
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(255, 245, 245, 0.95);
-        z-index: -1;
-    }
 
     .app-container {
         width: 100%;
-        max-width: 480px;
+        max-width: 420px; /*稍微縮窄讓比例更好看*/
         background: #fff;
         min-height: 100vh;
-        box-shadow: 0 0 40px rgba(201, 24, 43, 0.2);
+        box-shadow: 0 0 50px rgba(0,0,0,0.5);
         display: flex;
         flex-direction: column;
         position: relative;
         overflow: hidden;
     }
     
-    /* === Header & Title === */
+    /* === Header & Title (更緊湊) === */
     .header {
         text-align: center;
-        padding: 80px 20px 20px; /* 上方留白給馬跑 */
-        background: linear-gradient(180deg, #fff 0%, #fff0f0 100%);
-        border-bottom: 2px solid #ffebeb;
+        padding: 60px 15px 15px; /* 縮減 padding */
+        background: linear-gradient(180deg, #fffbf0 0%, #fff 100%); /* 淡淡的米黃漸層 */
+        border-bottom: 1px solid #fcebb6;
         position: relative;
     }
     
     .brand-tag {
         display: inline-block;
-        background: var(--dark-red);
+        background: var(--bg-red);
         color: var(--gold);
-        padding: 4px 16px;
+        padding: 3px 12px;
         border-radius: 50px;
         font-weight: bold;
-        font-size: 0.85em;
-        letter-spacing: 2px;
-        margin-bottom: 35px; /* 增加間距避免擋到馬 */
+        font-size: 0.75em;
+        letter-spacing: 1.5px;
+        margin-bottom: 25px; /* 縮減間距 */
         border: 1px solid var(--gold);
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
     }
 
     .title-wrapper {
         position: relative;
         display: inline-block;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
     }
 
     .title-box {
         background: var(--primary-red);
         color: #fff;
-        padding: 15px 40px;
-        border-radius: 18px;
-        box-shadow: 0 6px 0 var(--dark-red), 0 10px 10px rgba(0,0,0,0.15);
+        padding: 10px 30px; /* 縮小內距 */
+        border-radius: 12px;
+        box-shadow: 0 4px 0 var(--bg-red), 0 8px 15px rgba(0,0,0,0.2);
         border: 2px solid var(--gold);
         position: relative;
         z-index: 2;
     }
 
-    /* 燈籠裝飾 */
+    /* 燈籠裝飾 (微調位置) */
     .lantern {
         position: absolute;
-        bottom: -20px;
-        font-size: 28px;
+        bottom: -18px;
+        font-size: 22px;
         animation: swing 3s ease-in-out infinite;
         z-index: 3;
         filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
     }
-    .lantern-left { left: 5px; transform-origin: top center; }
-    .lantern-right { right: 5px; transform-origin: top center; animation-delay: 1.5s; }
+    .lantern-left { left: 0px; transform-origin: top center; }
+    .lantern-right { right: 0px; transform-origin: top center; animation-delay: 1.5s; }
 
     @keyframes swing {
         0%, 100% { transform: rotate(-8deg); }
@@ -115,215 +103,165 @@
     }
 
     h1.main-title {
-        font-size: 1.9em;
+        font-size: 1.7em; /* 字體微調 */
         margin: 0;
         font-weight: 900;
-        letter-spacing: 3px;
-        text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+        letter-spacing: 2px;
+        text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
         line-height: 1.2;
     }
     h2.sub-title {
-        color: var(--dark-red);
-        font-size: 1.1em;
-        margin-top: 25px;
+        color: var(--bg-red);
+        font-size: 1em;
+        margin-top: 15px;
         font-weight: bold;
         letter-spacing: 1px;
     }
 
-    /* === Cute Chubby Horse Animation (Updated) === */
+    /* === Cute Chubby Horse Animation (位置微調) === */
     .horse-container {
         position: absolute;
-        top: -65px; /* 調整位置，站在標題上 */
+        top: -50px; /* 貼近標題 */
         left: 0;
         width: 100%;
-        height: 70px;
+        height: 60px;
         pointer-events: none;
-        z-index: 1; /* 在標題後面一點點，或上方 */
+        z-index: 5;
     }
     .cute-horse {
-        width: 80px; 
-        height: 65px;
+        width: 65px; /* 稍微縮小更精緻 */
+        height: 52px;
         position: absolute;
         animation: run-cycle 5s linear infinite;
-        filter: drop-shadow(0 5px 3px rgba(0,0,0,0.15));
+        filter: drop-shadow(0 4px 2px rgba(0,0,0,0.15));
         z-index: 5;
     }
 
-    /* 胖胖馬 SVG 樣式優化 */
-    .horse-body { fill: #e67e22; } /* 橘色馬身 */
-    .horse-hair { fill: #d35400; } /* 深橘鬃毛 */
-    .horse-hoof { fill: #5d4037; } /* 深色蹄子 */
-    .horse-saddle { fill: #c0392b; } /* 紅色馬鞍 */
-    .horse-saddle-detail { fill: #f1c40f; } /* 金色裝飾 */
+    /* 胖胖馬 SVG 樣式 */
+    .horse-body { fill: #d35400; } 
+    .horse-hair { fill: #f39c12; } 
+    .horse-hoof { fill: #5d4037; } 
+    .horse-saddle { fill: #c0392b; }
+    .horse-saddle-detail { fill: #f1c40f; }
 
     @keyframes run-cycle {
-        0% { left: 0%; transform: scaleX(-1) translateY(0) rotate(0deg); }
-        45% { left: 82%; transform: scaleX(-1) translateY(-8px) rotate(5deg); }
-        50% { left: 82%; transform: scaleX(1) translateY(0) rotate(0deg); }
-        95% { left: 0%; transform: scaleX(1) translateY(-8px) rotate(-5deg); }
-        100% { left: 0%; transform: scaleX(-1) translateY(0) rotate(0deg); }
+        0% { left: 5%; transform: scaleX(-1) translateY(0) rotate(0deg); }
+        45% { left: 75%; transform: scaleX(-1) translateY(-6px) rotate(5deg); }
+        50% { left: 75%; transform: scaleX(1) translateY(0) rotate(0deg); }
+        95% { left: 5%; transform: scaleX(1) translateY(-6px) rotate(-5deg); }
+        100% { left: 5%; transform: scaleX(-1) translateY(0) rotate(0deg); }
     }
 
-    /* === Input & Cards === */
+    /* === Input & Cards (更緊湊精緻) === */
     .card-panel {
-        margin: 20px 25px;
+        margin: 15px 20px;
         background: white;
-        padding: 30px 20px;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(201, 24, 43, 0.08);
-        border: 1px solid #ffe5e5;
+        padding: 25px 20px; /* 縮減 Padding */
+        border-radius: 16px;
+        box-shadow: 0 5px 20px rgba(146, 43, 33, 0.1);
+        border: 1px solid #fadbd8;
         text-align: center;
     }
     
     .input-group {
-        margin-bottom: 25px;
+        margin-bottom: 20px;
         text-align: left;
     }
     .input-group label {
         display: block;
         font-weight: bold;
-        margin-bottom: 8px;
-        color: var(--dark-red);
-        font-size: 1em;
+        margin-bottom: 6px;
+        color: var(--bg-red);
+        font-size: 0.95em;
     }
     .input-group input {
         width: 100%;
-        padding: 15px;
+        padding: 12px;
         border: 2px solid #eee;
-        border-radius: 12px;
-        font-size: 1.2em; /* 字體加大更好點 */
+        border-radius: 10px;
+        font-size: 1.1em;
         box-sizing: border-box;
         transition: all 0.3s;
         background: #fafafa;
         text-align: center;
         letter-spacing: 1px;
+        color: #333;
     }
     .input-group input:focus {
         border-color: var(--primary-red);
         background: #fff;
         outline: none;
-        box-shadow: 0 0 0 4px rgba(201, 24, 43, 0.1);
+        box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.15);
     }
 
-    /* === Quiz UI === */
-    .progress-bar-container {
-        height: 10px;
-        background: #eee;
-        width: 100%;
-    }
-    .progress-bar-fill {
-        height: 100%;
-        background: linear-gradient(90deg, var(--gold), var(--primary-red));
-        width: 0%;
-        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        border-radius: 0 5px 5px 0;
-    }
-    
-    .question-card {
-        padding: 25px;
-        background: #fff;
-    }
-    .q-text {
-        font-weight: bold;
-        font-size: 1.25em;
-        margin-bottom: 30px;
-        line-height: 1.6;
-        color: #2b2d42;
-    }
-    
-    .option {
-        display: flex;
-        align-items: center;
-        padding: 18px 15px;
-        margin-bottom: 15px;
-        background: #fff;
-        border: 2px solid #f0f0f0;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-size: 1.05em;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-    }
-    .option:active { transform: scale(0.98); }
-    .option.selected {
-        border-color: var(--primary-red);
-        background: #fff0f3;
-        color: var(--dark-red);
-        font-weight: bold;
-        box-shadow: 0 4px 12px rgba(201, 24, 43, 0.15);
-    }
-
-    .option-circle {
-        width: 24px;
-        height: 24px;
-        border: 2px solid #ccc;
-        border-radius: 50%;
-        margin-right: 15px;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .option.selected .option-circle {
-        border-color: var(--primary-red);
-        background: var(--primary-red);
-    }
-
-    /* === Buttons === */
+    /* === Buttons (更有質感) === */
     .btn-area {
-        padding: 20px;
+        padding: 15px 20px;
         background: #fff;
-        border-top: 1px solid #ffe5e5;
+        border-top: 1px solid #f2f2f2;
         margin-top: auto;
     }
     .btn {
         width: 100%;
-        padding: 18px;
+        padding: 15px;
         border: none;
         border-radius: 50px;
-        font-size: 1.15em;
+        font-size: 1.1em;
         font-weight: bold;
         cursor: pointer;
         transition: all 0.2s;
-        margin-bottom: 15px;
+        margin-bottom: 12px;
         letter-spacing: 1px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         position: relative;
         overflow: hidden;
     }
     .btn:active { transform: scale(0.97); }
 
     .btn-start {
-        background: linear-gradient(135deg, var(--primary-red), #ff4d6d);
+        background: linear-gradient(135deg, var(--primary-red), #e74c3c);
         color: white;
         font-size: 1.2em;
-        box-shadow: 0 8px 20px rgba(201, 24, 43, 0.3);
+        box-shadow: 0 6px 15px rgba(192, 57, 43, 0.3);
+        border: 1px solid rgba(255,255,255,0.2);
     }
 
-    .btn-boutique { background: linear-gradient(135deg, #003049, #023e8a); color: white; }
-    .btn-domestic { background: linear-gradient(135deg, #d00000, #9d0208); color: white; }
-    .btn-secondary { background: #6c757d; color: white; }
+    .btn-boutique { background: linear-gradient(135deg, #1a3c6e, #2980b9); color: white; }
+    .btn-domestic { background: linear-gradient(135deg, #c0392b, #e67e22); color: white; }
+    .btn-secondary { background: #7f8c8d; color: white; }
     .btn-outline { background: #fff; border: 2px solid var(--primary-red); color: var(--primary-red); }
-    .btn-text { background: transparent; color: #888; font-size: 0.95em; padding: 10px; box-shadow: none; text-decoration: underline; }
+    .btn-text { background: transparent; color: #999; font-size: 0.9em; padding: 8px; box-shadow: none; text-decoration: underline; }
     
-    /* Result & Leaderboard Styles */
+    /* === Quiz UI === */
+    .progress-bar-container { height: 8px; background: #eee; width: 100%; }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--primary-red)); width: 0%; transition: width 0.4s ease; }
+    
+    .question-card { padding: 20px; background: #fff; }
+    .q-text { font-weight: bold; font-size: 1.15em; margin-bottom: 20px; line-height: 1.5; color: #2c3e50; }
+    
+    .option {
+        display: flex; align-items: center; padding: 14px 12px; margin-bottom: 12px;
+        background: #fff; border: 2px solid #f4f6f7; border-radius: 10px; cursor: pointer;
+        transition: all 0.2s; font-size: 1em; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
+    .option.selected { border-color: var(--primary-red); background: #fdedec; color: var(--bg-red); font-weight: bold; }
+    .option-circle { width: 20px; height: 20px; border: 2px solid #bdc3c7; border-radius: 50%; margin-right: 12px; flex-shrink: 0; }
+    .option.selected .option-circle { border-color: var(--primary-red); background: var(--primary-red); }
+
+    /* === Result & Leaderboard === */
     .result-header {
-        background: linear-gradient(135deg, #d90429 0%, #8d0801 100%);
-        color: white;
-        padding: 40px 20px 50px;
-        text-align: center;
-        border-radius: 0 0 40px 40px;
-        margin-bottom: 20px;
+        background: linear-gradient(135deg, #922b21 0%, #c0392b 100%);
+        color: white; padding: 30px 20px 40px; text-align: center;
+        border-radius: 0 0 30px 30px; margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(146, 43, 33, 0.3);
     }
-    .score-big { font-size: 5em; font-weight: 800; margin: 10px 0; }
+    .score-big { font-size: 4.5em; font-weight: 800; margin: 5px 0; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
     
-    .leaderboard-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
-    .leaderboard-table td { padding: 15px 10px; background: #fff; }
-    .rank-num {
-        display: inline-block; width: 30px; height: 30px; line-height: 30px;
-        text-align: center; background: #eee; border-radius: 50%;
-    }
-    .rank-1 { background: #FFD700; color: #fff; }
+    .leaderboard-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+    .leaderboard-table td { padding: 12px 10px; background: #fff; border-bottom: 1px solid #eee; }
+    .leaderboard-table tr:first-child td { border-top: none; }
+    .rank-num { display: inline-block; width: 26px; height: 26px; line-height: 26px; text-align: center; background: #ecf0f1; border-radius: 50%; font-size: 0.9em; font-weight: bold; color: #7f8c8d; }
+    .rank-1 { background: var(--gold); color: #fff; box-shadow: 0 2px 5px rgba(241, 196, 15, 0.4); }
 
 </style>
 </head>
@@ -339,7 +277,6 @@
             <br>
             
             <div class="title-wrapper">
-                <!-- 修正版：更精緻肥胖的 Q 版馬 -->
                 <div class="horse-container">
                     <div class="cute-horse">
                         <svg viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
@@ -347,7 +284,7 @@
                             <ellipse cx="50" cy="50" rx="30" ry="22" class="horse-body" />
                             <!-- 脖子 -->
                             <path d="M65,40 Q75,15 85,20 L75,50" class="horse-body" stroke-width="0" />
-                            <!-- 頭 (大一點圓一點) -->
+                            <!-- 頭 -->
                             <circle cx="85" cy="22" r="14" class="horse-body" />
                             <!-- 耳朵 -->
                             <path d="M80,10 L82,2 L88,8" class="horse-body" />
@@ -355,9 +292,9 @@
                             <!-- 鬃毛 -->
                             <path d="M78,15 Q70,30 65,25 Q60,30 70,45" class="horse-hair" stroke="none" />
                             <circle cx="85" cy="12" r="5" class="horse-hair" />
-                            <!-- 尾巴 (短胖) -->
+                            <!-- 尾巴 -->
                             <path d="M20,45 Q10,40 15,30" class="horse-hair" stroke-width="4" stroke="#d35400" fill="none" stroke-linecap="round" />
-                            <!-- 腿 (短圓) -->
+                            <!-- 腿 -->
                             <rect x="35" y="65" width="6" height="12" rx="3" class="horse-body" />
                             <rect x="55" y="65" width="6" height="12" rx="3" class="horse-body" />
                             <rect x="35" y="75" width="6" height="3" class="horse-hoof" />
@@ -386,14 +323,13 @@
         
         <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
             <div class="card-panel">
-                <div style="margin-bottom:20px; color:#555; font-size:1em; font-weight:bold;">
+                <div style="margin-bottom:15px; color:#555; font-size:0.95em; font-weight:bold;">
                     👋 歡迎！請輸入工號
                 </div>
                 <div class="input-group">
                     <label>您的工號 (ID)</label>
                     <input type="text" id="inputId" placeholder="請輸入工號" inputmode="numeric">
                 </div>
-                <!-- 部門欄位已完全移除 -->
                 
                 <button class="btn btn-start" onclick="performLogin()">確認登入</button>
             </div>
@@ -407,14 +343,14 @@
     <!-- 2. 選單畫面 (Menu View) -->
     <div id="menuView" style="display:none; height: 100vh; flex-direction: column;">
         <div class="header" style="padding-top:40px;">
-            <h1 class="main-title" style="color:var(--primary-red);">選擇測驗項目</h1>
-            <h2 class="sub-title" id="welcomeText">Hi, 同仁</h2>
+            <h1 class="main-title" style="color:var(--primary-red); font-size:1.5em;">選擇測驗項目</h1>
+            <h2 class="sub-title" id="welcomeText" style="font-size:1em; margin-top:5px; color:#555;">Hi, 同仁</h2>
         </div>
         
         <div style="flex:1; padding:20px; display:flex; flex-direction:column; justify-content:center;">
-             <div style="background: #fffcf2; border-left: 5px solid var(--gold); padding: 20px; border-radius: 12px; margin-bottom:30px;">
-                <h3 style="margin:0 0 10px 0; color:#e85d04;">📝 測驗說明</h3>
-                <ul style="padding-left: 20px; margin:0; color:#555; line-height:1.8;">
+             <div style="background: #fffcf2; border-left: 4px solid var(--gold); padding: 15px; border-radius: 10px; margin-bottom:25px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <h3 style="margin:0 0 8px 0; color:#d35400; font-size:1em;">📝 測驗說明</h3>
+                <ul style="padding-left: 20px; margin:0; color:#555; line-height:1.6; font-size:0.9em;">
                     <li>請依據您的業種選擇題庫。</li>
                     <li>包含銀行、全館活動共同題。</li>
                     <li>共 20 題，滿分 100 分。</li>
@@ -423,12 +359,10 @@
 
             <button class="btn btn-boutique" onclick="startQuiz('boutique')">
                 <div style="font-size:1.2em;">👜 精品重點測驗</div>
-                <div style="font-size:0.8em; opacity:0.8; font-weight:normal;">含 03.04.05.06 類</div>
             </button>
             
             <button class="btn btn-domestic" onclick="startQuiz('domestic')">
-                <div style="font-size:1.2em;">💄 國產/香化測驗</div>
-                <div style="font-size:0.8em; opacity:0.8; font-weight:normal;">排除精品與飾品</div>
+                <div style="font-size:1.2em;">🏺 國產食品測驗</div>
             </button>
         </div>
         <div class="btn-area">
@@ -440,9 +374,9 @@
     <div id="quizView" style="display:none; height: 100vh; flex-direction: column;">
         <div class="header" style="padding: 15px 20px;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div class="brand-tag" id="quizSubjectTag" style="margin:0; font-size:0.75em; background:#eee; color:#555; box-shadow:none;">SUBJECT</div>
-                <div style="font-weight:900; color:#d90429; font-size:1.1em;">
-                    <span id="currentQNum" style="font-size:1.5em;">1</span> / <span id="totalQNum">20</span>
+                <div class="brand-tag" id="quizSubjectTag" style="margin:0; font-size:0.7em; background:#f4f6f7; color:#555; box-shadow:none; border-color:#ddd;">SUBJECT</div>
+                <div style="font-weight:900; color:var(--primary-red); font-size:1.1em;">
+                    <span id="currentQNum" style="font-size:1.4em;">1</span> / <span id="totalQNum">20</span>
                 </div>
             </div>
         </div>
@@ -462,13 +396,13 @@
     <!-- 4. 結果畫面 (Result View) -->
     <div id="resultView" style="display:none; flex-direction: column;">
         <div class="result-header">
-            <div style="font-size:1.1em; color:var(--gold); font-weight:bold;">FINAL SCORE</div>
+            <div style="font-size:1em; color:var(--gold); font-weight:bold; letter-spacing:1px;">FINAL SCORE</div>
             <div class="score-big" id="finalScore">0</div>
-            <div style="background:rgba(0,0,0,0.2); display:inline-block; padding:5px 20px; border-radius:20px;" id="displayUserInfo">User Info</div>
+            <div style="background:rgba(0,0,0,0.2); display:inline-block; padding:4px 15px; border-radius:20px; font-size:0.9em;" id="displayUserInfo">User Info</div>
         </div>
 
-        <div style="padding: 0 25px;">
-            <h3 style="margin: 0 0 15px 0; color: #2b2d42; font-weight:800; border-bottom: 2px solid #eee; padding-bottom:10px;">
+        <div style="padding: 0 20px;">
+            <h3 style="margin: 0 0 15px 0; color: #2c3e50; font-weight:800; border-bottom: 2px solid #f0f0f0; padding-bottom:8px; font-size:1.1em;">
                 📊 答題檢討
             </h3>
         </div>
@@ -490,7 +424,7 @@
             <div class="title-box" style="transform:none; font-size:0.8em; padding:8px 20px;">
                 <h1 class="main-title" style="font-size:1.4em;">🏆 線上英雄榜</h1>
             </div>
-            <h2 class="sub-title" style="margin-top:5px;">Top 10 Live Ranking</h2>
+            <h2 class="sub-title" style="margin-top:5px; font-size:0.95em;">Top 10 Live Ranking</h2>
         </div>
         
         <div style="flex: 1; overflow-y: auto; padding: 20px; background:#f8f9fa;">
@@ -641,7 +575,7 @@
             tag.style.color = "#fff";
             nextBtn.className = "btn btn-boutique";
         } else {
-            tag.innerText = "國產/香化";
+            tag.innerText = "國產食品"; // Updated
             tag.style.background = "#d00000";
             tag.style.color = "#fff";
             nextBtn.className = "btn btn-domestic";
@@ -745,7 +679,7 @@
 
     window.copyResultText = function() {
         let finalScore = Math.round((score / currentQuestions.length) * 100);
-        let typeText = (currentQuizType === 'boutique') ? "精品重點" : "國產/香化";
+        let typeText = (currentQuizType === 'boutique') ? "精品重點" : "國產食品"; // Updated
         // 修正：移除部門文字，只顯示工號
         let text = `【${typeText}測驗結果】\n工號：${userInfo.name}\n分數：${finalScore} 分\n日期：${new Date().toLocaleDateString()}`;
         
