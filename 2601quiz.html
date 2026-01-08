@@ -3,37 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>2026 新春銷售會考 - 正式發布版</title>
+    <title>2026 新春銷售會考 - 旗艦修復版</title>
     
-    <!-- 載入必要基礎庫 -->
+    <!-- 1. 核心載入 (CDN 版) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f3f4f6; -webkit-tap-highlight-color: transparent; }
-        .btn-active:active { transform: scale(0.98); }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-    </style>
-</head>
-<body>
-    <div id="root"></div>
-
-    <!-- Firebase SDK (Compat) - 最穩定版本 -->
+    <!-- 2. Firebase 穩定版本 (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: #f0f2f5; 
+            margin: 0; 
+            padding: 0;
+            overscroll-behavior: none;
+        }
+        .btn-active:active { transform: scale(0.96); }
+        .quiz-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        /* 滾動條美化 */
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="flex items-center justify-center h-screen font-bold text-gray-400">系統啟動中...</div>
+    </div>
+
     <script type="text/babel">
         const { useState, useEffect, useRef, useMemo } = React;
 
-        // ==========================================
-        // 🗝️ 已更新為您提供的新鑰匙 (quiz-2dce6)
-        // ==========================================
+        // ✅ 已換上您的新鑰匙 (quiz-2dce6)
         const firebaseConfig = {
             apiKey: "AIzaSyAk5ugWIjaeva-GNn54bbIJ4_V57mk__eo",
             authDomain: "quiz-2dce6.firebaseapp.com",
@@ -44,11 +53,16 @@
             measurementId: "G-Q5D52QGSSF"
         };
 
+        // --- 初始化 Firebase (加上連線狀態檢測) ---
         let db;
         try {
-            const app = firebase.initializeApp(firebaseConfig);
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
             db = firebase.firestore();
-        } catch (e) { console.error("Firebase 初始化失敗", e); }
+        } catch (e) {
+            console.error("Firebase 初始化錯誤", e);
+        }
 
         const ALL_QUESTIONS = [
             { id: 1, category: 'domestic', question: '國產滿額現抵活動：單筆滿 $1,880 可以現抵多少？', options: ['$150', '$200', '$250', '$300'], correct: 2 },
@@ -95,26 +109,27 @@
             const [selectedIdx, setSelectedIdx] = useState(null);
             const [isChecked, setIsChecked] = useState(false);
             const [leaderboard, setLeaderboard] = useState([]);
-            const [dbStatus, setDbStatus] = useState('🟡 正在連線...');
+            const [status, setStatus] = useState({ light: '⚪', msg: '初始化...' });
             const resRef = useRef();
 
-            // 🟡 診斷與監聽
+            // 🟢 資料庫連線測試
             useEffect(() => {
                 if (db) {
                     firebase.auth().signInAnonymously().then(() => {
-                        setDbStatus('🟢 雲端連線成功');
-                        db.collection('exam_records').onSnapshot(snap => {
+                        setStatus({ light: '🟢', msg: '雲端資料庫已連線' });
+                        // 監聽排行榜
+                        db.collection('exam_v5').onSnapshot(snap => {
                             setLeaderboard(snap.docs.map(doc => doc.data()));
                         }, err => {
-                            setDbStatus('🔴 資料庫讀取失敗 (檢查 Rules)');
+                            setStatus({ light: '🔴', msg: '讀取失敗 (檢查 Rules)' });
                         });
                     }).catch(err => {
-                        setDbStatus('🔴 登入失敗 (檢查 Auth)');
+                        setStatus({ light: '🔴', msg: '登入失敗 (檢查 Auth)' });
                     });
                 }
             }, []);
 
-            const handleStart = (mode) => {
+            const handleModeSelect = (mode) => {
                 const filtered = mode === 'domestic' 
                     ? ALL_QUESTIONS.filter(q => q.category === 'domestic' || q.category === 'common')
                     : ALL_QUESTIONS.filter(q => q.category === 'boutique' || q.category === 'common');
@@ -125,11 +140,11 @@
 
             const submitResult = async () => {
                 setView('result');
-                if (db && employeeId) {
+                if (db && employeeId.trim()) {
                     try {
-                        await db.collection('exam_records').add({
+                        await db.collection('exam_v5').add({
                             id: employeeId.toUpperCase().trim(),
-                            score,
+                            score: score,
                             mode: currentMode,
                             time: firebase.firestore.FieldValue.serverTimestamp()
                         });
@@ -137,7 +152,16 @@
                 }
             };
 
-            const rankList = useMemo(() => {
+            const downloadImg = async () => {
+                const canvas = await html2canvas(resRef.current, { scale: 3, backgroundColor: '#ffffff' });
+                const link = document.createElement('a');
+                link.download = `${employeeId}_成績單.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+            };
+
+            // 去重複取最高分
+            const sortedRank = useMemo(() => {
                 const map = new Map();
                 leaderboard.forEach(item => {
                     const old = map.get(item.id);
@@ -146,39 +170,48 @@
                 return Array.from(map.values()).sort((a,b) => b.score - a.score);
             }, [leaderboard]);
 
-            // --- Views ---
+            // --- 介面渲染 ---
+
             if (view === 'login') return (
-                <div className="min-h-screen flex flex-col items-center justify-center p-4">
-                    <div className="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden border">
-                        <div className="bg-red-600 p-8 text-center text-white">
-                            <div className="text-5xl mb-2">🏆</div>
-                            <h1 className="text-2xl font-black">2026 新春銷售會考</h1>
+                <div className="quiz-container flex-col">
+                    <div className="bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl overflow-hidden border">
+                        <div className="bg-red-600 p-10 text-center text-white relative">
+                            <div className="text-6xl mb-4">🏆</div>
+                            <h1 className="text-2xl font-black">2026 新春銷售大會考</h1>
+                            <p className="text-red-100 text-xs mt-2 font-bold tracking-widest opacity-80 uppercase">Internal Exam System</p>
                         </div>
-                        <div className="p-8 space-y-6">
-                            <input type="text" placeholder="輸入工號 / 姓名" className="w-full p-4 bg-gray-50 border-2 rounded-xl outline-none focus:border-red-500 font-bold uppercase" onChange={e => setEmployeeId(e.target.value)} />
-                            <button onClick={() => employeeId.trim() && setView('menu')} className="w-full bg-red-600 text-white py-4 rounded-xl font-black btn-active shadow-lg">進入測驗</button>
+                        <div className="p-10 space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-xs font-black text-gray-400 ml-1 uppercase">工號 / 姓名</label>
+                                <input type="text" placeholder="例: A12345" className="w-full p-4 bg-gray-50 border-2 rounded-2xl outline-none focus:border-red-500 font-bold uppercase transition-all" onChange={e => setEmployeeId(e.target.value)} />
+                            </div>
+                            <button onClick={() => employeeId.trim() && setView('menu')} className="w-full bg-red-600 text-white py-5 rounded-2xl font-black shadow-xl shadow-red-200 btn-active">進入系統</button>
                         </div>
                     </div>
-                    <div className="mt-4 text-[10px] font-bold text-gray-400 tracking-widest">{dbStatus}</div>
+                    <div className="mt-6 text-[10px] font-bold text-gray-400 flex items-center">
+                        <span className="mr-2">{status.light}</span> {status.msg}
+                    </div>
                 </div>
             );
 
             if (view === 'menu') return (
-                <div className="min-h-screen flex items-center justify-center p-4">
-                    <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-8 space-y-4 border text-center">
-                        <h2 className="text-xl font-black mb-6 uppercase">你好, {employeeId}</h2>
-                        <button onClick={() => handleStart('domestic')} className="w-full flex items-center p-6 bg-red-50 rounded-2xl border-2 border-transparent hover:border-red-500 btn-active transition-all">
-                            <span className="text-3xl mr-4">🛍️</span>
-                            <div className="text-left"><p className="font-black text-lg text-red-900">國產/一般組</p><p className="text-xs text-red-400 font-bold">食品、來店禮回饋</p></div>
-                        </button>
-                        <button onClick={() => handleStart('boutique')} className="w-full flex items-center p-6 bg-amber-50 rounded-2xl border-2 border-transparent hover:border-amber-500 btn-active transition-all">
-                            <span className="text-3xl mr-4">🎁</span>
-                            <div className="text-left"><p className="font-black text-lg text-amber-900">精品/珠寶組</p><p className="text-xs text-amber-400 font-bold">精品大類活動</p></div>
-                        </button>
-                        <button onClick={() => setView('leaderboard')} className="w-full flex items-center p-6 bg-blue-50 rounded-2xl border-2 border-transparent hover:border-blue-500 btn-active transition-all">
-                            <span className="text-3xl mr-4">📊</span>
-                            <div className="text-left"><p className="font-black text-lg text-blue-900">總成績排行榜</p></div>
-                        </button>
+                <div className="quiz-container">
+                    <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-10 border text-center">
+                        <h2 className="text-2xl font-black mb-8 text-gray-800">你好, {employeeId.toUpperCase()}</h2>
+                        <div className="space-y-4">
+                            <button onClick={() => handleModeSelect('domestic')} className="w-full flex items-center p-6 bg-red-50 rounded-3xl border-2 border-transparent hover:border-red-500 btn-active transition-all">
+                                <span className="text-4xl mr-5">🛍️</span>
+                                <div className="text-left"><p className="font-black text-lg text-red-900">國產/一般組</p><p className="text-xs text-red-400 font-bold">食品、來店禮回饋</p></div>
+                            </button>
+                            <button onClick={() => handleModeSelect('boutique')} className="w-full flex items-center p-6 bg-amber-50 rounded-3xl border-2 border-transparent hover:border-amber-500 btn-active transition-all">
+                                <span className="text-4xl mr-5">🎁</span>
+                                <div className="text-left"><p className="font-black text-lg text-amber-900">精品/珠寶組</p><p className="text-xs text-amber-400 font-bold">精品大類、高單價活動</p></div>
+                            </button>
+                            <button onClick={() => setView('leaderboard')} className="w-full flex items-center p-6 bg-blue-50 rounded-3xl border-2 border-transparent hover:border-blue-500 btn-active transition-all">
+                                <span className="text-4xl mr-5">📊</span>
+                                <div className="text-left"><p className="font-black text-lg text-blue-900">查看排行榜</p><p className="text-xs text-blue-400 font-bold">即時更新全體紀錄</p></div>
+                            </button>
+                        </div>
                     </div>
                 </div>
             );
@@ -186,30 +219,32 @@
             if (view === 'quiz') {
                 const q = activeQuestions[currentIndex];
                 return (
-                    <div className="min-h-screen flex items-center justify-center p-4">
-                        <div className="bg-white w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden flex flex-col" style={{minHeight:'500px'}}>
-                            <div className="px-6 py-4 bg-gray-50 flex justify-between font-bold text-[10px] border-b uppercase tracking-widest text-gray-400">
-                                <span>題目 {currentIndex + 1} / 20</span>
-                                <span>{employeeId}</span>
+                    <div className="quiz-container">
+                        <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col border" style={{minHeight:'550px'}}>
+                            <div className="px-8 py-5 bg-gray-50 flex justify-between font-black text-[10px] tracking-tighter border-b uppercase text-gray-400">
+                                <span className="text-red-500">題目 {currentIndex + 1} / 20</span>
+                                <span>考生: {employeeId}</span>
                             </div>
-                            <div className="p-8 flex-grow">
-                                <h3 className="text-lg font-black text-gray-800 mb-6">{q.question}</h3>
-                                <div className="space-y-3">
+                            <div className="p-10 flex-grow">
+                                <h3 className="text-xl font-black text-gray-800 mb-8 leading-snug">{q.question}</h3>
+                                <div className="space-y-4">
                                     {q.options.map((opt, i) => {
-                                        let style = "w-full p-4 rounded-xl border-2 text-left font-bold transition-all ";
+                                        let style = "w-full p-5 rounded-2xl border-2 text-left font-bold text-sm transition-all ";
                                         if (isChecked) {
-                                            if (i === q.correct) style += "border-green-500 bg-green-50 text-green-700";
-                                            else if (i === selectedIdx) style += "border-red-500 bg-red-50 text-red-700 opacity-80";
+                                            if (i === q.correct) style += "border-green-500 bg-green-50 text-green-700 shadow-md";
+                                            else if (i === selectedIdx) style += "border-red-500 bg-red-50 text-red-700 opacity-60";
                                             else style += "opacity-30 border-gray-100";
-                                        } else style += "border-gray-100 active:bg-gray-50";
+                                        } else style += "border-gray-100 hover:border-red-200 active:bg-gray-50";
                                         return (
                                             <button key={i} onClick={() => !isChecked && (setSelectedIdx(i), setIsChecked(true), i === q.correct && setScore(score + 1))} className={style}>{opt}</button>
                                         );
                                     })}
                                 </div>
                             </div>
-                            <div className="p-6 bg-gray-50 border-t">
-                                <button onClick={() => currentIndex < 19 ? (setCurrentIndex(currentIndex + 1), setSelectedIdx(null), setIsChecked(false)) : submitResult()} disabled={!isChecked} className="w-full bg-black text-white py-4 rounded-xl font-black disabled:opacity-20 btn-active shadow-lg">{currentIndex === 19 ? '提交成績' : '下一題'}</button>
+                            <div className="p-8 bg-gray-50 border-t">
+                                <button onClick={() => currentIndex < 19 ? (setCurrentIndex(currentIndex + 1), setSelectedIdx(null), setIsChecked(false)) : submitResult()} disabled={!isChecked} className="w-full bg-black text-white py-5 rounded-2xl font-black disabled:opacity-20 btn-active shadow-lg">
+                                    {currentIndex === 19 ? '提交結算' : '確認下一題'}
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -217,41 +252,53 @@
             }
 
             if (view === 'result') return (
-                <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+                <div className="quiz-container flex-col">
                     <div ref={resRef} className="bg-white w-full max-w-sm rounded-[3rem] shadow-2xl overflow-hidden mb-8 border">
-                        <div className={`p-10 text-white ${score >= 16 ? 'bg-green-600' : 'bg-red-600'}`}>
-                            <div className="text-6xl mb-4">🏅</div>
-                            <h2 className="text-7xl font-black mb-2">{score*5}%</h2>
-                            <p className="font-bold uppercase tracking-widest">會考結算單</p>
-                            <div className="mt-8 pt-8 border-t border-white/20 flex justify-between text-left text-xs font-bold">
-                                <div><p className="opacity-50 uppercase">UserID</p><p className="">{employeeId.toUpperCase()}</p></div>
-                                <div className="text-right"><p className="opacity-50 uppercase">Score</p><p className="">{score}/20</p></div>
+                        <div className={`p-14 text-center text-white ${score >= 16 ? 'bg-gradient-to-br from-green-600 to-emerald-700' : 'bg-gradient-to-br from-red-600 to-rose-700'}`}>
+                            <div className="text-7xl mb-6">🏅</div>
+                            <h2 className="text-8xl font-black mb-4 tracking-tighter">{score*5}<span className="text-2xl font-bold ml-1">%</span></h2>
+                            <p className="font-black text-white/80 text-xs tracking-widest uppercase">考試成績證明單</p>
+                            <div className="mt-10 pt-10 border-t border-white/20 flex justify-between text-left text-xs font-bold uppercase">
+                                <div><p className="opacity-50 mb-1">ID</p><p className="text-sm">{employeeId.toUpperCase()}</p></div>
+                                <div className="text-right"><p className="opacity-50 mb-1">SCORE</p><p className="text-sm">{score} / 20</p></div>
                             </div>
                         </div>
                     </div>
-                    <button onClick={() => html2canvas(resRef.current).then(c => { const l=document.createElement('a'); l.download='成績單.png'; l.href=c.toDataURL(); l.click(); })} className="w-full max-w-sm bg-blue-600 text-white py-4 rounded-xl font-black mb-3 btn-active shadow-xl">📥 下載成績截圖</button>
-                    <button onClick={() => setView('menu')} className="w-full max-w-sm bg-gray-200 text-gray-600 py-4 rounded-xl font-black btn-active">返回選單</button>
+                    <div className="w-full max-w-sm space-y-3">
+                        <button onClick={downloadImg} className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-lg shadow-xl btn-active">📸 下載證書截圖</button>
+                        <button onClick={() => location.reload()} className="w-full bg-gray-200 text-gray-600 py-5 rounded-2xl font-black btn-active">重新登入</button>
+                    </div>
                 </div>
             );
 
             if (view === 'leaderboard') return (
-                <div className="min-h-screen flex items-center justify-center p-4">
-                    <div className="bg-white w-full max-w-md rounded-[2rem] shadow-2xl h-[80vh] flex flex-col overflow-hidden border">
-                        <div className="p-6 bg-blue-600 text-white text-center">
-                            <h2 className="font-black text-xl mb-4 tracking-tighter uppercase">Global Leaderboard</h2>
+                <div className="quiz-container">
+                    <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl h-[85vh] flex flex-col overflow-hidden border">
+                        <div className="p-8 bg-blue-600 text-white text-center">
+                            <h2 className="font-black text-2xl tracking-tight">GLOBAL LEADERBOARD</h2>
+                            <p className="text-[10px] font-bold opacity-70 mt-1 uppercase tracking-widest">即時成績排行</p>
                         </div>
-                        <div className="flex-grow overflow-y-auto p-4 space-y-2 custom-scrollbar">
-                            {rankList.length === 0 ? <p className="text-center text-gray-400 mt-10">資料同步中...</p> : rankList.map((item, idx) => (
-                                <div key={idx} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl border border-gray-100 shadow-sm">
+                        <div className="flex-grow overflow-y-auto p-6 space-y-3 custom-scrollbar bg-gray-50/50">
+                            {sortedRank.length === 0 ? <p className="text-center text-gray-400 mt-10">連線中，請稍候...</p> : sortedRank.map((item, idx) => (
+                                <div key={idx} className="flex justify-between items-center p-5 bg-white rounded-3xl border border-gray-100 shadow-sm transition-all hover:scale-[1.02]">
                                     <div className="flex items-center">
-                                        <span className={`w-8 h-8 flex items-center justify-center rounded-full text-xs font-black mr-4 ${idx < 3 ? 'bg-yellow-400 text-white shadow-sm' : 'bg-gray-200 text-gray-400'}`}>{idx+1}</span>
-                                        <div className="text-left"><p className="font-black text-gray-800 tracking-tight">{item.id}</p><p className="text-[10px] text-gray-400 font-bold uppercase">{item.mode === 'domestic' ? '國產' : '精品'}</p></div>
+                                        <div className={`w-10 h-10 flex items-center justify-center rounded-2xl text-sm font-black mr-4 ${idx === 0 ? 'bg-yellow-400 text-white shadow-md' : idx === 1 ? 'bg-slate-300 text-white' : idx === 2 ? 'bg-orange-300 text-white' : 'bg-gray-100 text-gray-400'}`}>
+                                            {idx + 1}
+                                        </div>
+                                        <div>
+                                            <p className="font-black text-gray-800 tracking-tight">{item.id}</p>
+                                            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">{item.mode === 'domestic' ? '國產' : '精品'}組</p>
+                                        </div>
                                     </div>
-                                    <div className="text-right"><p className="text-blue-600 font-black text-lg leading-none">{item.score} <span className="text-[10px] font-bold text-gray-300">題</span></p></div>
+                                    <div className="text-right">
+                                        <p className="text-blue-600 font-black text-lg leading-none">{item.score} <span className="text-[10px] font-bold text-gray-300">分</span></p>
+                                    </div>
                                 </div>
                             ))}
                         </div>
-                        <div className="p-6 border-t bg-gray-50"><button onClick={() => setView('menu')} className="w-full py-4 bg-white border rounded-xl font-black btn-active shadow-sm">返回</button></div>
+                        <div className="p-8 border-t bg-white">
+                            <button onClick={() => setView('menu')} className="w-full py-5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-2xl font-black transition-all btn-active">返回選單</button>
+                        </div>
                     </div>
                 </div>
             );
@@ -259,7 +306,8 @@
             return null;
         };
 
-        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
