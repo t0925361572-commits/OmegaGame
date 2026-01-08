@@ -362,7 +362,7 @@
             </div>
             
             <div style="text-align:center;">
-                 <button class="btn btn-text" onclick="showLeaderboard()">🏆 偷看線上排行榜</button>
+                 <button class="btn btn-text" onclick="showLeaderboard()">🏆 偷看線上英雄榜</button>
             </div>
         </div>
     </div>
@@ -482,7 +482,8 @@
 <!-- Firebase Module Script -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAk5ugWIjaeva-GNn54bbIJ4_V57mk__eo",
@@ -496,6 +497,14 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
+    
+    // 自動登入 Firebase (解決權限問題)
+    signInAnonymously(auth).then(() => {
+        console.log("Firebase Anonymous Auth Successful");
+    }).catch((error) => {
+        console.error("Firebase Auth Failed", error);
+    });
 
     // --- 全域變數 ---
     let currentQuestions = [];
@@ -759,6 +768,7 @@
             console.log("Score saved!");
         } catch (e) {
             console.error("Error adding document: ", e);
+            alert("無法上傳成績，請檢查網路或聯繫管理員。");
         }
     }
 
@@ -773,19 +783,32 @@
         tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#aaa;">雲端資料讀取中...</td></tr>`;
 
         try {
-            const q = query(collection(db, "quiz_leaderboard_2026"), orderBy("score", "desc"), orderBy("timestamp", "asc"), limit(10));
-            const querySnapshot = await getDocs(q);
+            // 改為一次抓取所有資料，然後在前端排序，避免 Firebase 索引問題
+            const querySnapshot = await getDocs(collection(db, "quiz_leaderboard_2026"));
+            
+            let data = [];
+            querySnapshot.forEach((doc) => {
+                data.push(doc.data());
+            });
+
+            // 前端排序：分數高 -> 低，時間早 -> 晚
+            data.sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                return a.timestamp - b.timestamp;
+            });
+
+            // 取前 10 名
+            data = data.slice(0, 10);
             
             tbody.innerHTML = "";
             let rank = 1;
 
-            if (querySnapshot.empty) {
+            if (data.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#aaa;">尚無紀錄<br>快來當第一個挑戰者！</td></tr>`;
                 return;
             }
 
-            querySnapshot.forEach((doc) => {
-                const item = doc.data();
+            data.forEach((item) => {
                 let rankClass = "";
                 if (rank === 1) rankClass = "rank-1";
                 
@@ -809,4 +832,3 @@
 
 </body>
 </html>
-```
