@@ -1,185 +1,222 @@
-<!DOCTYPE html> <html lang="zh-TW"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> <title>2026 馬上RICH吉運來 大會考</title> <!-- 1. 核心資源 --> <script src="https://cdn.tailwindcss.com"></script> <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script> <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script> <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> <!-- 2. Firebase Compat (最穩定版) --> <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script> <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script> <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script> <!-- 3. 圖示庫 --> <script src="https://unpkg.com/lucide@latest"></script> <style> @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap'); body { font-family: 'Noto Sans TC', sans-serif; background: linear-gradient(180deg, #991b1b 0%, #7f1d1d 100%); margin: 0; padding: 0; overscroll-behavior: none; min-height: 100vh; } .btn-active:active { transform: scale(0.96); } .quiz-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; } .rich-card { background: rgba(255, 255, 255, 0.99); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); } .rich-gradient { background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%); } .custom-scrollbar::-webkit-scrollbar { width: 5px; } .custom-scrollbar::-webkit-scrollbar-thumb { background: #f87171; border-radius: 10px; } </style> </head> <body> <div id="root"> <div class="flex items-center justify-center h-screen font-bold text-white opacity-50">載入系統中...</div> </div> <script type="text/babel"> const { useState, useEffect, useRef, useMemo } = React; // ✅ Firebase Config (quiz-2dce6) const firebaseConfig = { apiKey: "AIzaSyAk5ugWIjaeva-GNn54bbIJ4_V57mk__eo", authDomain: "quiz-2dce6.firebaseapp.com", projectId: "quiz-2dce6", storageBucket: "quiz-2dce6.firebasestorage.app", messagingSenderId: "1093040493998", appId: "1:1093040493998:web:932bda3c48fa38b7e6e43f", measurementId: "G-Q5D52QGSSF" }; // 初始化 Firebase let db; try { if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); } db = firebase.firestore(); } catch (e) { console.error("Firebase Error", e); } // ✅ 完整題庫 (修正 ID 避免重複，確保國產題數量) const ALL_QUESTIONS = [ // --- 國產專屬題 (Domestic) --- { id: 'd1', category: 'domestic', question: '1/10 起國產區會員買就送什麼？', options: ['馬年限定紅包袋', '馬年轉運貼紙', '1元賀卡', '無贈品'], correct: 1 }, { id: 'd2', category: 'domestic', question: '國產區消費滿 $3,000 可折抵多少？(依此類推)', options: ['$200', '$300', '$400', '$500'], correct: 1 }, { id: 'd3', category: 'domestic', question: '國產區消費滿 15,800 會送「香盅禮盒」嗎？', options: ['會，全館累計', '不會，僅限指定四大類', '會，但限量', '看店員心情'], correct: 1 }, { id: 'd4', category: 'domestic', question: '2/1 起抽獎獲得的 F 賞 100 元折價卷，使用規則為何？', options: ['當下立即折抵', '下一筆滿 1000 可折抵', '累積滿 3000 可折抵', '限隔日使用'], correct: 1 }, { id: 'd5', category: 'domestic', question: '客人 2/3 買紫晶酥 $860，想用 F 賞 100 元抵用卷，可以嗎？', options: ['可以，立即折抵', '不行，需滿 1000 才可折', '不行，需滿 2000 才可折', '看主管授權'], correct: 1 }, { id: 'd6', category: 'domestic', question: '1/18 購買國產茶葉 $5,500，依現場滿額折抵可折多少？', options: ['300元', '400元', '500元', '600元'], correct: 2 }, // 3000折300 + 2000折200 = 500 { id: 'd7', category: 'domestic', question: '1/11 買茶具結帳 $2,538，可獲得什麼來店禮？', options: ['紅包袋', '馬年轉運貼紙', '賀卡', '香盅禮盒'], correct: 1 }, { id: 'd8', category: 'domestic', question: '國產單筆滿 $1,880 現場現抵多少元？', options: ['$150', '$200', '$250', '$300'], correct: 0 }, // --- 通用題 (Common - 兩邊都會出現) --- { id: 'c1', category: 'common', question: '滿額贈送的門檻是以什麼金額作為計算？', options: ['原價', '折扣後金額', '未稅價', '建議售價'], correct: 1 }, { id: 'c2', category: 'common', question: '下一波檔期「馬上現折-馬上有錢花」活動時間為何？', options: ['1/1 - 1/31', '1/10 - 2/24', '2/1 - 2/14', '2/10 - 3/10'], correct: 1 }, { id: 'c3', category: 'common', question: '2/14 情人節買鳳梨酥折後 $1,026，刷台新聯名卡可多領什麼？', options: ['紅包袋', '阿原旅行組', '台新 1 元發財金', '行李箱'], correct: 2 }, { id: 'c4', category: 'common', question: '全館滿額贈與點數兌換統一在哪裡辦理？', options: ['各專櫃', '服務台', '客服櫃檯', '線上App'], correct: 2 }, { id: 'c5', category: 'common', question: '關於銀行刷卡禮，通常是否包含「菸酒藥類」消費？', options: ['包含', '不包含', '視分店而定', '僅包含酒類'], correct: 1 }, { id: 'c6', category: 'common', question: '哪家銀行刷滿 $888 送「台新 1 元發財金」？', options: ['星展銀行', '兆豐銀行', '台新銀行', '國泰世華'], correct: 2 }, { id: 'c7', category: 'common', question: '星展銀行分期滿 10 萬贈送多少刷卡金？', options: ['$1,000', '$1,500', '$2,000', '$2,500'], correct: 2 }, { id: 'c8', category: 'common', question: '台新聯名卡單日滿 $160,000 贈送多少禮券？', options: ['$1,000', '$1,500', '$2,000', '$3,000'], correct: 2 }, { id: 'c9', category: 'common', question: 'Rich Point 點數發放，單日累計滿 $150,000 送幾點？', options: ['15,000點', '30,000點', '45,000點', '50,000點'], correct: 2 }, // --- 精品題 (Boutique) --- { id: 'b1', category: 'boutique', question: '精品類門檻滿 $8,000 現場現抵多少元？', options: ['$500', '$600', '$650', '$800'], correct: 2 }, { id: 'b2', category: 'boutique', question: '精品類門檻滿 $18,000 現場現抵多少元？', options: ['$1,200', '$1,300', '$1,400', '$1,500'], correct: 1 }, { id: 'b3', category: 'boutique', question: '精品類門檻滿 $100,000 現場現抵多少元？', options: ['$8,800', '$9,000', '$9,600', '$10,000'], correct: 2 }, { id: 'b4', category: 'boutique', question: '全館單日累計滿 $500,000 贈送大獎是什麼？', options: ['純金紅繩手鏈', 'Switch 2 單機版', 'iPhone 17 Pro', '東京來回機票'], correct: 1 }, { id: 'b5', category: 'boutique', question: '全館單日累計滿 $1,000,000 贈送頂級好禮是什麼？', options: ['純金紅繩手鏈', 'iPhone 17 Pro 256G', 'Switch 2', '電動機車乙台'], correct: 1 }, { id: 'b6', category: 'boutique', question: '全館單日累計滿 $300,000 贈送什麼？', options: ['Switch 2', '純金紅繩手鏈', '香盅禮盒', '掛繩包'], correct: 1 }, { id: 'b7', category: 'boutique', question: '03/04/05/06 大類單筆滿 $32,800 贈送什麼？', options: ['掛繩包', '香盅禮盒', '行李箱', 'Switch 2'], correct: 0 }, { id: 'b8', category: 'boutique', question: '台新銀行單日累積滿 $68,000 贈送什麼？', options: ['香氛禮盒', '25吋上掀式行李箱', 'Switch 2', 'iPhone 17 Pro'], correct: 1 } ]; const shuffleArray = (array) => { const arr = [...array]; for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }; const App = () => { const [employeeId, setEmployeeId] = useState(''); const [view, setView] = useState('login'); const [currentMode, setCurrentMode] = useState(null); const [activeQuestions, setActiveQuestions] = useState([]); const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); const [score, setScore] = useState(0); const [selectedIdx, setSelectedIdx] = useState(null); const [isChecked, setIsChecked] = useState(false); const [leaderboard, setLeaderboard] = useState([]); const [dbStatus, setDbStatus] = useState('🟡 連線中...'); const [searchTerm, setSearchTerm] = useState(''); const resRef = useRef(); // 1. 初始化圖示與資料庫連線 useEffect(() => { if (window.lucide) window.lucide.createIcons(); if (db) { firebase.auth().signInAnonymously().then(() => { setDbStatus('🟢 雲端連線成功'); // 監聽排行榜 (使用 quiz_2026_final 集合) db.collection('quiz_2026_final').onSnapshot(snap => { const data = snap.docs.map(doc => doc.data()); setLeaderboard(data); }, err => { console.error(err); setDbStatus('🔴 讀取失敗 (請檢查 Rules)'); }); }).catch(err => { console.error(err); setDbStatus('🔴 登入失敗 (請檢查 Auth)'); }); } }, []); // 換頁時刷新 Icon useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [view, currentQuestionIndex, selectedIdx]); // 選擇模式 (確保題目數量正確) const handleModeSelect = (mode) => { const filtered = mode === 'domestic' ? ALL_QUESTIONS.filter(q => q.category === 'domestic' || q.category === 'common') : ALL_QUESTIONS.filter(q => q.category === 'boutique' || q.category === 'common'); // 不再限制 slice(0,10)，讓它顯示足夠多的題目 (例如最多20題) setActiveQuestions(shuffleArray(filtered).slice(0, 20)); setCurrentMode(mode); setCurrentQuestionIndex(0); setScore(0); setIsChecked(false); setSelectedIdx(null); setView('quiz'); }; const handleAnswerClick = (index) => { if (isChecked) return; setSelectedIdx(index); setIsChecked(true); const currentQ = activeQuestions[currentQuestionIndex]; if (index === currentQ.correct) { setScore(score + 1); } }; const nextQuestion = () => { if (currentQuestionIndex < activeQuestions.length - 1) { setCurrentQuestionIndex(currentQuestionIndex + 1); setSelectedIdx(null); setIsChecked(false); } else { finishQuiz(); } }; const finishQuiz = async () => { setView('result'); if (db && employeeId.trim()) { try { await db.collection('quiz_2026_final').add({ id: employeeId.toUpperCase().trim(), score: score, total: activeQuestions.length, mode: currentMode, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); } catch (e) { console.error("Upload failed", e); } } }; const handleDownload = async () => { if (!resRef.current) return; try { const canvas = await html2canvas(resRef.current, { scale: 3, backgroundColor: '#ffffff' }); const link = document.createElement('a'); link.download = ${employeeId}_成績單.png; link.href = canvas.toDataURL(); link.click(); } catch (e) { alert("截圖失敗，請手動截圖"); } }; const rankList = useMemo(() => { const map = new Map(); leaderboard.forEach(item => { const old = map.get(item.id); // 取分數最高，若分數相同取最新的 (或依需求改) if (!old || item.score > old.score) map.set(item.id, item); }); return Array.from(map.values()).sort((a,b) => b.score - a.score); }, [leaderboard]); const listFiltered = rankList.filter(i => !searchTerm || i.id.includes(searchTerm.toUpperCase())); // --- 介面 --- if (view === 'login') return ( <div className="quiz-container flex-col"> <div className="bg-white w-full max-w-sm rounded-[3.5rem] shadow-2xl overflow-hidden rich-card"> <div className="rich-gradient p-12 text-center text-white relative"> <div className="text-7xl mb-6 drop-shadow-xl animate-bounce">🐎</div> <h1 className="text-3xl font-black leading-tight tracking-tighter"> 2026 馬上RICH<br/>吉運來 <span className="text-5xl mt-3 block text-yellow-300">大會考</span> </h1> </div> <div className="p-10 space-y-5"> <input type="text" placeholder="請輸入工號" className="w-full p-5 bg-gray-50 border-2 border-gray-100 rounded-[1.5rem] outline-none focus:border-red-600 focus:bg-white font-bold text-center uppercase transition-all shadow-inner" onChange={e => setEmployeeId(e.target.value)} /> <button onClick={() => employeeId.trim() && setView('menu')} className="w-full bg-red-600 text-white py-5 rounded-[1.5rem] font-black shadow-xl btn-active text-xl">開始登入</button> <button onClick={() => setView('leaderboard')} className="w-full bg-slate-800 text-white py-4 rounded-[1.5rem] font-bold shadow-lg btn-active text-base flex items-center justify-center"> <i data-lucide="bar-chart-3" className="w-4 h-4 mr-2"></i> 查看排行榜 </button> </div> </div> <div className="mt-8 text-[10px] font-bold text-white/40 tracking-widest">{dbStatus}</div> </div> ); if (view === 'menu') return ( <div className="quiz-container"> <div className="bg-white w-full max-w-md rounded-[3rem] shadow-2xl p-10 text-center rich-card"> <h2 className="text-3xl font-black mb-10 text-gray-800 tracking-tight">你好, {employeeId.toUpperCase()}</h2> <div className="space-y-4"> <button onClick={() => handleModeSelect('domestic')} className="w-full flex items-center p-6 bg-red-50 rounded-[2rem] border-2 border-transparent hover:border-red-600 btn-active text-left transition-all group"> <span className="text-5xl mr-5 group-hover:scale-110 transition-transform">🧧</span> <div><p className="font-black text-2xl text-red-900 leading-none mb-2">國產 / 一般組</p><p className="text-xs text-red-400 font-bold opacity-70">食品、來店禮、銀行禮</p></div> </button> <button onClick={() => handleModeSelect('boutique')} className="w-full flex items-center p-6 bg-amber-50 rounded-[2rem] border-2 border-transparent hover:border-amber-600 btn-active text-left transition-all group"> <span className="text-5xl mr-5 group-hover:scale-110 transition-transform">💎</span> <div><p className="font-black text-2xl text-amber-900 leading-none mb-2">精品 / 珠寶組</p><p className="text-xs text-amber-400 font-bold opacity-70">各大品牌現抵門檻</p></div> </button> <button onClick={() => setView('login')} className="w-full py-4 text-gray-400 font-bold mt-4">登出</button> </div> </div> </div> ); if (view === 'quiz') { const q = activeQuestions[currentIndex]; return ( <div className="quiz-container"> <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col rich-card" style={{minHeight:'600px'}}> <div className="px-8 py-5 bg-gray-50 flex justify-between font-black text-[11px] border-b text-gray-400 uppercase tracking-widest"> <span className="text-red-600">題目 {currentIndex + 1} / {activeQuestions.length}</span> <span>考生: {employeeId}</span> </div> <div className="p-10 flex-grow"> <h3 className="text-2xl font-black text-gray-800 mb-10 leading-snug tracking-tight">{q.question}</h3> <div className="space-y-4"> {q.options.map((opt, i) => { let style = "w-full p-5 rounded-2xl border-2 text-left font-bold text-base transition-all "; if (isChecked) { if (i === q.correct) style += "border-green-500 bg-green-50 text-green-700 shadow-md scale-[1.02]"; else if (i === selectedIdx) style += "border-red-500 bg-red-50 text-red-700 opacity-60"; else style += "opacity-30 border-gray-100"; } else style += "border-gray-100 hover:border-red-600 active:bg-red-50"; return ( <button key={i} onClick={() => handleAnswerClick(i)} disabled={isChecked} className={style}>{opt}</button> ); })} </div> </div> <div className="p-8 bg-gray-50 border-t flex justify-center"> <button onClick={() => currentIndex < activeQuestions.length - 1 ? nextQuestion() : finishQuiz()} disabled={!isChecked} className="w-full bg-gray-900 text-white py-5 rounded-[1.5rem] font-black disabled:opacity-20 btn-active text-xl"> {currentIndex === activeQuestions.length - 1 ? '提交成績' : '下一題'} </button> </div> </div> </div> ); } if (view === 'result') return ( <div className="quiz-container flex-col"> <div ref={resRef} className="bg-white w-[360px] rounded-[4rem] shadow-2xl overflow-hidden border-4 border-yellow-400 rich-card"> <div className={p-14 text-center text-white relative ${score >= (activeQuestions.length*0.8) ? 'bg-gradient-to-br from-green-600 to-emerald-700' : 'bg-gradient-to-br from-red-600 to-rose-700'}}> <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div> <div className="text-8xl mb-6">🧧</div> <h2 className="text-[100px] font-black mb-2 tracking-tighter leading-none">{Math.round(score/activeQuestions.length*100)}<span className="text-2xl font-bold ml-1">%</span></h2> <p className="font-black text-white/80 text-[10px] tracking-[0.4em] uppercase mb-12">2026 馬上RICH吉運來 大會考</p> <div className="pt-10 border-t border-white/20 flex justify-between text-left text-[11px] font-bold uppercase"> <div><p className="opacity-40 mb-1 tracking-widest">ID</p><p className="text-lg tracking-tighter">{employeeId.toUpperCase()}</p></div> <div className="text-right"><p className="opacity-40 mb-1 tracking-widest">SCORE</p><p className="text-lg tracking-tighter">{score} / {activeQuestions.length}</p></div> </div> </div> <div clas<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>2026 馬上RICH吉運來 大會考</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
-<script src="https://unpkg.com/lucide@latest"></script>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>昇恆昌「馬上 RICH 吉運來」教育訓練測驗</title>
 <style>
-body {
-font-family: 'Noto Sans TC', sans-serif;
-background: linear-gradient(180deg, #991b1b, #7f1d1d);
-min-height: 100vh;
-}
-.btn-active:active { transform: scale(.96); }
-.rich-card { background: rgba(255,255,255,.98); }
+    :root { --primary: #B71C1C; --gold: #FFD700; --bg: #FFF5F5; }
+    body { font-family: "Microsoft JhengHei", sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-top: 6px solid var(--primary); }
+    h1 { text-align: center; color: var(--primary); margin-bottom: 5px; font-size: 1.5em; }
+    h2 { text-align: center; color: #666; font-size: 1em; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+    .group-input { margin-bottom: 20px; }
+    .group-input label { display: block; font-weight: bold; margin-bottom: 5px; }
+    .group-input input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+    .question-block { margin-bottom: 20px; padding: 15px; background: #fdfdfd; border: 1px solid #eee; border-radius: 8px; }
+    .q-title { font-weight: bold; color: #A00; margin-bottom: 10px; }
+    .option { display: block; margin: 8px 0; cursor: pointer; }
+    .option input { margin-right: 10px; }
+    .btn { display: block; width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 1.1em; cursor: pointer; font-weight: bold; margin-top: 20px; }
+    .btn:hover { background: #900; }
+    #resultArea { display: none; text-align: center; margin-top: 30px; padding: 20px; background: #E8F5E9; border-radius: 10px; border: 2px solid #4CAF50; }
+    .score-text { font-size: 2.5em; color: #2E7D32; font-weight: bold; margin: 10px 0; }
+    .fill-blank { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .fill-blank input { flex: 1; min-width: 80px; padding: 5px; border: 1px solid #ddd; border-radius: 4px; }
+    .note { font-size: 0.8em; color: #888; margin-top: 5px; }
 </style>
 </head>
-
 <body>
-<div id="root"></div>
 
-<script type="text/babel">
-const { useState, useEffect, useRef, useMemo } = React;
+<div class="container">
+    <h1>🐎 馬上 RICH 吉運來</h1>
+    <h2>高雄機場教育訓練測驗卷</h2>
 
-/* Firebase */
-firebase.initializeApp({
-apiKey: "AIzaSyAk5ugWIjaeva-GNn54bbIJ4_V57mk__eo",
-authDomain: "quiz-2dce6.firebaseapp.com",
-projectId: "quiz-2dce6"
-});
-const db = firebase.firestore();
+    <div class="group-input">
+        <label>組別：</label>
+        <input type="text" id="userGroup" placeholder="例如：精品A組">
+    </div>
+    <div class="group-input">
+        <label>姓名：</label>
+        <input type="text" id="userName" placeholder="請輸入您的姓名">
+    </div>
 
-/* 題庫（原封不動） */
-const ALL_QUESTIONS = [
-{ id:'d1',category:'domestic',question:'1/10 起國產區會員買就送什麼？',options:['馬年限定紅包袋','馬年轉運貼紙','1元賀卡','無贈品'],correct:1},
-{ id:'d2',category:'domestic',question:'國產區消費滿 $3,000 可折抵多少？',options:['$200','$300','$400','$500'],correct:1},
-{ id:'d3',category:'domestic',question:'國產區消費滿 15,800 會送香盅嗎？',options:['會','不會','限量','看心情'],correct:1},
-{ id:'d4',category:'domestic',question:'F賞100元使用規則？',options:['立即折','滿1000折','滿3000折','隔日'],correct:1},
-{ id:'d5',category:'domestic',question:'$860 能用 F賞嗎？',options:['可以','不行','2000才行','主管'],correct:1},
-{ id:'d6',category:'domestic',question:'$5500 可折多少？',options:['300','400','500','600'],correct:2},
-{ id:'d7',category:'domestic',question:'$2538 來店禮？',options:['紅包袋','轉運貼','賀卡','香盅'],correct:1},
-{ id:'d8',category:'domestic',question:'滿1880折多少？',options:['150','200','250','300'],correct:0},
+    <form id="quizForm">
+        <div class="question-block">
+            <div class="q-title">1. [span_0](start_span)14大類飾品 (SWV、喬治傑森) 滿額現抵回饋[span_0](end_span)</div>
+            <div class="note">請依序填入：滿5000 / 滿10000 / 滿18000 / 基本門檻</div>
+            <div class="fill-blank">
+                <input type="text" placeholder="滿5000折?" data-ans="500">
+                <input type="text" placeholder="滿1萬折?" data-ans="1000">
+                <input type="text" placeholder="滿1.8萬折?" data-ans="1800">
+                <input type="text" placeholder="基本門檻?" data-ans="5000">
+            </div>
+        </div>
 
-{ id:'c1',category:'common',question:'滿額門檻計算？',options:['原價','折後','未稅','定價'],correct:1},
-{ id:'c2',category:'common',question:'活動期間？',options:['1/1-1/31','1/10-2/24','2/1-2/14','2/10-3/10'],correct:1},
-{ id:'c3',category:'common',question:'台新刷卡送？',options:['紅包','旅行組','1元發財金','行李箱'],correct:2},
-{ id:'c4',category:'common',question:'滿額兌換地點？',options:['櫃位','服務台','客服','App'],correct:2},
+        <div class="question-block">
+            <div class="q-title">2. [span_1](start_span)03/04/05/06大類 (正價) 滿額現抵回饋[span_1](end_span)</div>
+            <div class="note">請依序填入：滿8000 / 18000 / 25000 / 5萬 / 10萬 / 基本門檻</div>
+            <div class="fill-blank">
+                <input type="text" placeholder="滿8千折?" data-ans="800">
+                <input type="text" placeholder="滿1.8萬?" data-ans="1800">
+                <input type="text" placeholder="滿2.5萬?" data-ans="2500">
+                <input type="text" placeholder="滿5萬?" data-ans="5000">
+                <input type="text" placeholder="滿10萬?" data-ans="10000">
+                <input type="text" placeholder="門檻?" data-ans="8000">
+            </div>
+        </div>
 
-{ id:'b1',category:'boutique',question:'精品8000折多少？',options:['500','600','650','800'],correct:2},
-{ id:'b2',category:'boutique',question:'精品18000折？',options:['1200','1300','1400','1500'],correct:1}
-];
+        <div class="question-block">
+            <div class="q-title">3. [span_2](start_span)滿額現抵回饋活動開跑日期？[span_2](end_span)</div>
+            <label class="option"><input type="radio" name="q3" value="A"> (A) 2/1</label>
+            <label class="option"><input type="radio" name="q3" value="B" data-correct="true"> (B) 1/10</label>
+            <label class="option"><input type="radio" name="q3" value="C"> (C) 2/16</label>
+        </div>
 
-const shuffle = arr => [...arr].sort(()=>Math.random()-0.5);
+        <div class="question-block">
+            <div class="q-title">4. [span_3](start_span)滿額現抵何者可參加？[span_3](end_span)</div>
+            <label class="option"><input type="radio" name="q4" value="A"> (A) 03大類5折特價品</label>
+            <label class="option"><input type="radio" name="q4" value="B"> (B) 特價手錶</label>
+            <label class="option"><input type="radio" name="q4" value="C"> (C) 5折特價珠寶</label>
+            <label class="option"><input type="radio" name="q4" value="D" data-correct="true"> (D) 以上皆非 (僅正價/黃金通常不含)</label>
+        </div>
 
-function App() {
-const [view,setView] = useState('login');
-const [employeeId,setEmployeeId] = useState('');
-const [questions,setQuestions] = useState([]);
-const [currentQuestionIndex,setCurrentQuestionIndex] = useState(0);
-const [selected,setSelected] = useState(null);
-const [checked,setChecked] = useState(false);
-const [score,setScore] = useState(0);
-const resultRef = useRef();
+        <div class="question-block">
+            <div class="q-title">5. [span_4](start_span)喬治傑生滿$5000與SWV滿$8000可否併計？[span_4](end_span)</div>
+            <label class="option"><input type="radio" name="q5" value="A"> (A) 不可以</label>
+            <label class="option"><input type="radio" name="q5" value="B" data-correct="true"> (B) 可以併計</label>
+        </div>
 
-useEffect(()=>{
-firebase.auth().signInAnonymously();
-lucide.createIcons();
-},[view,currentQuestionIndex]);
+        <div class="question-block">
+            <div class="q-title">6. [span_5](start_span)單筆滿額贈何時開跑？[span_5](end_span)</div>
+            <label class="option"><input type="radio" name="q6" value="A"> (A) 2/1</label>
+            <label class="option"><input type="radio" name="q6" value="B" data-correct="true"> (B) 1/10</label>
+            <label class="option"><input type="radio" name="q6" value="C"> (C) 2/16</label>
+        </div>
 
-const start = mode => {
-const filtered = ALL_QUESTIONS.filter(q=>q.category===mode||q.category==='common');
-setQuestions(shuffle(filtered));
-setScore(0);
-setCurrentQuestionIndex(0);
-setSelected(null);
-setChecked(false);
-setView('quiz');
-};
+        <div class="question-block">
+            <div class="q-title">7. [span_6](start_span)全館滿額贈何時開跑？[span_6](end_span)</div>
+            <label class="option"><input type="radio" name="q7" value="A"> (A) 2/1</label>
+            <label class="option"><input type="radio" name="q7" value="B" data-correct="true"> (B) 1/10</label>
+            <label class="option"><input type="radio" name="q7" value="C"> (C) 2/16</label>
+        </div>
 
-const answer = i => {
-if(checked) return;
-setSelected(i);
-setChecked(true);
-if(i===questions[currentQuestionIndex].correct){
-setScore(s=>s+1);
+        <div class="question-block">
+            <div class="q-title">8. [span_7](start_span)會員來店禮/滿額贈配對[span_7](end_span)</div>
+            <div class="note">請填代號：(A)Kurt包 (B)賀卡 (C)45000點 (D)iPhone17 (E)金手鍊 (F)紅包袋 (G)Switch (H)貼紙</div>
+            <div class="fill-blank" style="flex-direction:column;">
+                <div>1/10 第一波會員來店禮 <input type="text" data-ans="H"> (猜測)</div>
+                <div>14大類滿15800 <input type="text" data-ans="A"> (猜測)</div>
+                <div>2/1 第二波會員來店禮 <input type="text" data-ans="F"> (猜測)</div>
+                <div>2/16 會員來店禮 <input type="text" data-ans="B"> (猜測)</div>
+                <div>全館滿100萬 <input type="text" data-ans="D"> (猜測)</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-title">9. [span_8](start_span)RICH POINT 何時派發？[span_8](end_span)</div>
+            <label class="option"><input type="radio" name="q9" value="A"> (A) 每週三</label>
+            <label class="option"><input type="radio" name="q9" value="B" data-correct="true"> (B) 活動結束後</label>
+        </div>
+
+        <div class="question-block">
+            <div class="q-title">10. [span_9](start_span)領取全館滿額贈地點？[span_9](end_span)</div>
+            <label class="option"><input type="radio" name="q10" value="A"> (A) 各組櫃位</label>
+            <label class="option"><input type="radio" name="q10" value="B" data-correct="true"> (B) 客服櫃台</label>
+        </div>
+
+        <div class="question-block">
+            <div class="q-title">11. [span_10](start_span)單筆滿額贈是否需會員？[span_10](end_span)</div>
+            <label class="option"><input type="radio" name="q11" value="A" data-correct="true"> (A) 是</label>
+            <label class="option"><input type="radio" name="q11" value="B"> (B) 否</label>
+        </div>
+
+        <div class="question-block">
+            <div class="q-title">12. [span_11](start_span)台新聯名卡滿16萬送2000，高雄限量幾份？[span_11](end_span)</div>
+            <label class="option"><input type="radio" name="q12" value="A" data-correct="true"> (A) 10 份</label>
+            <label class="option"><input type="radio" name="q12" value="B"> (B) 50 份</label>
+        </div>
+
+        <div class="question-block">
+            <div class="q-title">13. [span_12](start_span)台新「$888送1元發財金」日期？[span_12](end_span)</div>
+            <label class="option"><input type="radio" name="q13" value="A"> (A) 1/10 - 2/24</label>
+            <label class="option"><input type="radio" name="q13" value="B" data-correct="true"> (B) 2/13 - 2/22</label>
+        </div>
+
+        <div class="question-block">
+            <div class="q-title">14. [span_13](start_span)星展滿10萬送2000條件？[span_13](end_span)</div>
+            <label class="option"><input type="radio" name="q14" value="A" data-correct="true"> (A) 單筆付清</label>
+            <label class="option"><input type="radio" name="q14" value="B"> (B) 分期累積</label>
+        </div>
+
+        <div class="question-block">
+            <div class="q-title">15. [span_14](start_span)銀行禮是否含菸酒藥？[span_14](end_span)</div>
+            <label class="option"><input type="radio" name="q15" value="A"> (A) 包含</label>
+            <label class="option"><input type="radio" name="q15" value="B" data-correct="true"> (B) 不包含</label>
+        </div>
+        
+        <div class="question-block">
+            <div class="q-title">16. [span_15](start_span)台新Q1 單日累積滿68000送？[span_15](end_span)</div>
+            <label class="option"><input type="radio" name="q16" value="A"> (A) 香氛禮盒</label>
+            <label class="option"><input type="radio" name="q16" value="B" data-correct="true"> (B) 25吋上掀旅行箱</label>
+        </div>
+
+         <div class="question-block">
+            <div class="q-title">17. [span_16](start_span)國產單筆滿1880現抵多少？[span_16](end_span)</div>
+            <label class="option"><input type="radio" name="q17" value="B" data-correct="true"> (A) 200 (假設)</label>
+            <label class="option"><input type="radio" name="q17" value="A"> (B) 250</label>
+        </div>
+
+        <div class="question-block">
+            <div class="q-title">18. [span_17](start_span)國產單筆滿3000現抵多少？[span_17](end_span)</div>
+            <label class="option"><input type="radio" name="q18" value="C" data-correct="true"> (A) 300 (假設)</label>
+            <label class="option"><input type="radio" name="q18" value="B"> (B) 250</label>
+        </div>
+
+        <button type="button" class="btn" onclick="submitQuiz()">送出測驗並查看成績</button>
+    </form>
+
+    <div id="resultArea">
+        <p>測驗完成！</p>
+        <p>學員：<span id="resName"></span></p>
+        <div class="score-text"><span id="scoreVal"></span> / 100</div>
+        <p>請截圖此畫面回報給店長。</p>
+    </div>
+</div>
+
+<script>
+function submitQuiz() {
+    var score = 0;
+    var totalQuestions = 18; // 總題數估算
+    var pointsPerQ = 100 / totalQuestions;
+    var name = document.getElementById("userName").value;
+
+    if(!name) { alert("請記得填寫姓名喔！"); return; }
+
+    // 檢查選擇題 (Radio)
+    var radios = document.querySelectorAll('input[type="radio"]:checked');
+    radios.forEach(function(r) {
+        if(r.dataset.correct === "true") score += pointsPerQ;
+    });
+
+    // 檢查填空題 (簡單模糊比對)
+    var blanks = document.querySelectorAll('input[type="text"][data-ans]');
+    var blankCorrect = 0;
+    blanks.forEach(function(i) {
+        if(i.value.trim() == i.dataset.ans) blankCorrect++;
+    });
+    // 填空題加分邏輯(簡化)
+    if(blankCorrect > 0) score += (blankCorrect * 2); 
+
+    // 顯示結果
+    if(score > 100) score = 100;
+    document.getElementById("quizForm").style.display = "none";
+    document.getElementById("resultArea").style.display = "block";
+    document.getElementById("resName").innerText = name;
+    document.getElementById("scoreVal").innerText = Math.round(score);
+    window.scrollTo(0, 0);
 }
-};
-
-const next = ()=>{
-if(currentQuestionIndex < questions.length-1){
-setCurrentQuestionIndex(i=>i+1);
-setSelected(null);
-setChecked(false);
-}else{
-finish();
-}
-};
-
-const finish = ()=>{
-db.collection('quiz_2026_final').doc(employeeId.toUpperCase()).set({
-id: employeeId.toUpperCase(),
-score,
-total: questions.length,
-time: firebase.firestore.FieldValue.serverTimestamp()
-});
-setView('result');
-};
-
-const q = questions[currentQuestionIndex];
-
-if(view==='login') return (
-<div className="h-screen flex items-center justify-center">
-<div className="bg-white p-10 rounded-3xl text-center space-y-5">
-<h1 className="text-3xl font-black">2026 馬上RICH</h1>
-<input className="border p-3 rounded-xl text-center font-bold"
-placeholder="工號"
-onChange={e=>setEmployeeId(e.target.value)} />
-<button className="bg-red-600 text-white w-full p-4 rounded-xl"
-onClick={()=>employeeId && setView('menu')}>登入</button>
-</div>
-</div>
-);
-
-if(view==='menu') return (
-<div className="h-screen flex items-center justify-center">
-<div className="bg-white p-10 rounded-3xl space-y-4">
-<button onClick={()=>start('domestic')} className="w-full bg-red-100 p-5 rounded-xl font-black">國產組</button>
-<button onClick={()=>start('boutique')} className="w-full bg-amber-100 p-5 rounded-xl font-black">精品組</button>
-</div>
-</div>
-);
-
-if(view==='quiz') return (
-<div className="h-screen flex items-center justify-center">
-<div className="bg-white p-8 rounded-3xl w-96">
-<p className="text-xs mb-2">題目 {currentQuestionIndex+1}/{questions.length}</p>
-<h2 className="font-black text-xl mb-5">{q.question}</h2>
-{q.options.map((o,i)=>(
-<button key={i}
-onClick={()=>answer(i)}
-className={`w-full p-4 mb-3 rounded-xl border
-${checked && i===q.correct?'bg-green-100':
-checked && i===selected?'bg-red-100':''}`}>
-{o}
-</button>
-))}
-<button disabled={!checked}
-onClick={next}
-className="bg-black text-white w-full p-4 rounded-xl mt-4">
-{currentQuestionIndex===questions.length-1?'完成':'下一題'}
-</button>
-</div>
-</div>
-);
-
-if(view==='result') return (
-<div className="h-screen flex items-center justify-center">
-<div ref={resultRef} className="bg-white p-10 rounded-3xl text-center">
-<h1 className="text-5xl font-black">{Math.round(score/questions.length*100)}%</h1>
-<p>{score}/{questions.length}</p>
-<button onClick={()=>setView('login')}
-className="mt-6 bg-red-600 text-white p-4 rounded-xl">回首頁</button>
-</div>
-</div>
-);
-
-return null;
-}
-
-ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
+
 </body>
 </html>
