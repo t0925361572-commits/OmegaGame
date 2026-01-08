@@ -118,38 +118,38 @@
         letter-spacing: 1px;
     }
 
-    /* === Cute Chubby Horse Animation (位置微調) === */
+    /* === Auspicious Horse Animation (祥瑞馬) === */
     .horse-container {
         position: absolute;
-        top: -50px; /* 貼近標題 */
+        top: -65px; /* 貼近標題 */
         left: 0;
         width: 100%;
-        height: 60px;
+        height: 80px;
         pointer-events: none;
         z-index: 5;
     }
     .cute-horse {
-        width: 65px; /* 稍微縮小更精緻 */
-        height: 52px;
+        width: 90px; /* 尺寸加大 */
+        height: 70px;
         position: absolute;
-        animation: run-cycle 5s linear infinite;
-        filter: drop-shadow(0 4px 2px rgba(0,0,0,0.15));
+        /* 輕盈的奔跑動畫 */
+        animation: run-cycle 6s linear infinite; 
+        filter: drop-shadow(0 5px 3px rgba(0,0,0,0.2));
         z-index: 5;
     }
 
-    /* 胖胖馬 SVG 樣式 */
-    .horse-body { fill: #d35400; } 
-    .horse-hair { fill: #f39c12; } 
-    .horse-hoof { fill: #5d4037; } 
-    .horse-saddle { fill: #c0392b; }
-    .horse-saddle-detail { fill: #f1c40f; }
+    /* 祥瑞馬 SVG 樣式 */
+    .horse-main { fill: #d35400; } /* 駿馬紅棕色 */
+    .horse-mane { fill: #f1c40f; } /* 金色鬃毛 */
+    .horse-saddle { fill: #c0392b; stroke: #f1c40f; stroke-width: 1.5; } /* 紅色金邊馬鞍 */
+    .horse-detail { fill: #fff; } /* 白色細節 */
 
     @keyframes run-cycle {
-        0% { left: 5%; transform: scaleX(-1) translateY(0) rotate(0deg); }
-        45% { left: 75%; transform: scaleX(-1) translateY(-6px) rotate(5deg); }
-        50% { left: 75%; transform: scaleX(1) translateY(0) rotate(0deg); }
-        95% { left: 5%; transform: scaleX(1) translateY(-6px) rotate(-5deg); }
-        100% { left: 5%; transform: scaleX(-1) translateY(0) rotate(0deg); }
+        0% { left: 0%; transform: scaleX(-1) translateY(0) rotate(-2deg); }
+        45% { left: 80%; transform: scaleX(-1) translateY(-10px) rotate(5deg); }
+        50% { left: 80%; transform: scaleX(1) translateY(0) rotate(0deg); }
+        95% { left: 0%; transform: scaleX(1) translateY(-10px) rotate(-5deg); }
+        100% { left: 0%; transform: scaleX(-1) translateY(0) rotate(-2deg); }
     }
 
     /* === Input & Cards (更緊湊精緻) === */
@@ -279,34 +279,35 @@
             <div class="title-wrapper">
                 <div class="horse-container">
                     <div class="cute-horse">
+                        <!-- 重新設計的祥瑞福氣馬 SVG -->
                         <svg viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
-                            <!-- 肥肥的身體 -->
-                            <ellipse cx="50" cy="50" rx="30" ry="22" class="horse-body" />
-                            <!-- 脖子 -->
-                            <path d="M65,40 Q75,15 85,20 L75,50" class="horse-body" stroke-width="0" />
-                            <!-- 頭 -->
-                            <circle cx="85" cy="22" r="14" class="horse-body" />
-                            <!-- 耳朵 -->
-                            <path d="M80,10 L82,2 L88,8" class="horse-body" />
-                            <path d="M90,10 L92,2 L98,8" class="horse-body" />
-                            <!-- 鬃毛 -->
-                            <path d="M78,15 Q70,30 65,25 Q60,30 70,45" class="horse-hair" stroke="none" />
-                            <circle cx="85" cy="12" r="5" class="horse-hair" />
-                            <!-- 尾巴 -->
-                            <path d="M20,45 Q10,40 15,30" class="horse-hair" stroke-width="4" stroke="#d35400" fill="none" stroke-linecap="round" />
-                            <!-- 腿 -->
-                            <rect x="35" y="65" width="6" height="12" rx="3" class="horse-body" />
-                            <rect x="55" y="65" width="6" height="12" rx="3" class="horse-body" />
-                            <rect x="35" y="75" width="6" height="3" class="horse-hoof" />
-                            <rect x="55" y="75" width="6" height="3" class="horse-hoof" />
-                            <!-- 眼睛 -->
-                            <circle cx="88" cy="20" r="2.5" fill="white" />
-                            <circle cx="89" cy="20" r="1" fill="black" />
-                            <!-- 腮紅 -->
-                            <circle cx="82" cy="25" r="2" fill="#ff9999" opacity="0.6" />
-                            <!-- 馬鞍 -->
-                            <path d="M40,40 Q50,35 60,40 L60,50 Q50,55 40,50 Z" class="horse-saddle" />
-                            <circle cx="50" cy="45" r="3" class="horse-saddle-detail" />
+                            <!-- 後腿 -->
+                            <path d="M20,60 Q15,70 18,75 L25,75 L25,60" class="horse-main" />
+                            <path d="M35,60 Q30,70 33,75 L40,75 L40,60" class="horse-main" />
+                            <!-- 前腿 -->
+                            <path d="M60,60 Q65,70 62,75 L55,75 L55,60" class="horse-main" />
+                            <path d="M75,60 Q80,70 77,75 L70,75 L70,60" class="horse-main" />
+                            
+                            <!-- 飄逸的尾巴 -->
+                            <path d="M10,40 Q0,30 5,20 Q15,25 20,40" class="horse-mane" />
+                            
+                            <!-- 圓潤的身體 -->
+                            <path d="M20,60 Q15,30 40,25 Q70,25 80,45 Q85,60 70,65 Q50,70 20,60" class="horse-main" />
+                            
+                            <!-- 脖子與頭 -->
+                            <path d="M70,30 Q80,10 90,15 Q95,20 85,35" class="horse-main" />
+                            <circle cx="85" cy="18" r="2" fill="white" /> <!-- 眼睛 -->
+                            
+                            <!-- 飄逸的鬃毛 -->
+                            <path d="M75,15 Q70,5 60,10 Q65,20 70,25" class="horse-mane" />
+                            <path d="M80,10 Q82,2 85,5" class="horse-mane" />
+                            
+                            <!-- 華麗馬鞍 -->
+                            <path d="M40,25 Q50,35 60,25 L60,35 Q50,45 40,35 Z" class="horse-saddle" />
+                            
+                            <!-- 雲紋裝飾 -->
+                            <circle cx="35" cy="45" r="3" fill="#f1c40f" opacity="0.6" />
+                            <circle cx="65" cy="45" r="2" fill="#f1c40f" opacity="0.6" />
                         </svg>
                     </div>
                 </div>
@@ -796,3 +797,5 @@
 
 </body>
 </html>
+```
+```eof
