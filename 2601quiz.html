@@ -320,7 +320,7 @@
 
 <div class="app-container">
     
-    <!-- 1. 登入畫面 (Login View) - 直接顯示，無需歡迎頁 -->
+    <!-- 1. 登入畫面 (Login View) - 直接顯示 -->
     <div id="loginView" style="display:flex; height: 100vh; flex-direction: column;">
         
         <!-- Header with Horse Animation -->
@@ -348,15 +348,15 @@
         <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
             <div class="card-panel">
                 <div style="margin-bottom:20px; color:#555; font-size:0.9em;">
-                    請輸入您的資料以開始測驗
+                    請輸入工號以開始測驗
                 </div>
                 <div class="input-group">
-                    <label>您的姓名</label>
-                    <input type="text" id="inputName" placeholder="請輸入真實姓名">
+                    <label>您的工號</label>
+                    <input type="text" id="inputId" placeholder="請輸入工號">
                 </div>
                 <div class="input-group">
-                    <label>部門 / 工號</label>
-                    <input type="text" id="inputDept" placeholder="例如：精品A組 / 12345">
+                    <label>所屬部門</label>
+                    <input type="text" id="inputDept" placeholder="例如：精品A組">
                 </div>
                 <button class="btn btn-start" onclick="performLogin()">確認登入</button>
             </div>
@@ -385,7 +385,7 @@
             </div>
 
             <button class="btn btn-boutique" onclick="startQuiz('boutique')">
-                <div style="font-size:1.2em;">� 精品重點測驗</div>
+                <div style="font-size:1.2em;">👜 精品重點測驗</div>
                 <div style="font-size:0.8em; opacity:0.8; font-weight:normal;">含 03.04.05.06 類</div>
             </button>
             
@@ -461,9 +461,9 @@
                 <thead>
                     <tr>
                         <th width="15%">#</th>
-                        <th width="30%">NAME</th>
-                        <th width="35%">DEPT</th>
-                        <th width="20%">SCORE</th>
+                        <th width="30%">工號</th>
+                        <th width="35%">部門</th>
+                        <th width="20%">分數</th>
                     </tr>
                 </thead>
                 <tbody id="leaderboardBody">
@@ -553,16 +553,18 @@
 
     // 1. 執行登入 (驗證並切換到選單)
     window.performLogin = function() {
-        const name = document.getElementById('inputName').value.trim();
+        // 使用工號與部門
+        const id = document.getElementById('inputId').value.trim();
         const dept = document.getElementById('inputDept').value.trim();
 
-        if (!name || !dept) {
-            alert("⚠️ 請先輸入「姓名」與「部門/工號」！");
+        if (!id || !dept) {
+            alert("⚠️ 請先輸入「工號」與「部門」！");
             return;
         }
-        userInfo = { name, dept };
+        // userInfo 的 name 欄位改存 ID，以便與後端/排行榜邏輯相容
+        userInfo = { name: id, dept: dept };
         
-        document.getElementById('welcomeText').innerText = `Hi, ${name}`;
+        document.getElementById('welcomeText').innerText = `Hi, ${id}`;
         document.getElementById('loginView').style.display = 'none';
         document.getElementById('menuView').style.display = 'flex';
     }
@@ -700,7 +702,7 @@
     window.copyResultText = function() {
         let finalScore = Math.round((score / currentQuestions.length) * 100);
         let typeText = (currentQuizType === 'boutique') ? "精品重點" : "國產/香化";
-        let text = `【${typeText}測驗結果】\n姓名：${userInfo.name}\n部門：${userInfo.dept}\n分數：${finalScore} 分\n日期：${new Date().toLocaleDateString()}`;
+        let text = `【${typeText}測驗結果】\n工號：${userInfo.name}\n部門：${userInfo.dept}\n分數：${finalScore} 分\n日期：${new Date().toLocaleDateString()}`;
         
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(() => {
@@ -807,3 +809,4 @@
 
 </body>
 </html>
+```
