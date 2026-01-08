@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>2026 馬上RICH吉運來 大會考</title>
     
-    <!-- 1. 核心資源載入 -->
+    <!-- 核心資源載入 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <!-- 2. Firebase 穩定版本 (Compat) -->
+    <!-- Firebase Compat 版本 -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -21,7 +21,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
         body { 
             font-family: 'Noto Sans TC', sans-serif; 
-            background: linear-gradient(180deg, #991b1b 0%, #7f1d1d 100%); /* 深紅背景 */
+            background: linear-gradient(180deg, #b91c1c 0%, #7f1d1d 100%); 
             margin: 0; 
             padding: 0;
             overscroll-behavior: none;
@@ -29,24 +29,22 @@
         }
         .btn-active:active { transform: scale(0.96); }
         .quiz-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
-        
-        /* 滾動條美化 */
+        .rich-card { background: rgba(255, 255, 255, 0.98); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); }
+        .gold-border { border: 2px solid #fbbf24; }
+        .rich-gradient { background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%); }
         .custom-scrollbar::-webkit-scrollbar { width: 5px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #f87171; border-radius: 10px; }
-        
-        .rich-gradient { background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%); }
-        .card-shadow { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
     </style>
 </head>
 <body>
     <div id="root">
-        <div class="flex items-center justify-center h-screen font-bold text-white opacity-50">系統載入中...</div>
+        <div class="flex items-center justify-center h-screen font-bold text-white opacity-50">載入中...</div>
     </div>
 
     <script type="text/babel">
         const { useState, useEffect, useRef, useMemo } = React;
 
-        // ✅ 使用您提供的新鑰匙 (quiz-2dce6)
+        // ✅ 使用您最新的專屬鑰匙 (quiz-2dce6)
         const firebaseConfig = {
             apiKey: "AIzaSyAk5ugWIjaeva-GNn54bbIJ4_V57mk__eo",
             authDomain: "quiz-2dce6.firebaseapp.com",
@@ -64,43 +62,29 @@
                 firebase.initializeApp(firebaseConfig);
             }
             db = firebase.firestore();
-        } catch (e) {
-            console.error("Firebase 初始化錯誤", e);
-        }
+        } catch (e) { console.error("Firebase Error", e); }
 
         const ALL_QUESTIONS = [
-            { id: 1, category: 'domestic', question: '國產滿額現抵活動：單筆滿 $1,880 可以現抵多少？', options: ['$150', '$200', '$250', '$300'], correct: 2 },
-            { id: 2, category: 'domestic', question: '國產滿額現抵活動：單筆滿 $3,000 可以現抵多少？', options: ['$250', '$300', '$350', '$400'], correct: 1 },
-            { id: 3, category: 'domestic', question: '國產單筆滿額 $3,000，每滿 $1,000 以此類推，換算回饋率約為幾 %？', options: ['8%', '10%', '12%', '15%'], correct: 1 },
-            { id: 4, category: 'domestic', question: '2/1 開跑活動，單筆滿 $1,000 可獲得什麼？', options: ['1元賀卡', '馬年紅包袋', '抽獎券乙張', '抵用券'], correct: 2 },
-            { id: 27, category: 'domestic', question: '若國產單筆消費滿 $5,000 (依每滿千推算)，可現抵回饋多少？', options: ['$400', '$500', '$600', '$450'], correct: 1 },
-            { id: 28, category: 'domestic', question: '若國產單筆消費滿 $8,000 (依每滿千推算)，可現抵回饋多少？', options: ['$700', '$800', '$750', '$900'], correct: 1 },
-            { id: 29, category: 'domestic', question: '國產滿額現抵的回饋計算方式是？', options: ['滿$3,000送$200', '每滿$1,000現抵10%', '滿$5,000送$600', '無累計'], correct: 1 },
-            { id: 13, category: 'boutique', question: '03/04/05/06 大類 (皮件/眼鏡/珠寶/錶) 基本門檻滿 $8,000 現抵多少？', options: ['$500', '$600', '$650', '$800'], correct: 2 },
-            { id: 31, category: 'boutique', question: '03/04/05/06 大類 (皮件/眼鏡/珠寶/錶) 滿 $18,000 現抵多少？', options: ['$1,200', '$1,300', '$1,400', '$1,500'], correct: 1 },
-            { id: 32, category: 'boutique', question: '03/04/05/06 大類 (皮件/眼鏡/珠寶/錶) 滿 $25,000 現抵多少？', options: ['$2,000', '$2,200', '$2,400', '$2,500'], correct: 2 },
-            { id: 33, category: 'boutique', question: '03/04/05/06 大類 (皮件/眼鏡/珠寶/錶) 滿 $50,000 現抵多少？', options: ['$4,000', '$4,500', '$4,800', '$5,000'], correct: 2 },
-            { id: 14, category: 'boutique', question: '03/04/05/06 大類 (皮件/眼鏡/珠寶/錶) 滿 $100,000 現抵多少？', options: ['$8,800', '$9,000', '$9,600', '$10,000'], correct: 2 },
-            { id: 16, category: 'boutique', question: '03/04/05/06 大類單筆滿 $32,800 贈送什麼？', options: ['掛繩包', '香盅禮盒', '行李箱', 'SWITCH 2'], correct: 0 },
-            { id: 17, category: 'boutique', question: '全館當日累計滿 $500,000 贈送什麼大獎？', options: ['純金紅繩手鏈', 'I-PHLOE 17 PRO', 'SWITCH 2 單機版', '東京來回機票'], correct: 2 },
-            { id: 18, category: 'boutique', question: '全館當日累計滿 $1,000,000 贈送什麼頂級好禮？', options: ['純金紅繩手鏈', 'I-PHLOE 17 PRO 256G', 'SWITCH 2', '重機乙台'], correct: 1 },
-            { id: 19, category: 'boutique', question: 'Rich Point 點數發放：全館當日累計滿 $150,000 送幾點？', options: ['15,000點', '30,000點', '45,000點', '50,000點'], correct: 2 },
-            { id: 5, category: 'common', question: '1/10 第一波會員來店禮是？', options: ['馬年紅包袋', '轉運貼紙', '1元賀卡', '香盅禮盒'], correct: 1 },
-            { id: 6, category: 'common', question: '2/1 第二波會員來店禮是？', options: ['馬年紅包袋', '轉運貼紙', '掛繩包', '純金紅繩手鏈'], correct: 0 },
-            { id: 34, category: 'common', question: '2/16 第三波會員來店禮是？', options: ['轉運貼紙', '1元賀卡', '馬年紅包袋', '掛繩包'], correct: 1 },
-            { id: 7, category: 'common', question: '關於銀行刷卡滿額禮，通常是否包含「菸酒藥類」的消費金額？', options: ['包含', '不包含', '視銀行而定', '僅包含酒類'], correct: 1 },
-            { id: 23, category: 'common', question: 'Rich Point 點數何時統一派發？', options: ['消費當下', '每週一', '每週三', '每月1號'], correct: 2 },
-            { id: 24, category: 'common', question: '全館滿額贈及點數兌換，統一於何處辦理？', options: ['各專櫃', '服務台', '客服櫃檯', '線上兌換'], correct: 2 },
-            { id: 25, category: 'boutique', question: '全館滿額贈是否包含「黃金及特價珠寶手錶」的消費？', options: ['不包含', '包含', '僅包含黃金', '僅包含手錶'], correct: 1 },
-            { id: 35, category: 'common', question: '全館當日累計滿 $300,000 贈送什麼？', options: ['SWITCH 2', '純金紅繩手鏈', '香盅禮盒', '掛繩包'], correct: 1 },
-            { id: 8, category: 'common', question: '台新銀行 2026 Q1 活動，單日累積滿 $22,000 現場贈送？', options: ['香氛禮盒', '阿原艾草旅行組乙組', '掛繩包', '25吋行李箱'], correct: 1 },
-            { id: 9, category: 'common', question: '台新銀行 2026 Q1 活動，單日累積滿 $68,000 贈送？', options: ['香氛禮盒', '25吋上掀旅行箱', 'SWITCH 2', '純金紅繩手鏈'], correct: 1 },
-            { id: 36, category: 'common', question: '台新銀行刷卡滿 $160,000 送的 $2,000 是什麼形式？', options: ['現金', '禮券', '刷卡金', '點數'], correct: 1 },
-            { id: 10, category: 'common', question: '台新銀行獨家「$888 送台新 1 元發財金」活動，限定日期區間為何？', options: ['1/10 - 2/24', '2/13 - 2/22', '2/1 - 2/15', '1/1 - 1/31'], correct: 1 },
-            { id: 20, category: 'common', question: '台新銀行昇恆昌聯名卡滿 $160,000 送 $2,000 禮券，「高雄機場」限量幾份？', options: ['10 份', '20 份', '50 份', '100 份'], correct: 0 },
-            { id: 21, category: 'common', question: '星展銀行滿 10 萬送 $2,000 刷卡金，需符合哪種付款條件？', options: ['單筆付清', '分期累積', '限制Apple Pay', '限制現金回饋卡'], correct: 1 },
-            { id: 22, category: 'common', question: '兆豐銀行滿 10 萬送 $900 刷卡金，需符合哪種付款條件？', options: ['單日累積分期', '單筆付清', '不限', '需登錄'], correct: 0 },
-            { id: 37, category: 'common', question: '哪一家銀行推出「$888 送 1 元發財金」活動？', options: ['星展銀行', '兆豐銀行', '台新銀行', '國泰世華'], correct: 2 }
+            { id: 1, category: 'domestic', question: '國產單筆滿 $1,880 現場現抵多少元？', options: ['$150', '$200', '$250', '$300'], correct: 0 },
+            { id: 2, category: 'domestic', question: '國產單筆滿 $3,000 現場現抵多少元？', options: ['$250', '$300', '$350', '$400'], correct: 1 },
+            { id: 3, category: 'domestic', question: '1/10 - 1/25 第一波會員來店禮送什麼？', options: ['馬上吉運貼紙', '馬上RICH紅包袋', '1元賀卡', '阿原旅行組'], correct: 0 },
+            { id: 4, category: 'domestic', question: '2/1 - 2/12 第二波會員來店禮送什麼？', options: ['馬上吉運貼紙', '馬上RICH紅包袋', '1元賀卡', '香盅禮盒'], correct: 1 },
+            { id: 5, category: 'domestic', question: '2/13 - 2/22 第三波會員來店禮送什麼？', options: ['馬上吉運貼紙', '馬上RICH紅包袋', '馬上發財 1元賀卡', '掛繩包'], correct: 2 },
+            { id: 6, category: 'domestic', question: '台新銀行單日累積滿 $22,000 贈送什麼？', options: ['香氛禮盒', '阿原艾草旅行組乙組', '掛繩包', '25吋行李箱'], correct: 1 },
+            { id: 7, category: 'domestic', question: '台新銀行單日累積滿 $68,000 贈送什麼？', options: ['香氛禮盒', '25吋上掀式行李箱', 'Switch 2', 'iPhone 17 Pro'], correct: 1 },
+            { id: 8, category: 'boutique', question: '精品類門檻滿 $8,000 現場現抵多少元？', options: ['$500', '$600', '$650', '$800'], correct: 2 },
+            { id: 9, category: 'boutique', question: '精品類門檻滿 $18,000 現場現抵多少元？', options: ['$1,200', '$1,300', '$1,400', '$1,500'], correct: 1 },
+            { id: 10, category: 'boutique', question: '精品類門檻滿 $100,000 現場現抵多少元？', options: ['$8,800', '$9,000', '$9,600', '$10,000'], correct: 2 },
+            { id: 11, category: 'boutique', question: '全館單日累計滿 $500,000 贈送大獎是什麼？', options: ['純金紅繩手鏈', 'Switch 2 單機版', 'iPhone 17 Pro', '東京來回機票'], correct: 1 },
+            { id: 12, category: 'boutique', question: '全館單日累計滿 $1,000,000 贈送頂級好禮是什麼？', options: ['純金紅繩手鏈', 'iPhone 17 Pro 256G', 'Switch 2', '電動機車乙台'], correct: 1 },
+            { id: 13, category: 'boutique', question: '全館單日累計滿 $300,000 贈送什麼？', options: ['Switch 2', '純金紅繩手鏈', '香盅禮盒', '掛繩包'], correct: 1 },
+            { id: 14, category: 'common', question: '台新聯名卡單日滿 $160,000 贈送多少禮券？', options: ['$1,000', '$1,500', '$2,000', '$3,000'], correct: 2 },
+            { id: 15, category: 'common', question: 'Rich Point 點數發放，單日累計滿 $150,000 送幾點？', options: ['15,000點', '30,000點', '45,000點', '50,000點'], correct: 2 },
+            { id: 16, category: 'common', question: '關於銀行刷卡禮，通常是否包含「菸酒藥類」消費？', options: ['包含', '不包含', '視分店而定', '僅包含酒類'], correct: 1 },
+            { id: 17, category: 'common', question: '哪家銀行刷滿 $888 送「台新 1 元發財金」？', options: ['星展銀行', '兆豐銀行', '台新銀行', '國泰世華'], correct: 2 },
+            { id: 18, category: 'common', question: '星展銀行分期滿 10 萬贈送多少刷卡金？', options: ['$1,000', '$1,500', '$2,000', '$2,500'], correct: 2 },
+            { id: 19, category: 'boutique', question: '03/04/05/06 大類單筆滿 $32,800 贈送什麼？', options: ['掛繩包', '香盅禮盒', '行李箱', 'Switch 2'], correct: 0 },
+            { id: 20, category: 'common', question: '全館滿額贈與點數兌換統一在哪裡辦理？', options: ['各專櫃', '服務台', '客服櫃檯', '線上App'], correct: 2 }
         ];
 
         const App = () => {
@@ -113,26 +97,21 @@
             const [selectedIdx, setSelectedIdx] = useState(null);
             const [isChecked, setIsChecked] = useState(false);
             const [leaderboard, setLeaderboard] = useState([]);
-            const [diag, setDiag] = useState({ light: '⚪', msg: '正在嘗試連線...' });
+            const [dbStatus, setDbStatus] = useState('🟡 連線中...');
             const resRef = useRef();
 
-            // 🟢 資料庫連線檢測與排行榜監聽
             useEffect(() => {
                 if (db) {
                     firebase.auth().signInAnonymously().then(() => {
-                        setDiag({ light: '🟢', msg: '雲端連線成功' });
+                        setDbStatus('🟢 雲端連線成功');
                         db.collection('exam_final_records').onSnapshot(snap => {
                             setLeaderboard(snap.docs.map(doc => doc.data()));
-                        }, err => {
-                            setDiag({ light: '🔴', msg: '讀取失敗 (檢查 Rules)' });
-                        });
-                    }).catch(err => {
-                        setDiag({ light: '🔴', msg: '登入失敗 (檢查 Auth)' });
-                    });
+                        }, err => setDbStatus('🔴 讀取失敗'));
+                    }).catch(err => setDbStatus('🔴 登入失敗'));
                 }
             }, []);
 
-            const handleStart = (mode) => {
+            const handleModeSelect = (mode) => {
                 const filtered = mode === 'domestic' 
                     ? ALL_QUESTIONS.filter(q => q.category === 'domestic' || q.category === 'common')
                     : ALL_QUESTIONS.filter(q => q.category === 'boutique' || q.category === 'common');
@@ -151,7 +130,7 @@
                             mode: currentMode,
                             time: firebase.firestore.FieldValue.serverTimestamp()
                         });
-                    } catch (e) { console.error("Save failed", e); }
+                    } catch (e) { console.error(e); }
                 }
             };
 
@@ -164,51 +143,44 @@
                 return Array.from(map.values()).sort((a,b) => b.score - a.score);
             }, [leaderboard]);
 
-            // --- 介面呈現 ---
+            // --- UI 渲染 ---
 
             if (view === 'login') return (
                 <div className="quiz-container flex-col">
-                    <div className="bg-white w-full max-w-sm rounded-[3rem] shadow-2xl card-shadow overflow-hidden">
+                    <div className="bg-white w-full max-w-sm rounded-[3.5rem] shadow-2xl overflow-hidden rich-card">
                         <div className="rich-gradient p-12 text-center text-white relative">
-                            <div className="text-7xl mb-6 drop-shadow-lg">🐎</div>
-                            <h1 className="text-3xl font-black leading-tight tracking-tight">
-                                2026 馬上RICH吉運來<br/>
-                                <span className="text-4xl mt-2 block">大會考</span>
+                            <div className="text-7xl mb-6 drop-shadow-xl animate-bounce">🐎</div>
+                            <h1 className="text-4xl font-black leading-tight tracking-tighter">
+                                2026 馬上RICH<br/>吉運來
+                                <span className="text-5xl mt-3 block text-yellow-300">大會考</span>
                             </h1>
-                            <div className="mt-6 w-12 h-1 bg-white/30 mx-auto rounded-full"></div>
                         </div>
-                        <div className="p-10 space-y-6">
-                            <div className="space-y-2">
-                                <label className="text-xs font-black text-gray-400 ml-1 uppercase tracking-widest">Employee ID / Name</label>
-                                <input type="text" placeholder="請輸入工號或姓名" className="w-full p-5 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none focus:border-red-500 focus:bg-white font-bold uppercase transition-all shadow-inner" onChange={e => setEmployeeId(e.target.value)} />
-                            </div>
-                            <button onClick={() => employeeId.trim() && setView('menu')} className="w-full bg-red-600 text-white py-5 rounded-2xl font-black shadow-xl shadow-red-200 btn-active text-xl">開始測驗</button>
+                        <div className="p-10 space-y-5">
+                            <input type="text" placeholder="輸入工號或姓名登入" className="w-full p-5 bg-gray-50 border-2 border-gray-100 rounded-[1.5rem] outline-none focus:border-red-600 focus:bg-white font-bold text-center uppercase transition-all shadow-inner" onChange={e => setEmployeeId(e.target.value)} />
+                            <button onClick={() => employeeId.trim() && setView('menu')} className="w-full bg-red-600 text-white py-5 rounded-[1.5rem] font-black shadow-xl btn-active text-xl">開始登入</button>
+                            <button onClick={() => setView('leaderboard')} className="w-full bg-slate-800 text-white py-4 rounded-[1.5rem] font-bold shadow-lg btn-active text-base flex items-center justify-center">
+                                <span className="mr-2">📊</span> 查看即時排行榜
+                            </button>
                         </div>
                     </div>
-                    <div className="mt-8 text-[11px] font-bold text-white/50 flex items-center bg-black/20 px-4 py-2 rounded-full backdrop-blur-sm">
-                        <span className="mr-2">{diag.light}</span> {diag.msg}
-                    </div>
+                    <div className="mt-8 text-[10px] font-bold text-white/40 tracking-widest">{dbStatus}</div>
                 </div>
             );
 
             if (view === 'menu') return (
                 <div className="quiz-container">
-                    <div className="bg-white w-full max-w-md rounded-[3rem] shadow-2xl p-10 border text-center card-shadow">
-                        <p className="text-xs font-black text-red-500 uppercase tracking-[0.3em] mb-2">Welcome</p>
-                        <h2 className="text-3xl font-black mb-10 text-gray-800 tracking-tight">{employeeId.toUpperCase()}</h2>
+                    <div className="bg-white w-full max-w-md rounded-[3rem] shadow-2xl p-10 text-center rich-card">
+                        <h2 className="text-3xl font-black mb-10 text-gray-800 tracking-tight">你好, {employeeId.toUpperCase()}</h2>
                         <div className="space-y-4">
-                            <button onClick={() => handleStart('domestic')} className="w-full flex items-center p-6 bg-red-50 rounded-[2rem] border-2 border-transparent hover:border-red-500 btn-active transition-all group">
+                            <button onClick={() => handleModeSelect('domestic')} className="w-full flex items-center p-6 bg-red-50 rounded-[2rem] border-2 border-transparent hover:border-red-600 btn-active text-left transition-all group">
                                 <span className="text-5xl mr-5 group-hover:scale-110 transition-transform">🧧</span>
-                                <div className="text-left"><p className="font-black text-xl text-red-900 leading-none mb-2">國產 / 一般組</p><p className="text-xs text-red-400 font-bold opacity-70">食品、來店禮、銀行回饋</p></div>
+                                <div><p className="font-black text-2xl text-red-900 leading-none mb-2">國產 / 一般組</p><p className="text-xs text-red-400 font-bold opacity-70">食品、來店禮、銀行禮</p></div>
                             </button>
-                            <button onClick={() => handleStart('boutique')} className="w-full flex items-center p-6 bg-amber-50 rounded-[2rem] border-2 border-transparent hover:border-amber-500 btn-active transition-all group">
+                            <button onClick={() => handleModeSelect('boutique')} className="w-full flex items-center p-6 bg-amber-50 rounded-[2rem] border-2 border-transparent hover:border-amber-600 btn-active text-left transition-all group">
                                 <span className="text-5xl mr-5 group-hover:scale-110 transition-transform">💎</span>
-                                <div className="text-left"><p className="font-black text-xl text-amber-900 leading-none mb-2">精品 / 珠寶組</p><p className="text-xs text-amber-400 font-bold opacity-70">精品大類、高單價門檻</p></div>
+                                <div><p className="font-black text-2xl text-amber-900 leading-none mb-2">精品 / 珠寶組</p><p className="text-xs text-amber-400 font-bold opacity-70">各大品牌現抵門檻</p></div>
                             </button>
-                            <button onClick={() => setView('leaderboard')} className="w-full flex items-center p-6 bg-slate-50 rounded-[2rem] border-2 border-transparent hover:border-slate-400 btn-active transition-all group">
-                                <span className="text-5xl mr-5 group-hover:scale-110 transition-transform">📊</span>
-                                <div className="text-left"><p className="font-black text-xl text-slate-700 leading-none mb-2">全體成績排行</p><p className="text-xs text-slate-400 font-bold opacity-70">即時同步全體戰績</p></div>
-                            </button>
+                            <button onClick={() => setView('login')} className="w-full py-4 text-gray-400 font-bold">返回登入頁</button>
                         </div>
                     </div>
                 </div>
@@ -218,9 +190,9 @@
                 const q = activeQuestions[currentIndex];
                 return (
                     <div className="min-h-screen flex items-center justify-center p-4">
-                        <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col border card-shadow" style={{minHeight:'580px'}}>
-                            <div className="px-8 py-6 bg-gray-50 flex justify-between font-black text-[11px] tracking-widest border-b uppercase text-gray-400">
-                                <span className="text-red-500">測驗中 {currentIndex + 1} / 20</span>
+                        <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col rich-card" style={{minHeight:'600px'}}>
+                            <div className="px-8 py-5 bg-gray-50 flex justify-between font-black text-[11px] border-b text-gray-400 uppercase tracking-widest">
+                                <span className="text-red-600">進度 {currentIndex + 1} / 20</span>
                                 <span>考生: {employeeId}</span>
                             </div>
                             <div className="p-10 flex-grow">
@@ -232,16 +204,16 @@
                                             if (i === q.correct) style += "border-green-500 bg-green-50 text-green-700 shadow-md scale-[1.02]";
                                             else if (i === selectedIdx) style += "border-red-500 bg-red-50 text-red-700 opacity-60";
                                             else style += "opacity-30 border-gray-100";
-                                        } else style += "border-gray-100 hover:border-red-200 active:bg-gray-50 shadow-sm";
+                                        } else style += "border-gray-100 hover:border-red-600 active:bg-red-50";
                                         return (
                                             <button key={i} onClick={() => !isChecked && (setSelectedIdx(i), setIsChecked(true), i === q.correct && setScore(score + 1))} className={style}>{opt}</button>
                                         );
                                     })}
                                 </div>
                             </div>
-                            <div className="p-8 bg-gray-50 border-t">
-                                <button onClick={() => currentIndex < 19 ? (setCurrentIndex(currentIndex + 1), setSelectedIdx(null), setIsChecked(false)) : submitResult()} disabled={!isChecked} className="w-full bg-gray-900 text-white py-5 rounded-2xl font-black disabled:opacity-20 btn-active shadow-xl transition-all text-xl">
-                                    {currentIndex === 19 ? '提交本次成績' : '確認下一題'}
+                            <div className="p-8 bg-gray-50 border-t flex justify-center">
+                                <button onClick={() => currentIndex < 19 ? (setCurrentIndex(currentIndex + 1), setSelectedIdx(null), setIsChecked(false)) : submitResult()} disabled={!isChecked} className="w-full bg-gray-900 text-white py-5 rounded-[1.5rem] font-black disabled:opacity-20 btn-active text-xl">
+                                    {currentIndex === 19 ? '提交本次成績' : '下一題'}
                                 </button>
                             </div>
                         </div>
@@ -251,53 +223,50 @@
 
             if (view === 'result') return (
                 <div className="quiz-container flex-col">
-                    <div ref={resRef} className="bg-white w-full max-w-sm rounded-[4rem] shadow-2xl overflow-hidden mb-10 border-4 border-white card-shadow">
+                    <div ref={resRef} className="bg-white w-[360px] rounded-[4rem] shadow-2xl overflow-hidden border-4 border-yellow-400 card-shadow">
                         <div className={`p-14 text-center text-white relative ${score >= 16 ? 'bg-gradient-to-br from-green-500 to-emerald-700' : 'bg-gradient-to-br from-red-600 to-rose-700'}`}>
                             <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-                            <div className="text-8xl mb-8 drop-shadow-xl">🏅</div>
-                            <h2 className="text-8xl font-black mb-4 tracking-tighter">{score*5}<span className="text-2xl font-bold ml-1">%</span></h2>
-                            <p className="font-black text-white/80 text-[11px] tracking-[0.3em] uppercase mb-10">2026 馬上RICH吉運來 大會考</p>
+                            <div className="text-8xl mb-6">🧧</div>
+                            <h2 className="text-[100px] font-black mb-2 tracking-tighter leading-none">{score*5}<span className="text-3xl font-bold ml-1">%</span></h2>
+                            <p className="font-black text-white/80 text-[10px] tracking-[0.4em] uppercase mb-12">2026 馬上RICH吉運來 大會考</p>
                             <div className="pt-10 border-t border-white/20 flex justify-between text-left text-[11px] font-bold uppercase">
-                                <div><p className="opacity-50 mb-1">UserID</p><p className="text-lg">{employeeId.toUpperCase()}</p></div>
-                                <div className="text-right"><p className="opacity-50 mb-1">Score</p><p className="text-lg">{score} / 20</p></div>
+                                <div><p className="opacity-40 mb-1 tracking-widest">考生工號</p><p className="text-lg tracking-tighter">{employeeId.toUpperCase()}</p></div>
+                                <div className="text-right"><p className="opacity-40 mb-1 tracking-widest">答對題數</p><p className="text-lg tracking-tighter">{score} / 20</p></div>
                             </div>
                         </div>
+                        <div className="bg-yellow-400 py-3 text-center text-red-900 font-black text-xs tracking-widest">
+                            恭 喜 您 完 成 測 驗 ‧ 祝 您 馬 上 R I C H
+                        </div>
                     </div>
-                    <div className="w-full max-w-sm space-y-4">
-                        <button onClick={() => html2canvas(resRef.current, {scale:3}).then(c => { const l=document.createElement('a'); l.download='馬上RICH會考成績.png'; l.href=c.toDataURL(); l.click(); })} className="w-full bg-blue-600 text-white py-5 rounded-[2rem] font-black text-lg shadow-xl shadow-blue-900/20 btn-active flex items-center justify-center">📥 下載成績證明截圖</button>
-                        <button onClick={() => location.reload()} className="w-full bg-white/10 text-white py-5 rounded-[2rem] font-black text-lg border-2 border-white/20 backdrop-blur-md btn-active">返回首頁重新測驗</button>
+                    <div className="w-full max-w-sm space-y-4 mt-10">
+                        <button onClick={() => html2canvas(resRef.current, {scale:3}).then(c => { const l=document.createElement('a'); l.download='成績證明.png'; l.href=c.toDataURL(); l.click(); })} className="w-full bg-blue-600 text-white py-5 rounded-[2rem] font-black text-lg shadow-xl btn-active flex items-center justify-center italic tracking-wider">📥 立即下載成績證明截圖</button>
+                        <button onClick={() => location.reload()} className="w-full bg-white/10 text-white py-5 rounded-[2rem] font-black text-lg border-2 border-white/20 backdrop-blur-sm btn-active">返回首頁</button>
                     </div>
                 </div>
             );
 
             if (view === 'leaderboard') return (
-                <div className="min-h-screen flex items-center justify-center p-4">
-                    <div className="bg-white w-full max-w-md rounded-[3rem] shadow-2xl h-[85vh] flex flex-col overflow-hidden border card-shadow">
+                <div className="quiz-container">
+                    <div className="bg-white w-full max-w-md rounded-[3rem] shadow-2xl h-[85vh] flex flex-col overflow-hidden border rich-card">
                         <div className="p-10 bg-slate-900 text-white text-center relative">
-                            <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
                             <h2 className="font-black text-3xl tracking-tight mb-2">LEADERBOARD</h2>
-                            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.4em]">即時成績排行</p>
+                            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.4em]">全體即時排行</p>
                         </div>
                         <div className="flex-grow overflow-y-auto p-8 space-y-4 custom-scrollbar bg-slate-50">
-                            {rankList.length === 0 ? <p className="text-center text-slate-400 mt-10 font-bold">資料同步中，請稍候...</p> : rankList.map((item, idx) => (
+                            {rankList.length === 0 ? <p className="text-center text-slate-400 mt-10 font-bold">同步中...</p> : rankList.map((item, idx) => (
                                 <div key={idx} className={`flex justify-between items-center p-6 bg-white rounded-[2rem] border border-slate-100 shadow-sm transition-all ${item.id.toUpperCase() === employeeId.toUpperCase() ? 'ring-4 ring-red-500/20 bg-red-50/30' : ''}`}>
                                     <div className="flex items-center">
                                         <div className={`w-12 h-12 flex items-center justify-center rounded-2xl text-lg font-black mr-5 shadow-sm ${idx === 0 ? 'bg-yellow-400 text-white shadow-yellow-200' : idx === 1 ? 'bg-slate-300 text-white shadow-slate-200' : idx === 2 ? 'bg-orange-300 text-white shadow-orange-200' : 'bg-slate-100 text-slate-400'}`}>
                                             {idx + 1}
                                         </div>
-                                        <div>
-                                            <p className="font-black text-slate-800 text-lg tracking-tight leading-none mb-1">{item.id}</p>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{item.mode === 'domestic' ? '國產' : '精品'}組</p>
-                                        </div>
+                                        <div><p className="font-black text-slate-800 text-xl tracking-tight leading-none mb-1">{item.id}</p><p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{item.mode === 'domestic' ? '國產' : '精品'}組</p></div>
                                     </div>
-                                    <div className="text-right">
-                                        <p className="text-red-600 font-black text-2xl leading-none">{item.score}<span className="text-xs ml-1 opacity-50 font-bold uppercase">PTS</span></p>
-                                    </div>
+                                    <div className="text-right"><p className="text-red-600 font-black text-2xl leading-none">{item.score}<span className="text-xs ml-1 opacity-50 font-bold uppercase">題</span></p></div>
                                 </div>
                             ))}
                         </div>
                         <div className="p-8 border-t bg-white">
-                            <button onClick={() => setView('menu')} className="w-full py-5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-[2rem] font-black transition-all btn-active text-lg shadow-sm">返回系統選單</button>
+                            <button onClick={() => setView('login')} className="w-full py-5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-[2rem] font-black transition-all btn-active text-lg shadow-sm">返回登入系統</button>
                         </div>
                     </div>
                 </div>
