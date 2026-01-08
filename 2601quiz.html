@@ -60,7 +60,7 @@
     /* === Header & Title === */
     .header {
         text-align: center;
-        padding: 60px 20px 20px; /* 增加上方留白給馬跑 */
+        padding: 70px 20px 20px; /* 增加上方留白給馬跑 */
         background: linear-gradient(180deg, #fff 0%, #fff0f0 100%);
         border-bottom: 2px solid #ffebeb;
         position: relative;
@@ -75,7 +75,7 @@
         font-weight: bold;
         font-size: 0.85em;
         letter-spacing: 2px;
-        margin-bottom: 25px; /* 增加間距 */
+        margin-bottom: 30px; /* 增加間距 */
         border: 1px solid var(--gold);
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
@@ -129,30 +129,41 @@
         letter-spacing: 1px;
     }
 
-    /* === Cute Horse Animation === */
+    /* === Cute Chubby Horse Animation === */
     .horse-container {
         position: absolute;
-        top: -45px; /* 站在標題上面 */
+        top: -55px; /* 站在標題上面 */
         left: 0;
         width: 100%;
-        height: 50px;
+        height: 60px;
         pointer-events: none;
         z-index: 3;
     }
     .cute-horse {
-        font-size: 42px;
+        width: 70px;  /* 變大變肥 */
+        height: 55px;
         position: absolute;
         /* 馬的跑步動畫：左右來回 + 上下跳動 */
         animation: run-cycle 6s linear infinite;
-        filter: drop-shadow(0 4px 2px rgba(0,0,0,0.2));
+        filter: drop-shadow(0 4px 2px rgba(0,0,0,0.1));
     }
 
+    /* 胖胖馬的 SVG 樣式 */
+    .horse-svg path {
+        fill: #d35400; /* 馬身顏色 */
+        stroke: #873900;
+        stroke-width: 1;
+    }
+    .horse-eye { fill: #fff; }
+    .horse-pupil { fill: #000; }
+    .horse-hair { fill: #f39c12; }
+
     @keyframes run-cycle {
-        0% { left: 0%; transform: scaleX(-1) translateY(0); } /* 面向右跑 */
-        45% { left: 85%; transform: scaleX(-1) translateY(-5px); } /* 跑到右邊 */
-        50% { left: 85%; transform: scaleX(1) translateY(0); } /* 轉向左 */
-        95% { left: 0%; transform: scaleX(1) translateY(-5px); } /* 跑到左邊 */
-        100% { left: 0%; transform: scaleX(-1) translateY(0); } /* 轉向右 */
+        0% { left: 5%; transform: scaleX(-1) translateY(0); } /* 面向右跑 */
+        45% { left: 80%; transform: scaleX(-1) translateY(-6px); } /* 跑到右邊 */
+        50% { left: 80%; transform: scaleX(1) translateY(0); } /* 轉向左 */
+        95% { left: 5%; transform: scaleX(1) translateY(-6px); } /* 跑到左邊 */
+        100% { left: 5%; transform: scaleX(-1) translateY(0); } /* 轉向右 */
     }
 
     /* === Input & Cards === */
@@ -329,9 +340,35 @@
             <br>
             
             <div class="title-wrapper">
-                <!-- 一匹可愛的馬，在標題上跑 -->
+                <!-- 一匹精緻可愛的小胖馬 -->
                 <div class="horse-container">
-                    <div class="cute-horse">🐎</div>
+                    <div class="cute-horse">
+                        <svg class="horse-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 尾巴 -->
+                            <path d="M10,50 Q5,40 15,35 Q20,30 25,45" class="horse-hair" stroke="none" />
+                            <!-- 後腿 -->
+                            <path d="M25,70 L25,85 A3,3 0 0,0 28,88 L32,85 L32,70" />
+                            <path d="M35,70 L35,85 A3,3 0 0,0 38,88 L42,85 L42,70" />
+                            <!-- 前腿 -->
+                            <path d="M65,70 L65,85 A3,3 0 0,0 68,88 L72,85 L72,70" />
+                            <path d="M75,70 L75,85 A3,3 0 0,0 78,88 L82,85 L82,70" />
+                            <!-- 身體 (圓滾滾) -->
+                            <ellipse cx="50" cy="60" rx="35" ry="25" />
+                            <!-- 脖子 -->
+                            <path d="M70,50 Q80,20 90,30 L80,60" stroke="none" />
+                            <!-- 頭 -->
+                            <ellipse cx="85" cy="30" rx="12" ry="15" transform="rotate(-10, 85, 30)" />
+                            <!-- 耳朵 -->
+                            <path d="M80,18 L82,10 L88,16" class="horse-hair" stroke="none" />
+                            <!-- 鬃毛 -->
+                            <path d="M75,25 Q70,40 65,30 Q60,35 70,50" class="horse-hair" stroke="none" />
+                            <!-- 眼睛 -->
+                            <circle cx="88" cy="28" r="3" class="horse-eye" />
+                            <circle cx="89" cy="28" r="1" class="horse-pupil" />
+                            <!-- 鼻子 -->
+                            <circle cx="92" cy="35" r="1" fill="#5a2d0c" />
+                        </svg>
+                    </div>
                 </div>
 
                 <div class="title-box">
@@ -347,17 +384,15 @@
         <!-- Login Form -->
         <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
             <div class="card-panel">
-                <div style="margin-bottom:20px; color:#555; font-size:0.9em;">
+                <div style="margin-bottom:20px; color:#555; font-size:0.95em; font-weight:bold;">
                     請輸入工號以開始測驗
                 </div>
                 <div class="input-group">
                     <label>您的工號</label>
-                    <input type="text" id="inputId" placeholder="請輸入工號">
+                    <input type="text" id="inputId" placeholder="請輸入工號 (必填)">
                 </div>
-                <div class="input-group">
-                    <label>所屬部門</label>
-                    <input type="text" id="inputDept" placeholder="例如：精品A組">
-                </div>
+                <!-- 部門欄位已移除 -->
+                
                 <button class="btn btn-start" onclick="performLogin()">確認登入</button>
             </div>
             
@@ -460,14 +495,13 @@
             <table class="leaderboard-table">
                 <thead>
                     <tr>
-                        <th width="15%">#</th>
-                        <th width="30%">工號</th>
-                        <th width="35%">部門</th>
-                        <th width="20%">分數</th>
+                        <th width="20%">#</th>
+                        <th width="50%">工號</th>
+                        <th width="30%">分數</th>
                     </tr>
                 </thead>
                 <tbody id="leaderboardBody">
-                    <tr><td colspan="4" style="text-align:center; padding:30px; color:#aaa;">資料讀取中...</td></tr>
+                    <tr><td colspan="3" style="text-align:center; padding:30px; color:#aaa;">資料讀取中...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -499,7 +533,7 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
     
-    // 自動登入 Firebase (解決權限問題)
+    // 自動登入 Firebase
     signInAnonymously(auth).then(() => {
         console.log("Firebase Anonymous Auth Successful");
     }).catch((error) => {
@@ -562,18 +596,17 @@
 
     // 1. 執行登入 (驗證並切換到選單)
     window.performLogin = function() {
-        // 使用工號與部門
+        // 使用工號
         const id = document.getElementById('inputId').value.trim();
-        const dept = document.getElementById('inputDept').value.trim();
 
-        if (!id || !dept) {
-            alert("⚠️ 請先輸入「工號」與「部門」！");
+        if (!id) {
+            alert("⚠️ 請先輸入「工號」！");
             return;
         }
-        // userInfo 的 name 欄位改存 ID，以便與後端/排行榜邏輯相容
-        userInfo = { name: id, dept: dept };
+        // userInfo 只存工號，dept 預設為空
+        userInfo = { name: id, dept: "" };
         
-        document.getElementById('welcomeText').innerText = `Hi, ${id}`;
+        document.getElementById('welcomeText').innerText = `Hi, 工號 ${id}`;
         document.getElementById('loginView').style.display = 'none';
         document.getElementById('menuView').style.display = 'flex';
     }
@@ -683,9 +716,9 @@
         let finalScore = Math.round((score / currentQuestions.length) * 100);
         document.getElementById('finalScore').innerText = finalScore;
         let typeName = (currentQuizType === 'boutique') ? "(精)" : "(國)";
-        document.getElementById('displayUserInfo').innerText = `${userInfo.name} / ${userInfo.dept} ${typeName}`;
+        document.getElementById('displayUserInfo').innerText = `工號：${userInfo.name} ${typeName}`;
 
-        window.saveToLeaderboard(userInfo.name, userInfo.dept + " " + typeName, finalScore);
+        window.saveToLeaderboard(userInfo.name, "", finalScore); // 傳入空部門
 
         let reviewHtml = "";
         userAnswers.forEach((ans, idx) => {
@@ -711,7 +744,7 @@
     window.copyResultText = function() {
         let finalScore = Math.round((score / currentQuestions.length) * 100);
         let typeText = (currentQuizType === 'boutique') ? "精品重點" : "國產/香化";
-        let text = `【${typeText}測驗結果】\n工號：${userInfo.name}\n部門：${userInfo.dept}\n分數：${finalScore} 分\n日期：${new Date().toLocaleDateString()}`;
+        let text = `【${typeText}測驗結果】\n工號：${userInfo.name}\n分數：${finalScore} 分\n日期：${new Date().toLocaleDateString()}`;
         
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(() => {
@@ -752,7 +785,6 @@
         document.getElementById('leaderboardView').style.display = 'none';
         document.getElementById('resultView').style.display = 'none';
         document.getElementById('loginView').style.display = 'flex';
-        // 不清空資料，方便重測
     }
 
     // === Firebase Functions ===
@@ -761,7 +793,7 @@
         try {
             await addDoc(collection(db, "quiz_leaderboard_2026"), {
                 name: name,
-                dept: dept,
+                dept: "-", // 預設值
                 score: score,
                 timestamp: Date.now()
             });
@@ -773,17 +805,15 @@
     }
 
     window.showLeaderboard = async function() {
-        // Hide all views first
         document.getElementById('loginView').style.display = 'none';
         document.getElementById('menuView').style.display = 'none';
         document.getElementById('resultView').style.display = 'none';
         document.getElementById('leaderboardView').style.display = 'flex';
 
         let tbody = document.getElementById('leaderboardBody');
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#aaa;">雲端資料讀取中...</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:30px; color:#aaa;">雲端資料讀取中...</td></tr>`;
 
         try {
-            // 改為一次抓取所有資料，然後在前端排序，避免 Firebase 索引問題
             const querySnapshot = await getDocs(collection(db, "quiz_leaderboard_2026"));
             
             let data = [];
@@ -791,20 +821,18 @@
                 data.push(doc.data());
             });
 
-            // 前端排序：分數高 -> 低，時間早 -> 晚
             data.sort((a, b) => {
                 if (b.score !== a.score) return b.score - a.score;
                 return a.timestamp - b.timestamp;
             });
 
-            // 取前 10 名
             data = data.slice(0, 10);
             
             tbody.innerHTML = "";
             let rank = 1;
 
             if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#aaa;">尚無紀錄<br>快來當第一個挑戰者！</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:30px; color:#aaa;">尚無紀錄<br>快來當第一個挑戰者！</td></tr>`;
                 return;
             }
 
@@ -816,7 +844,6 @@
                     <tr>
                         <td><span class="rank-num ${rankClass}">${rank}</span></td>
                         <td style="font-weight:bold; color:#555;">${item.name}</td>
-                        <td style="font-size:0.85em; color:#888;">${item.dept}</td>
                         <td style="font-weight:bold; color:#d90429; font-size:1.1em;">${item.score}</td>
                     </tr>
                 `;
@@ -825,7 +852,7 @@
 
         } catch (e) {
             console.error("Error fetching leaderboard: ", e);
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:red;">無法讀取排行榜</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:30px; color:red;">無法讀取排行榜</td></tr>`;
         }
     }
 </script>
