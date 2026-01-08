@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>2026 新春銷售會考 - 旗艦修復版</title>
+    <title>2026 馬上RICH吉運來 大會考</title>
     
-    <!-- 1. 核心載入 (CDN 版) -->
+    <!-- 1. 核心資源載入 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -21,28 +21,32 @@
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
         body { 
             font-family: 'Noto Sans TC', sans-serif; 
-            background-color: #f0f2f5; 
+            background: linear-gradient(180deg, #991b1b 0%, #7f1d1d 100%); /* 深紅背景 */
             margin: 0; 
             padding: 0;
             overscroll-behavior: none;
+            min-height: 100vh;
         }
         .btn-active:active { transform: scale(0.96); }
         .quiz-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
-        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        
         /* 滾動條美化 */
         .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #f87171; border-radius: 10px; }
+        
+        .rich-gradient { background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%); }
+        .card-shadow { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
     </style>
 </head>
 <body>
     <div id="root">
-        <div class="flex items-center justify-center h-screen font-bold text-gray-400">系統啟動中...</div>
+        <div class="flex items-center justify-center h-screen font-bold text-white opacity-50">系統載入中...</div>
     </div>
 
     <script type="text/babel">
         const { useState, useEffect, useRef, useMemo } = React;
 
-        // ✅ 已換上您的新鑰匙 (quiz-2dce6)
+        // ✅ 使用您提供的新鑰匙 (quiz-2dce6)
         const firebaseConfig = {
             apiKey: "AIzaSyAk5ugWIjaeva-GNn54bbIJ4_V57mk__eo",
             authDomain: "quiz-2dce6.firebaseapp.com",
@@ -53,7 +57,7 @@
             measurementId: "G-Q5D52QGSSF"
         };
 
-        // --- 初始化 Firebase (加上連線狀態檢測) ---
+        // 初始化 Firebase
         let db;
         try {
             if (!firebase.apps.length) {
@@ -109,27 +113,26 @@
             const [selectedIdx, setSelectedIdx] = useState(null);
             const [isChecked, setIsChecked] = useState(false);
             const [leaderboard, setLeaderboard] = useState([]);
-            const [status, setStatus] = useState({ light: '⚪', msg: '初始化...' });
+            const [diag, setDiag] = useState({ light: '⚪', msg: '正在嘗試連線...' });
             const resRef = useRef();
 
-            // 🟢 資料庫連線測試
+            // 🟢 資料庫連線檢測與排行榜監聽
             useEffect(() => {
                 if (db) {
                     firebase.auth().signInAnonymously().then(() => {
-                        setStatus({ light: '🟢', msg: '雲端資料庫已連線' });
-                        // 監聽排行榜
-                        db.collection('exam_v5').onSnapshot(snap => {
+                        setDiag({ light: '🟢', msg: '雲端連線成功' });
+                        db.collection('exam_final_records').onSnapshot(snap => {
                             setLeaderboard(snap.docs.map(doc => doc.data()));
                         }, err => {
-                            setStatus({ light: '🔴', msg: '讀取失敗 (檢查 Rules)' });
+                            setDiag({ light: '🔴', msg: '讀取失敗 (檢查 Rules)' });
                         });
                     }).catch(err => {
-                        setStatus({ light: '🔴', msg: '登入失敗 (檢查 Auth)' });
+                        setDiag({ light: '🔴', msg: '登入失敗 (檢查 Auth)' });
                     });
                 }
             }, []);
 
-            const handleModeSelect = (mode) => {
+            const handleStart = (mode) => {
                 const filtered = mode === 'domestic' 
                     ? ALL_QUESTIONS.filter(q => q.category === 'domestic' || q.category === 'common')
                     : ALL_QUESTIONS.filter(q => q.category === 'boutique' || q.category === 'common');
@@ -142,26 +145,17 @@
                 setView('result');
                 if (db && employeeId.trim()) {
                     try {
-                        await db.collection('exam_v5').add({
+                        await db.collection('exam_final_records').add({
                             id: employeeId.toUpperCase().trim(),
                             score: score,
                             mode: currentMode,
                             time: firebase.firestore.FieldValue.serverTimestamp()
                         });
-                    } catch (e) { alert("儲存失敗: " + e.message); }
+                    } catch (e) { console.error("Save failed", e); }
                 }
             };
 
-            const downloadImg = async () => {
-                const canvas = await html2canvas(resRef.current, { scale: 3, backgroundColor: '#ffffff' });
-                const link = document.createElement('a');
-                link.download = `${employeeId}_成績單.png`;
-                link.href = canvas.toDataURL();
-                link.click();
-            };
-
-            // 去重複取最高分
-            const sortedRank = useMemo(() => {
+            const rankList = useMemo(() => {
                 const map = new Map();
                 leaderboard.forEach(item => {
                     const old = map.get(item.id);
@@ -170,46 +164,50 @@
                 return Array.from(map.values()).sort((a,b) => b.score - a.score);
             }, [leaderboard]);
 
-            // --- 介面渲染 ---
+            // --- 介面呈現 ---
 
             if (view === 'login') return (
                 <div className="quiz-container flex-col">
-                    <div className="bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl overflow-hidden border">
-                        <div className="bg-red-600 p-10 text-center text-white relative">
-                            <div className="text-6xl mb-4">🏆</div>
-                            <h1 className="text-2xl font-black">2026 新春銷售大會考</h1>
-                            <p className="text-red-100 text-xs mt-2 font-bold tracking-widest opacity-80 uppercase">Internal Exam System</p>
+                    <div className="bg-white w-full max-w-sm rounded-[3rem] shadow-2xl card-shadow overflow-hidden">
+                        <div className="rich-gradient p-12 text-center text-white relative">
+                            <div className="text-7xl mb-6 drop-shadow-lg">🐎</div>
+                            <h1 className="text-3xl font-black leading-tight tracking-tight">
+                                2026 馬上RICH吉運來<br/>
+                                <span className="text-4xl mt-2 block">大會考</span>
+                            </h1>
+                            <div className="mt-6 w-12 h-1 bg-white/30 mx-auto rounded-full"></div>
                         </div>
                         <div className="p-10 space-y-6">
                             <div className="space-y-2">
-                                <label className="text-xs font-black text-gray-400 ml-1 uppercase">工號 / 姓名</label>
-                                <input type="text" placeholder="例: A12345" className="w-full p-4 bg-gray-50 border-2 rounded-2xl outline-none focus:border-red-500 font-bold uppercase transition-all" onChange={e => setEmployeeId(e.target.value)} />
+                                <label className="text-xs font-black text-gray-400 ml-1 uppercase tracking-widest">Employee ID / Name</label>
+                                <input type="text" placeholder="請輸入工號或姓名" className="w-full p-5 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none focus:border-red-500 focus:bg-white font-bold uppercase transition-all shadow-inner" onChange={e => setEmployeeId(e.target.value)} />
                             </div>
-                            <button onClick={() => employeeId.trim() && setView('menu')} className="w-full bg-red-600 text-white py-5 rounded-2xl font-black shadow-xl shadow-red-200 btn-active">進入系統</button>
+                            <button onClick={() => employeeId.trim() && setView('menu')} className="w-full bg-red-600 text-white py-5 rounded-2xl font-black shadow-xl shadow-red-200 btn-active text-xl">開始測驗</button>
                         </div>
                     </div>
-                    <div className="mt-6 text-[10px] font-bold text-gray-400 flex items-center">
-                        <span className="mr-2">{status.light}</span> {status.msg}
+                    <div className="mt-8 text-[11px] font-bold text-white/50 flex items-center bg-black/20 px-4 py-2 rounded-full backdrop-blur-sm">
+                        <span className="mr-2">{diag.light}</span> {diag.msg}
                     </div>
                 </div>
             );
 
             if (view === 'menu') return (
                 <div className="quiz-container">
-                    <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-10 border text-center">
-                        <h2 className="text-2xl font-black mb-8 text-gray-800">你好, {employeeId.toUpperCase()}</h2>
+                    <div className="bg-white w-full max-w-md rounded-[3rem] shadow-2xl p-10 border text-center card-shadow">
+                        <p className="text-xs font-black text-red-500 uppercase tracking-[0.3em] mb-2">Welcome</p>
+                        <h2 className="text-3xl font-black mb-10 text-gray-800 tracking-tight">{employeeId.toUpperCase()}</h2>
                         <div className="space-y-4">
-                            <button onClick={() => handleModeSelect('domestic')} className="w-full flex items-center p-6 bg-red-50 rounded-3xl border-2 border-transparent hover:border-red-500 btn-active transition-all">
-                                <span className="text-4xl mr-5">🛍️</span>
-                                <div className="text-left"><p className="font-black text-lg text-red-900">國產/一般組</p><p className="text-xs text-red-400 font-bold">食品、來店禮回饋</p></div>
+                            <button onClick={() => handleStart('domestic')} className="w-full flex items-center p-6 bg-red-50 rounded-[2rem] border-2 border-transparent hover:border-red-500 btn-active transition-all group">
+                                <span className="text-5xl mr-5 group-hover:scale-110 transition-transform">🧧</span>
+                                <div className="text-left"><p className="font-black text-xl text-red-900 leading-none mb-2">國產 / 一般組</p><p className="text-xs text-red-400 font-bold opacity-70">食品、來店禮、銀行回饋</p></div>
                             </button>
-                            <button onClick={() => handleModeSelect('boutique')} className="w-full flex items-center p-6 bg-amber-50 rounded-3xl border-2 border-transparent hover:border-amber-500 btn-active transition-all">
-                                <span className="text-4xl mr-5">🎁</span>
-                                <div className="text-left"><p className="font-black text-lg text-amber-900">精品/珠寶組</p><p className="text-xs text-amber-400 font-bold">精品大類、高單價活動</p></div>
+                            <button onClick={() => handleStart('boutique')} className="w-full flex items-center p-6 bg-amber-50 rounded-[2rem] border-2 border-transparent hover:border-amber-500 btn-active transition-all group">
+                                <span className="text-5xl mr-5 group-hover:scale-110 transition-transform">💎</span>
+                                <div className="text-left"><p className="font-black text-xl text-amber-900 leading-none mb-2">精品 / 珠寶組</p><p className="text-xs text-amber-400 font-bold opacity-70">精品大類、高單價門檻</p></div>
                             </button>
-                            <button onClick={() => setView('leaderboard')} className="w-full flex items-center p-6 bg-blue-50 rounded-3xl border-2 border-transparent hover:border-blue-500 btn-active transition-all">
-                                <span className="text-4xl mr-5">📊</span>
-                                <div className="text-left"><p className="font-black text-lg text-blue-900">查看排行榜</p><p className="text-xs text-blue-400 font-bold">即時更新全體紀錄</p></div>
+                            <button onClick={() => setView('leaderboard')} className="w-full flex items-center p-6 bg-slate-50 rounded-[2rem] border-2 border-transparent hover:border-slate-400 btn-active transition-all group">
+                                <span className="text-5xl mr-5 group-hover:scale-110 transition-transform">📊</span>
+                                <div className="text-left"><p className="font-black text-xl text-slate-700 leading-none mb-2">全體成績排行</p><p className="text-xs text-slate-400 font-bold opacity-70">即時同步全體戰績</p></div>
                             </button>
                         </div>
                     </div>
@@ -219,22 +217,22 @@
             if (view === 'quiz') {
                 const q = activeQuestions[currentIndex];
                 return (
-                    <div className="quiz-container">
-                        <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col border" style={{minHeight:'550px'}}>
-                            <div className="px-8 py-5 bg-gray-50 flex justify-between font-black text-[10px] tracking-tighter border-b uppercase text-gray-400">
-                                <span className="text-red-500">題目 {currentIndex + 1} / 20</span>
+                    <div className="min-h-screen flex items-center justify-center p-4">
+                        <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col border card-shadow" style={{minHeight:'580px'}}>
+                            <div className="px-8 py-6 bg-gray-50 flex justify-between font-black text-[11px] tracking-widest border-b uppercase text-gray-400">
+                                <span className="text-red-500">測驗中 {currentIndex + 1} / 20</span>
                                 <span>考生: {employeeId}</span>
                             </div>
                             <div className="p-10 flex-grow">
-                                <h3 className="text-xl font-black text-gray-800 mb-8 leading-snug">{q.question}</h3>
+                                <h3 className="text-2xl font-black text-gray-800 mb-10 leading-snug tracking-tight">{q.question}</h3>
                                 <div className="space-y-4">
                                     {q.options.map((opt, i) => {
-                                        let style = "w-full p-5 rounded-2xl border-2 text-left font-bold text-sm transition-all ";
+                                        let style = "w-full p-5 rounded-2xl border-2 text-left font-bold text-base transition-all ";
                                         if (isChecked) {
-                                            if (i === q.correct) style += "border-green-500 bg-green-50 text-green-700 shadow-md";
+                                            if (i === q.correct) style += "border-green-500 bg-green-50 text-green-700 shadow-md scale-[1.02]";
                                             else if (i === selectedIdx) style += "border-red-500 bg-red-50 text-red-700 opacity-60";
                                             else style += "opacity-30 border-gray-100";
-                                        } else style += "border-gray-100 hover:border-red-200 active:bg-gray-50";
+                                        } else style += "border-gray-100 hover:border-red-200 active:bg-gray-50 shadow-sm";
                                         return (
                                             <button key={i} onClick={() => !isChecked && (setSelectedIdx(i), setIsChecked(true), i === q.correct && setScore(score + 1))} className={style}>{opt}</button>
                                         );
@@ -242,8 +240,8 @@
                                 </div>
                             </div>
                             <div className="p-8 bg-gray-50 border-t">
-                                <button onClick={() => currentIndex < 19 ? (setCurrentIndex(currentIndex + 1), setSelectedIdx(null), setIsChecked(false)) : submitResult()} disabled={!isChecked} className="w-full bg-black text-white py-5 rounded-2xl font-black disabled:opacity-20 btn-active shadow-lg">
-                                    {currentIndex === 19 ? '提交結算' : '確認下一題'}
+                                <button onClick={() => currentIndex < 19 ? (setCurrentIndex(currentIndex + 1), setSelectedIdx(null), setIsChecked(false)) : submitResult()} disabled={!isChecked} className="w-full bg-gray-900 text-white py-5 rounded-2xl font-black disabled:opacity-20 btn-active shadow-xl transition-all text-xl">
+                                    {currentIndex === 19 ? '提交本次成績' : '確認下一題'}
                                 </button>
                             </div>
                         </div>
@@ -253,51 +251,53 @@
 
             if (view === 'result') return (
                 <div className="quiz-container flex-col">
-                    <div ref={resRef} className="bg-white w-full max-w-sm rounded-[3rem] shadow-2xl overflow-hidden mb-8 border">
-                        <div className={`p-14 text-center text-white ${score >= 16 ? 'bg-gradient-to-br from-green-600 to-emerald-700' : 'bg-gradient-to-br from-red-600 to-rose-700'}`}>
-                            <div className="text-7xl mb-6">🏅</div>
+                    <div ref={resRef} className="bg-white w-full max-w-sm rounded-[4rem] shadow-2xl overflow-hidden mb-10 border-4 border-white card-shadow">
+                        <div className={`p-14 text-center text-white relative ${score >= 16 ? 'bg-gradient-to-br from-green-500 to-emerald-700' : 'bg-gradient-to-br from-red-600 to-rose-700'}`}>
+                            <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                            <div className="text-8xl mb-8 drop-shadow-xl">🏅</div>
                             <h2 className="text-8xl font-black mb-4 tracking-tighter">{score*5}<span className="text-2xl font-bold ml-1">%</span></h2>
-                            <p className="font-black text-white/80 text-xs tracking-widest uppercase">考試成績證明單</p>
-                            <div className="mt-10 pt-10 border-t border-white/20 flex justify-between text-left text-xs font-bold uppercase">
-                                <div><p className="opacity-50 mb-1">ID</p><p className="text-sm">{employeeId.toUpperCase()}</p></div>
-                                <div className="text-right"><p className="opacity-50 mb-1">SCORE</p><p className="text-sm">{score} / 20</p></div>
+                            <p className="font-black text-white/80 text-[11px] tracking-[0.3em] uppercase mb-10">2026 馬上RICH吉運來 大會考</p>
+                            <div className="pt-10 border-t border-white/20 flex justify-between text-left text-[11px] font-bold uppercase">
+                                <div><p className="opacity-50 mb-1">UserID</p><p className="text-lg">{employeeId.toUpperCase()}</p></div>
+                                <div className="text-right"><p className="opacity-50 mb-1">Score</p><p className="text-lg">{score} / 20</p></div>
                             </div>
                         </div>
                     </div>
-                    <div className="w-full max-w-sm space-y-3">
-                        <button onClick={downloadImg} className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-lg shadow-xl btn-active">📸 下載證書截圖</button>
-                        <button onClick={() => location.reload()} className="w-full bg-gray-200 text-gray-600 py-5 rounded-2xl font-black btn-active">重新登入</button>
+                    <div className="w-full max-w-sm space-y-4">
+                        <button onClick={() => html2canvas(resRef.current, {scale:3}).then(c => { const l=document.createElement('a'); l.download='馬上RICH會考成績.png'; l.href=c.toDataURL(); l.click(); })} className="w-full bg-blue-600 text-white py-5 rounded-[2rem] font-black text-lg shadow-xl shadow-blue-900/20 btn-active flex items-center justify-center">📥 下載成績證明截圖</button>
+                        <button onClick={() => location.reload()} className="w-full bg-white/10 text-white py-5 rounded-[2rem] font-black text-lg border-2 border-white/20 backdrop-blur-md btn-active">返回首頁重新測驗</button>
                     </div>
                 </div>
             );
 
             if (view === 'leaderboard') return (
-                <div className="quiz-container">
-                    <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl h-[85vh] flex flex-col overflow-hidden border">
-                        <div className="p-8 bg-blue-600 text-white text-center">
-                            <h2 className="font-black text-2xl tracking-tight">GLOBAL LEADERBOARD</h2>
-                            <p className="text-[10px] font-bold opacity-70 mt-1 uppercase tracking-widest">即時成績排行</p>
+                <div className="min-h-screen flex items-center justify-center p-4">
+                    <div className="bg-white w-full max-w-md rounded-[3rem] shadow-2xl h-[85vh] flex flex-col overflow-hidden border card-shadow">
+                        <div className="p-10 bg-slate-900 text-white text-center relative">
+                            <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                            <h2 className="font-black text-3xl tracking-tight mb-2">LEADERBOARD</h2>
+                            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.4em]">即時成績排行</p>
                         </div>
-                        <div className="flex-grow overflow-y-auto p-6 space-y-3 custom-scrollbar bg-gray-50/50">
-                            {sortedRank.length === 0 ? <p className="text-center text-gray-400 mt-10">連線中，請稍候...</p> : sortedRank.map((item, idx) => (
-                                <div key={idx} className="flex justify-between items-center p-5 bg-white rounded-3xl border border-gray-100 shadow-sm transition-all hover:scale-[1.02]">
+                        <div className="flex-grow overflow-y-auto p-8 space-y-4 custom-scrollbar bg-slate-50">
+                            {rankList.length === 0 ? <p className="text-center text-slate-400 mt-10 font-bold">資料同步中，請稍候...</p> : rankList.map((item, idx) => (
+                                <div key={idx} className={`flex justify-between items-center p-6 bg-white rounded-[2rem] border border-slate-100 shadow-sm transition-all ${item.id.toUpperCase() === employeeId.toUpperCase() ? 'ring-4 ring-red-500/20 bg-red-50/30' : ''}`}>
                                     <div className="flex items-center">
-                                        <div className={`w-10 h-10 flex items-center justify-center rounded-2xl text-sm font-black mr-4 ${idx === 0 ? 'bg-yellow-400 text-white shadow-md' : idx === 1 ? 'bg-slate-300 text-white' : idx === 2 ? 'bg-orange-300 text-white' : 'bg-gray-100 text-gray-400'}`}>
+                                        <div className={`w-12 h-12 flex items-center justify-center rounded-2xl text-lg font-black mr-5 shadow-sm ${idx === 0 ? 'bg-yellow-400 text-white shadow-yellow-200' : idx === 1 ? 'bg-slate-300 text-white shadow-slate-200' : idx === 2 ? 'bg-orange-300 text-white shadow-orange-200' : 'bg-slate-100 text-slate-400'}`}>
                                             {idx + 1}
                                         </div>
                                         <div>
-                                            <p className="font-black text-gray-800 tracking-tight">{item.id}</p>
-                                            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">{item.mode === 'domestic' ? '國產' : '精品'}組</p>
+                                            <p className="font-black text-slate-800 text-lg tracking-tight leading-none mb-1">{item.id}</p>
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{item.mode === 'domestic' ? '國產' : '精品'}組</p>
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-blue-600 font-black text-lg leading-none">{item.score} <span className="text-[10px] font-bold text-gray-300">分</span></p>
+                                        <p className="text-red-600 font-black text-2xl leading-none">{item.score}<span className="text-xs ml-1 opacity-50 font-bold uppercase">PTS</span></p>
                                     </div>
                                 </div>
                             ))}
                         </div>
                         <div className="p-8 border-t bg-white">
-                            <button onClick={() => setView('menu')} className="w-full py-5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-2xl font-black transition-all btn-active">返回選單</button>
+                            <button onClick={() => setView('menu')} className="w-full py-5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-[2rem] font-black transition-all btn-active text-lg shadow-sm">返回系統選單</button>
                         </div>
                     </div>
                 </div>
