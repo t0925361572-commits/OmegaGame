@@ -5,45 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>2026 新春銷售大會考</title>
     
-    <!-- 載入必要套件 -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- 載入外部工具 (CDN) -->
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <script src="[https://unpkg.com/react@18/umd/react.production.min.js](https://unpkg.com/react@18/umd/react.production.min.js)"></script>
+    <script src="[https://unpkg.com/react-dom@18/umd/react-dom.production.min.js](https://unpkg.com/react-dom@18/umd/react-dom.production.min.js)"></script>
+    <script src="[https://unpkg.com/@babel/standalone/babel.min.js](https://unpkg.com/@babel/standalone/babel.min.js)"></script>
+    <script src="[https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js](https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js)"></script>
+    
+    <!-- 載入圖示庫 -->
+    <script src="[https://unpkg.com/lucide@latest](https://unpkg.com/lucide@latest)"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+        @import url('[https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap](https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap)');
         body { 
             font-family: 'Noto Sans TC', sans-serif;
-            background-color: #f8fafc;
+            background-color: #f1f5f9;
             -webkit-tap-highlight-color: transparent;
         }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-        .quiz-card { min-height: 520px; }
+        .quiz-card { min-height: 500px; }
+        .btn-active:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
-    <script type="text/babel" data-type="module">
-        import { useState, useEffect, useRef, useMemo } from 'https://esm.sh/react@18';
-        import { createRoot } from 'https://esm.sh/react-dom@18/client';
-        import { 
-            Trophy, ArrowRight, RefreshCw, CheckCircle, XCircle, ShoppingBag, 
-            Gift, Home, Camera, User, LogOut, BarChart3, Wifi, WifiOff, 
-            Award, Star, Search, List, Clock 
-        } from 'https://esm.sh/lucide-react@0.292.0';
-        
-        // Firebase SDK 模組
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    <!-- Firebase 傳統載入方式 (相容性最強) -->
+    <script src="[https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js](https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js)"></script>
+    <script src="[https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js](https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js)"></script>
+    <script src="[https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js](https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js)"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useMemo } = React;
 
         // ==========================================
-        // ✅ 鑰匙已成功加入！ (您的專屬 Firebase 設定)
+        // ✅ 您的專屬鑰匙 (已填入)
         // ==========================================
         const firebaseConfig = {
           apiKey: "AIzaSyCcRFWrx2qkUUFCm_fi5rU-DH8zkhiHvtw",
@@ -56,17 +51,18 @@
         };
 
         // 初始化 Firebase
-        let db = null;
-        let auth = null;
-        let isFirebaseReady = false;
-
+        let db;
         try {
-            const app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            isFirebaseReady = true;
+            if (!firebase.apps.length) {
+                const app = firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                // 匿名登入
+                firebase.auth().signInAnonymously();
+            } else {
+                db = firebase.firestore();
+            }
         } catch (e) {
-            console.error("Firebase 連線失敗:", e);
+            console.error("Firebase Error", e);
         }
 
         const ALL_QUESTIONS = [
@@ -105,227 +101,157 @@
         ];
 
         const shuffleArray = (array) => {
-            const newArray = [...array];
-            for (let i = newArray.length - 1; i > 0; i--) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+                [arr[i], arr[j]] = [arr[j], arr[i]];
             }
-            return newArray;
+            return arr;
         };
 
-        const QuizApp = () => {
+        const App = () => {
             const [employeeId, setEmployeeId] = useState('');
             const [view, setView] = useState('login');
-            const [isLoading, setIsLoading] = useState(false);
-            const [dbStatus, setDbStatus] = useState('connecting');
-            
             const [currentMode, setCurrentMode] = useState(null);
             const [activeQuestions, setActiveQuestions] = useState([]);
-            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [currentIndex, setCurrentIndex] = useState(0);
             const [score, setScore] = useState(0);
-            const [selectedAnswer, setSelectedAnswer] = useState(null);
-            const [isAnswerChecked, setIsAnswerChecked] = useState(false);
-            const [wrongAnswers, setWrongAnswers] = useState([]);
-            
-            const [leaderboardData, setLeaderboardData] = useState([]);
+            const [selectedIdx, setSelectedIdx] = useState(null);
+            const [isChecked, setIsChecked] = useState(false);
+            const [leaderboard, setLeaderboard] = useState([]);
             const [searchTerm, setSearchTerm] = useState('');
-            const resultRef = useRef(null);
+            const resRef = useRef();
 
-            // 背景連線驗證
+            // 即時同步排行榜
             useEffect(() => {
-                if (isFirebaseReady && auth) {
-                    signInAnonymously(auth)
-                        .then(() => setDbStatus('connected'))
-                        .catch(() => setDbStatus('error'));
-                } else {
-                    setDbStatus('error');
+                if (db) {
+                    const unsub = db.collection('quiz_v1').onSnapshot(snap => {
+                        const data = snap.docs.map(doc => doc.data());
+                        setLeaderboard(data);
+                    });
+                    return () => unsub();
                 }
             }, []);
 
-            // 成績同步監聽
-            useEffect(() => {
-                if (dbStatus === 'connected' && db) {
-                    const q = collection(db, 'quiz_results_final');
-                    const unsubscribe = onSnapshot(q, (snapshot) => {
-                        const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                        setLeaderboardData(docs);
-                    }, (err) => {
-                        console.error("同步失敗", err);
-                    });
-                    return () => unsubscribe();
-                }
-            }, [dbStatus]);
-
-            const handleStart = (e) => {
-                e.preventDefault();
-                if (employeeId.trim().length > 0) {
-                    setIsLoading(true);
-                    setTimeout(() => { setIsLoading(false); setView('menu'); }, 500);
-                }
-            };
-
-            const handleModeSelect = (mode) => {
-                let filtered = mode === 'domestic' 
+            const startQuiz = (mode) => {
+                const filtered = mode === 'domestic' 
                     ? ALL_QUESTIONS.filter(q => q.category === 'domestic' || q.category === 'common')
                     : ALL_QUESTIONS.filter(q => q.category === 'boutique' || q.category === 'common');
                 setActiveQuestions(shuffleArray(filtered).slice(0, 20));
                 setCurrentMode(mode);
-                setCurrentQuestionIndex(0);
-                setScore(0);
-                setWrongAnswers([]);
-                setIsAnswerChecked(false);
-                setSelectedAnswer(null);
                 setView('quiz');
             };
 
-            const handleAnswerClick = (index) => {
-                if (isAnswerChecked) return;
-                setSelectedAnswer(index);
-                setIsAnswerChecked(true);
-                const currentQ = activeQuestions[currentQuestionIndex];
-                if (index === currentQ.correct) {
-                    setScore(score + 1);
+            const checkAnswer = (idx) => {
+                if (isChecked) return;
+                setSelectedIdx(idx);
+                setIsChecked(true);
+                if (idx === activeQuestions[currentIndex].correct) setScore(score + 1);
+            };
+
+            const next = async () => {
+                if (currentIndex < 19) {
+                    setCurrentIndex(currentIndex + 1);
+                    setSelectedIdx(null);
+                    setIsChecked(false);
                 } else {
-                    setWrongAnswers([...wrongAnswers, { 
-                        question: currentQ.question, 
-                        userAnswer: currentQ.options[index], 
-                        correctAnswer: currentQ.options[currentQ.correct] 
-                    }]);
+                    setView('result');
+                    if (db) {
+                        await db.collection('quiz_v1').add({
+                            employeeId: employeeId.toUpperCase(),
+                            score,
+                            mode: currentMode,
+                            time: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
                 }
             };
 
-            const finishQuiz = async () => {
-                setView('result');
-                const data = {
-                    employeeId: employeeId.toUpperCase(),
-                    score,
-                    total: 20,
-                    percentage: Math.round(score/20*100),
-                    mode: currentMode,
-                    timestamp: serverTimestamp() || Date.now()
-                };
-                if (dbStatus === 'connected' && db) {
-                    try { await addDoc(collection(db, 'quiz_results_final'), data); }
-                    catch (e) { console.error("成績上傳失敗", e); }
-                }
+            const download = async () => {
+                const canvas = await html2canvas(resRef.current, { scale: 3 });
+                const link = document.createElement('a');
+                link.download = `${employeeId}_成績單.png`;
+                link.href = canvas.toDataURL();
+                link.click();
             };
 
-            const handleDownloadImage = async () => {
-                if (!resultRef.current) return;
-                try {
-                    const canvas = await window.html2canvas(resultRef.current, { scale: 3, backgroundColor: '#ffffff', useCORS: true });
-                    const link = document.createElement('a');
-                    link.download = `${employeeId}_2026會考成績.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                } catch (error) { console.error('截圖失敗'); }
-            };
-
-            // 資料處理：每人取最高分
+            // 去重複取最高分
             const processedRank = useMemo(() => {
                 const map = new Map();
-                leaderboardData.forEach(item => {
-                    const existing = map.get(item.employeeId);
-                    if (!existing || item.score > existing.score) map.set(item.employeeId, item);
+                leaderboard.forEach(item => {
+                    const old = map.get(item.employeeId);
+                    if (!old || item.score > old.score) map.set(item.employeeId, item);
                 });
-                return Array.from(map.values()).sort((a, b) => b.score - a.score);
-            }, [leaderboardData]);
-
-            const listFiltered = processedRank.filter(i => 
-                (!searchTerm || i.employeeId.includes(searchTerm.toUpperCase()))
-            );
-
-            // --- UI 畫面 ---
+                return Array.from(map.values()).sort((a,b) => b.score - a.score);
+            }, [leaderboard]);
 
             if (view === 'login') return (
-                <div className="min-h-screen flex items-center justify-center p-4">
-                    <div className="max-w-sm w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-gray-100">
-                        <div className="bg-gradient-to-br from-red-600 to-red-700 p-10 text-center text-white relative">
-                            <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-                            <Trophy className="w-20 h-20 mx-auto mb-4 text-yellow-400 drop-shadow-lg" />
-                            <h1 className="text-2xl font-black tracking-tight">2026 新春銷售會考</h1>
-                            <p className="text-red-100 mt-2 text-sm font-bold opacity-80 uppercase tracking-widest">Global Sales Exam</p>
+                <div className="min-h-screen flex items-center justify-center p-6">
+                    <div className="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden border border-gray-100">
+                        <div className="bg-red-600 p-10 text-center text-white">
+                            <i data-lucide="trophy" className="w-16 h-16 mx-auto mb-4 text-yellow-300"></i>
+                            <h1 className="text-2xl font-black">2026 新春銷售會考</h1>
                         </div>
-                        <form onSubmit={handleStart} className="p-10 space-y-6">
-                            <div>
-                                <label className="block text-sm font-black text-gray-700 ml-1 mb-2">工號 / 姓名</label>
-                                <div className="relative">
-                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                                    <input type="text" value={employeeId} onChange={(e) => setEmployeeId(e.target.value.toUpperCase())} className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-red-500 focus:bg-white outline-none transition-all font-bold uppercase" placeholder="例：A12345" required />
-                                </div>
-                            </div>
-                            <button type="submit" className="w-full bg-red-600 text-white py-5 rounded-2xl font-black text-lg hover:bg-red-700 shadow-xl shadow-red-100 transition-all active:scale-[0.98]">開始測驗</button>
-                            <div className="flex items-center justify-center text-[10px] text-gray-400 font-bold uppercase tracking-tighter pt-2">
-                                {dbStatus === 'connected' ? <Wifi className="w-3 h-3 text-green-500 mr-1.5"/> : <WifiOff className="w-3 h-3 text-red-400 mr-1.5"/>}
-                                {dbStatus === 'connected' ? '雲端數據庫已連線' : '正在嘗試連線...'}
-                            </div>
-                        </form>
+                        <div className="p-10 space-y-6">
+                            <input 
+                                type="text" placeholder="輸入工號 (例: A1234)" 
+                                className="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none focus:border-red-500 font-bold uppercase"
+                                onChange={e => setEmployeeId(e.target.value)}
+                            />
+                            <button 
+                                onClick={() => employeeId && setView('menu')}
+                                className="w-full bg-red-600 text-white py-4 rounded-2xl font-black shadow-lg btn-active"
+                            >進入測驗</button>
+                        </div>
                     </div>
                 </div>
             );
 
             if (view === 'menu') return (
-                <div className="min-h-screen flex items-center justify-center p-4">
-                    <div className="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl p-10 space-y-5 border border-gray-50">
-                        <div className="text-center mb-8">
-                            <h2 className="text-2xl font-black text-gray-800">歡迎回來, {employeeId}</h2>
-                            <p className="text-gray-400 font-bold text-sm mt-1">請選擇您的測驗模式</p>
-                        </div>
-                        <button onClick={() => handleModeSelect('domestic')} className="w-full group relative flex items-center p-6 bg-red-50 border-2 border-transparent hover:border-red-500 rounded-3xl transition-all text-left">
-                            <div className="bg-red-500 p-4 rounded-2xl mr-5 text-white shadow-lg shadow-red-200"><ShoppingBag className="w-7 h-7" /></div>
-                            <div><h3 className="font-black text-red-900 text-lg">國產/一般組</h3><p className="text-xs text-red-600 font-bold opacity-60 mt-0.5">食品、來店禮、銀行回饋</p></div>
+                <div className="min-h-screen flex items-center justify-center p-6">
+                    <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-10 space-y-4">
+                        <h2 className="text-xl font-black text-center mb-6">歡迎, {employeeId}</h2>
+                        <button onClick={() => startQuiz('domestic')} className="w-full flex items-center p-6 bg-red-50 rounded-3xl border-2 border-transparent hover:border-red-500 btn-active">
+                            <i data-lucide="shopping-bag" className="text-red-500 mr-4"></i>
+                            <div className="text-left"><p className="font-black text-lg">國產/一般組</p><p className="text-xs text-red-400">食品、來店禮</p></div>
                         </button>
-                        <button onClick={() => handleModeSelect('boutique')} className="w-full group relative flex items-center p-6 bg-amber-50 border-2 border-transparent hover:border-amber-500 rounded-3xl transition-all text-left">
-                            <div className="bg-amber-500 p-4 rounded-2xl mr-5 text-white shadow-lg shadow-amber-200"><Gift className="w-7 h-7" /></div>
-                            <div><h3 className="font-black text-amber-900 text-lg">精品/珠寶組</h3><p className="text-xs text-amber-600 font-bold opacity-60 mt-0.5">精品大類、高單價滿額贈</p></div>
+                        <button onClick={() => startQuiz('boutique')} className="w-full flex items-center p-6 bg-amber-50 rounded-3xl border-2 border-transparent hover:border-amber-500 btn-active">
+                            <i data-lucide="gift" className="text-amber-500 mr-4"></i>
+                            <div className="text-left"><p className="font-black text-lg">精品/珠寶組</p><p className="text-xs text-amber-400">高單價活動</p></div>
                         </button>
-                        <button onClick={() => setView('leaderboard')} className="w-full flex items-center p-6 bg-blue-50 border-2 border-transparent hover:border-blue-500 rounded-3xl transition-all text-left">
-                            <div className="bg-blue-500 p-4 rounded-2xl mr-5 text-white shadow-lg shadow-blue-200"><BarChart3 className="w-7 h-7" /></div>
-                            <div><h3 className="font-black text-blue-900 text-lg">即時總成績列表</h3><p className="text-xs text-blue-600 font-bold opacity-60 mt-0.5">查看全體進度與表現</p></div>
+                        <button onClick={() => setView('leaderboard')} className="w-full flex items-center p-6 bg-blue-50 rounded-3xl border-2 border-transparent hover:border-blue-500 btn-active">
+                            <i data-lucide="bar-chart-3" className="text-blue-500 mr-4"></i>
+                            <div className="text-left"><p className="font-black text-lg">即時總排行榜</p></div>
                         </button>
                     </div>
                 </div>
             );
 
             if (view === 'quiz') {
-                const q = activeQuestions[currentQuestionIndex];
+                const q = activeQuestions[currentIndex];
                 return (
                     <div className="min-h-screen flex items-center justify-center p-4">
-                        <div className="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col quiz-card border border-gray-50">
-                            <div className="px-8 py-6 border-b flex justify-between items-center bg-gray-50/50">
-                                <div className="flex items-center space-x-2">
-                                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                                    <span className="text-sm font-black text-gray-800 tracking-tighter">題目 {currentQuestionIndex + 1} / 20</span>
-                                </div>
-                                <span className="text-[10px] font-black text-gray-400 tracking-widest uppercase">{employeeId}</span>
+                        <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col quiz-card">
+                            <div className="p-6 bg-gray-50 flex justify-between font-bold text-xs border-b">
+                                <span>題目 {currentIndex + 1} / 20</span>
+                                <span className="text-gray-400 uppercase">{employeeId}</span>
                             </div>
-                            <div className="w-full bg-gray-100 h-2"><div className="bg-red-500 h-full transition-all duration-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]" style={{ width: `${((currentQuestionIndex + 1)/20)*100}%` }}></div></div>
-                            <div className="p-10 flex-grow">
-                                <h2 className="text-xl font-black text-gray-800 mb-8 leading-snug">{q.question}</h2>
-                                <div className="space-y-4">
-                                    {q.options.map((opt, idx) => {
-                                        let style = "w-full p-5 rounded-2xl border-2 text-left transition-all font-bold text-sm leading-relaxed ";
-                                        if (isAnswerChecked) {
-                                            if (idx === q.correct) style += "border-green-500 bg-green-50 text-green-700 shadow-md scale-[1.02]";
-                                            else if (idx === selectedAnswer) style += "border-red-500 bg-red-50 text-red-700 opacity-80";
-                                            else style += "opacity-30 border-gray-100 grayscale-[0.5]";
-                                        } else style += "border-gray-100 hover:border-red-200 hover:bg-red-50/30 text-gray-600 active:scale-95";
-                                        return (
-                                            <button key={idx} onClick={() => handleAnswerClick(idx)} disabled={isAnswerChecked} className={style}>
-                                                <div className="flex justify-between items-center">
-                                                    <span className="pr-4">{opt}</span>
-                                                    {isAnswerChecked && idx === q.correct && <CheckCircle className="w-5 h-5 flex-shrink-0" />}
-                                                    {isAnswerChecked && idx === selectedAnswer && idx !== q.correct && <XCircle className="w-5 h-5 flex-shrink-0" />}
-                                                </div>
-                                            </button>
-                                        );
+                            <div className="p-8 flex-grow">
+                                <h3 className="text-lg font-black mb-8 leading-relaxed">{q.question}</h3>
+                                <div className="space-y-3">
+                                    {q.options.map((opt, i) => {
+                                        let style = "w-full p-4 rounded-2xl border-2 text-left font-bold transition-all ";
+                                        if (isChecked) {
+                                            if (i === q.correct) style += "border-green-500 bg-green-50 text-green-700";
+                                            else if (i === selectedIdx) style += "border-red-500 bg-red-50 text-red-700";
+                                            else style += "opacity-30 border-gray-100";
+                                        } else style += "border-gray-100 active:bg-gray-50";
+                                        return <button key={i} onClick={() => checkAnswer(i)} className={style}>{opt}</button>;
                                     })}
                                 </div>
                             </div>
-                            <div className="px-10 py-8 bg-gray-50/50 border-t">
-                                <button onClick={() => currentQuestionIndex === 19 ? finishQuiz() : (setCurrentQuestionIndex(currentQuestionIndex+1), setIsAnswerChecked(false), setSelectedAnswer(null))} disabled={!isAnswerChecked} className="w-full bg-gray-900 text-white py-5 rounded-2xl font-black shadow-xl disabled:bg-gray-200 transition-all flex items-center justify-center">
-                                    {currentQuestionIndex === 19 ? '提交最終結果' : '確認並進入下一題'} <ArrowRight className="ml-2 w-5 h-5" />
-                                </button>
+                            <div className="p-8 border-t bg-gray-50">
+                                <button onClick={next} disabled={!isChecked} className="w-full bg-black text-white py-4 rounded-2xl font-black disabled:opacity-20 btn-active">下一題</button>
                             </div>
                         </div>
                     </div>
@@ -334,70 +260,44 @@
 
             if (view === 'result') return (
                 <div className="min-h-screen flex flex-col items-center justify-center p-6">
-                    <div ref={resultRef} className="max-w-md w-full bg-white rounded-[3rem] shadow-2xl overflow-hidden mb-8 border border-gray-50">
-                        <div className={`p-12 text-center text-white relative ${score >= 16 ? 'bg-gradient-to-br from-green-500 to-emerald-600' : 'bg-gradient-to-br from-red-600 to-rose-700'}`}>
-                            <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-                            <Award className="w-24 h-24 mx-auto mb-6 text-white drop-shadow-xl" />
-                            <h2 className="text-2xl font-black tracking-tight uppercase">測驗成績單</h2>
-                            <div className="text-8xl font-black my-6 tracking-tighter">{Math.round(score/20*100)}<span className="text-3xl ml-1 font-bold">%</span></div>
-                            <p className="font-bold text-white/80">答對題數：{score} / 20 題</p>
-                            <div className="mt-8 pt-8 border-t border-white/20 flex justify-between items-end">
-                                <div className="text-left">
-                                    <p className="text-[10px] font-black text-white/40 uppercase tracking-widest">Employee ID</p>
-                                    <p className="text-lg font-black">{employeeId}</p>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-[10px] font-black text-white/40 uppercase tracking-widest">Exam Date</p>
-                                    <p className="text-sm font-black">{new Date().toLocaleDateString()}</p>
-                                </div>
-                            </div>
+                    <div ref={resRef} className="bg-white w-full max-w-sm rounded-[3rem] shadow-2xl overflow-hidden mb-6 border">
+                        <div className={`p-12 text-center text-white ${score >= 16 ? 'bg-green-600' : 'bg-red-600'}`}>
+                            <i data-lucide="award" className="w-20 h-20 mx-auto mb-4"></i>
+                            <h2 className="text-5xl font-black mb-2">{score*5}%</h2>
+                            <p className="font-bold opacity-80">答對 {score} 題 / 工號 {employeeId}</p>
                         </div>
                     </div>
-                    <div className="max-w-md w-full space-y-4">
-                        <button onClick={handleDownloadImage} className="w-full bg-blue-600 text-white py-5 rounded-[1.5rem] font-black text-lg flex items-center justify-center shadow-xl shadow-blue-100 transition-all active:scale-95"><Camera className="mr-3 w-6 h-6" /> 下載證書截圖</button>
-                        <button onClick={() => setView('menu')} className="w-full bg-gray-900 text-white py-5 rounded-[1.5rem] font-black text-lg transition-all active:scale-95">返回主頁</button>
-                    </div>
+                    <button onClick={download} className="w-full max-w-sm bg-blue-600 text-white py-4 rounded-2xl font-black mb-3 btn-active">下載成績單截圖</button>
+                    <button onClick={() => location.reload()} className="w-full max-w-sm bg-gray-200 py-4 rounded-2xl font-black btn-active">返回主頁</button>
                 </div>
             );
 
             if (view === 'leaderboard') return (
                 <div className="min-h-screen flex flex-col items-center justify-center p-4">
-                    <div className="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl h-[85vh] flex flex-col overflow-hidden border border-gray-50">
-                        <div className="p-8 bg-gradient-to-br from-blue-600 to-indigo-700 text-white relative">
-                            <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-                            <h2 className="text-2xl font-black flex items-center justify-center tracking-tight mb-2"><BarChart3 className="mr-3 w-6 h-6"/> 全體成績列表</h2>
-                            <p className="text-blue-100 text-xs font-bold text-center opacity-70 mb-6">總共收集到 {leaderboardData.length} 筆測驗數據</p>
-                            <div className="relative">
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" />
-                                <input type="text" onChange={(e) => setSearchTerm(e.target.value)} className="w-full bg-white/10 backdrop-blur-md border border-white/20 p-4 pl-12 rounded-[1.25rem] text-white text-sm outline-none focus:bg-white/20 transition-all font-bold placeholder:text-white/40" placeholder="搜尋工號查詢結果..." />
-                            </div>
+                    <div className="bg-white w-full max-w-md rounded-[2rem] shadow-2xl h-[80vh] flex flex-col overflow-hidden">
+                        <div className="p-6 bg-blue-600 text-white text-center">
+                            <h2 className="font-black text-xl mb-4">全體即時排行</h2>
+                            <input 
+                                type="text" placeholder="搜尋工號..." 
+                                className="w-full p-2 rounded-lg text-black text-sm"
+                                onChange={e => setSearchTerm(e.target.value.toUpperCase())}
+                            />
                         </div>
-                        <div className="flex-grow overflow-y-auto p-6 space-y-3 custom-scrollbar bg-gray-50/30">
-                            {listFiltered.map((item, idx) => (
-                                <div key={idx} className={`flex justify-between items-center p-5 rounded-3xl border transition-all ${item.employeeId === employeeId ? 'bg-blue-50 border-blue-200' : 'bg-white border-gray-100'}`}>
+                        <div className="flex-grow overflow-y-auto p-4 space-y-2">
+                            {processedRank.filter(i => i.employeeId.includes(searchTerm)).map((item, idx) => (
+                                <div key={idx} className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl border border-gray-100">
                                     <div className="flex items-center">
-                                        <div className={`w-10 h-10 flex items-center justify-center rounded-2xl text-sm font-black mr-4 shadow-sm ${idx === 0 ? 'bg-yellow-400 text-white' : idx === 1 ? 'bg-slate-300 text-white' : idx === 2 ? 'bg-orange-300 text-white' : 'bg-gray-100 text-gray-400'}`}>
-                                            {idx + 1}
-                                        </div>
-                                        <div>
-                                            <span className="font-black text-gray-800 tracking-tight">{item.employeeId}</span>
-                                            <div className="flex items-center space-x-2 mt-0.5">
-                                                <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-md uppercase tracking-widest ${item.mode === 'domestic' ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-600'}`}>
-                                                    {item.mode === 'domestic' ? '國產' : '精品'}
-                                                </span>
-                                            </div>
-                                        </div>
+                                        <span className="w-8 font-black text-blue-300">#{idx+1}</span>
+                                        <span className="font-black text-gray-700">{item.employeeId}</span>
                                     </div>
                                     <div className="text-right">
-                                        <div className="text-blue-600 font-black text-lg leading-none">{item.score} <span className="text-[10px] font-bold text-gray-400">題</span></div>
-                                        <div className="text-[10px] font-black text-gray-300 mt-1 uppercase tracking-tighter">{item.percentage}% ACC</div>
+                                        <div className="text-blue-600 font-black">{item.score} 題</div>
+                                        <div className="text-[10px] text-gray-400">{item.mode === 'domestic' ? '國產' : '精品'}</div>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <div className="p-8 border-t bg-white">
-                            <button onClick={() => setView('menu')} className="w-full py-5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-[1.5rem] font-black transition-all active:scale-95">關閉清單並返回</button>
-                        </div>
+                        <div className="p-6 border-t"><button onClick={() => setView('menu')} className="w-full py-4 bg-gray-100 rounded-2xl font-black">返回</button></div>
                     </div>
                 </div>
             );
@@ -405,9 +305,10 @@
             return null;
         };
 
+        // 啟動圖示
         const root = createRoot(document.getElementById('root'));
-        root.render(<QuizApp />);
+        root.render(<App />);
+        setTimeout(() => lucide.createIcons(), 500);
     </script>
 </body>
 </html>
-
