@@ -5,64 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>2026 新春銷售大會考</title>
     
-    <!-- 載入外部工具 (CDN) -->
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-    <script src="[https://unpkg.com/react@18/umd/react.production.min.js](https://unpkg.com/react@18/umd/react.production.min.js)"></script>
-    <script src="[https://unpkg.com/react-dom@18/umd/react-dom.production.min.js](https://unpkg.com/react-dom@18/umd/react-dom.production.min.js)"></script>
-    <script src="[https://unpkg.com/@babel/standalone/babel.min.js](https://unpkg.com/@babel/standalone/babel.min.js)"></script>
-    <script src="[https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js](https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js)"></script>
+    <!-- 載入基礎庫 (全域變數版，最穩定) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
-    <!-- 載入圖示庫 -->
-    <script src="[https://unpkg.com/lucide@latest](https://unpkg.com/lucide@latest)"></script>
+    <!-- Firebase Compat 版本 (相容性最高) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
     <style>
-        @import url('[https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap](https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap)');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
         body { 
             font-family: 'Noto Sans TC', sans-serif;
-            background-color: #f1f5f9;
-            -webkit-tap-highlight-color: transparent;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
         }
-        .quiz-card { min-height: 500px; }
-        .btn-active:active { transform: scale(0.95); }
+        .btn-active:active { transform: scale(0.98); }
+        .quiz-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
     </style>
 </head>
 <body>
-    <div id="root"></div>
-
-    <!-- Firebase 傳統載入方式 (相容性最強) -->
-    <script src="[https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js](https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js)"></script>
-    <script src="[https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js](https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js)"></script>
-    <script src="[https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js](https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js)"></script>
+    <!-- 預防白屏的基礎 HTML -->
+    <div id="root">
+        <div style="display:flex; justify-content:center; align-items:center; height:100vh; font-weight:bold; color:#666;">
+            系統載入中，請稍候...
+        </div>
+    </div>
 
     <script type="text/babel">
         const { useState, useEffect, useRef, useMemo } = React;
 
-        // ==========================================
-        // ✅ 您的專屬鑰匙 (已填入)
-        // ==========================================
+        // ✅ 您提供的專屬 Firebase Config
         const firebaseConfig = {
-          apiKey: "AIzaSyCcRFWrx2qkUUFCm_fi5rU-DH8zkhiHvtw",
-          authDomain: "quiz-5a0b1.firebaseapp.com",
-          projectId: "quiz-5a0b1",
-          storageBucket: "quiz-5a0b1.firebasestorage.app",
-          messagingSenderId: "301759727206",
-          appId: "1:301759727206:web:9bb541130caacdd6108fa7",
-          measurementId: "G-MFPNWYY60W"
+            apiKey: "AIzaSyCcRFWrx2qkUUFCm_fi5rU-DH8zkhiHvtw",
+            authDomain: "quiz-5a0b1.firebaseapp.com",
+            projectId: "quiz-5a0b1",
+            storageBucket: "quiz-5a0b1.firebasestorage.app",
+            messagingSenderId: "301759727206",
+            appId: "1:301759727206:web:9bb541130caacdd6108fa7",
+            measurementId: "G-MFPNWYY60W"
         };
 
         // 初始化 Firebase
-        let db;
+        let db = null;
         try {
             if (!firebase.apps.length) {
                 const app = firebase.initializeApp(firebaseConfig);
                 db = firebase.firestore();
-                // 匿名登入
                 firebase.auth().signInAnonymously();
             } else {
                 db = firebase.firestore();
             }
         } catch (e) {
-            console.error("Firebase Error", e);
+            console.error("Firebase Init Error:", e);
         }
 
         const ALL_QUESTIONS = [
@@ -100,15 +100,6 @@
             { id: 37, category: 'common', question: '哪一家銀行推出「$888 送 1 元發財金」活動？', options: ['星展銀行', '兆豐銀行', '台新銀行', '國泰世華'], correct: 2 }
         ];
 
-        const shuffleArray = (array) => {
-            const arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        };
-
         const App = () => {
             const [employeeId, setEmployeeId] = useState('');
             const [view, setView] = useState('login');
@@ -122,61 +113,49 @@
             const [searchTerm, setSearchTerm] = useState('');
             const resRef = useRef();
 
-            // 即時同步排行榜
             useEffect(() => {
                 if (db) {
-                    const unsub = db.collection('quiz_v1').onSnapshot(snap => {
+                    const unsub = db.collection('quiz_data_v1').onSnapshot(snap => {
                         const data = snap.docs.map(doc => doc.data());
                         setLeaderboard(data);
-                    });
+                    }, err => console.error("Snapshot Error", err));
                     return () => unsub();
                 }
             }, []);
 
-            const startQuiz = (mode) => {
+            const handleStart = (mode) => {
                 const filtered = mode === 'domestic' 
                     ? ALL_QUESTIONS.filter(q => q.category === 'domestic' || q.category === 'common')
                     : ALL_QUESTIONS.filter(q => q.category === 'boutique' || q.category === 'common');
-                setActiveQuestions(shuffleArray(filtered).slice(0, 20));
+                const shuffled = [...filtered].sort(() => Math.random() - 0.5).slice(0, 20);
+                setActiveQuestions(shuffled);
                 setCurrentMode(mode);
                 setView('quiz');
             };
 
-            const checkAnswer = (idx) => {
-                if (isChecked) return;
-                setSelectedIdx(idx);
-                setIsChecked(true);
-                if (idx === activeQuestions[currentIndex].correct) setScore(score + 1);
-            };
-
-            const next = async () => {
-                if (currentIndex < 19) {
-                    setCurrentIndex(currentIndex + 1);
-                    setSelectedIdx(null);
-                    setIsChecked(false);
-                } else {
-                    setView('result');
-                    if (db) {
-                        await db.collection('quiz_v1').add({
-                            employeeId: employeeId.toUpperCase(),
+            const submitResult = async () => {
+                setView('result');
+                if (db) {
+                    try {
+                        await db.collection('quiz_data_v1').add({
+                            employeeId: employeeId.toUpperCase().trim(),
                             score,
                             mode: currentMode,
                             time: firebase.firestore.FieldValue.serverTimestamp()
                         });
-                    }
+                    } catch (e) { console.error("Save Error", e); }
                 }
             };
 
-            const download = async () => {
-                const canvas = await html2canvas(resRef.current, { scale: 3 });
+            const downloadImage = async () => {
+                const canvas = await html2canvas(resRef.current, { scale: 3, backgroundColor: '#ffffff' });
                 const link = document.createElement('a');
                 link.download = `${employeeId}_成績單.png`;
                 link.href = canvas.toDataURL();
                 link.click();
             };
 
-            // 去重複取最高分
-            const processedRank = useMemo(() => {
+            const rankList = useMemo(() => {
                 const map = new Map();
                 leaderboard.forEach(item => {
                     const old = map.get(item.employeeId);
@@ -185,43 +164,47 @@
                 return Array.from(map.values()).sort((a,b) => b.score - a.score);
             }, [leaderboard]);
 
+            // --- Views ---
+
             if (view === 'login') return (
-                <div className="min-h-screen flex items-center justify-center p-6">
-                    <div className="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden border border-gray-100">
-                        <div className="bg-red-600 p-10 text-center text-white">
-                            <i data-lucide="trophy" className="w-16 h-16 mx-auto mb-4 text-yellow-300"></i>
+                <div className="quiz-container">
+                    <div className="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden border">
+                        <div className="bg-red-600 p-8 text-center text-white">
+                            <div className="text-5xl mb-2">🏆</div>
                             <h1 className="text-2xl font-black">2026 新春銷售會考</h1>
                         </div>
-                        <div className="p-10 space-y-6">
+                        <div className="p-8 space-y-6">
                             <input 
-                                type="text" placeholder="輸入工號 (例: A1234)" 
-                                className="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none focus:border-red-500 font-bold uppercase"
+                                type="text" placeholder="輸入工號 / 姓名" 
+                                className="w-full p-4 bg-gray-50 border-2 rounded-xl outline-none focus:border-red-500 font-bold uppercase"
                                 onChange={e => setEmployeeId(e.target.value)}
                             />
                             <button 
-                                onClick={() => employeeId && setView('menu')}
-                                className="w-full bg-red-600 text-white py-4 rounded-2xl font-black shadow-lg btn-active"
-                            >進入測驗</button>
+                                onClick={() => employeeId.trim() && setView('menu')}
+                                className="w-full bg-red-600 text-white py-4 rounded-xl font-black btn-active shadow-lg"
+                            >開始登入</button>
                         </div>
                     </div>
                 </div>
             );
 
             if (view === 'menu') return (
-                <div className="min-h-screen flex items-center justify-center p-6">
-                    <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-10 space-y-4">
-                        <h2 className="text-xl font-black text-center mb-6">歡迎, {employeeId}</h2>
-                        <button onClick={() => startQuiz('domestic')} className="w-full flex items-center p-6 bg-red-50 rounded-3xl border-2 border-transparent hover:border-red-500 btn-active">
-                            <i data-lucide="shopping-bag" className="text-red-500 mr-4"></i>
-                            <div className="text-left"><p className="font-black text-lg">國產/一般組</p><p className="text-xs text-red-400">食品、來店禮</p></div>
+                <div className="quiz-container">
+                    <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-8 space-y-4 border">
+                        <div className="text-center mb-6">
+                            <h2 className="text-xl font-black text-gray-800">歡迎, {employeeId.toUpperCase()}</h2>
+                        </div>
+                        <button onClick={() => handleStart('domestic')} className="w-full flex items-center p-6 bg-red-50 rounded-2xl border-2 border-transparent hover:border-red-500 btn-active">
+                            <span className="text-3xl mr-4">🛍️</span>
+                            <div className="text-left"><p className="font-black text-lg">國產/一般組</p><p className="text-xs text-red-400">食品、來店禮回饋</p></div>
                         </button>
-                        <button onClick={() => startQuiz('boutique')} className="w-full flex items-center p-6 bg-amber-50 rounded-3xl border-2 border-transparent hover:border-amber-500 btn-active">
-                            <i data-lucide="gift" className="text-amber-500 mr-4"></i>
-                            <div className="text-left"><p className="font-black text-lg">精品/珠寶組</p><p className="text-xs text-amber-400">高單價活動</p></div>
+                        <button onClick={() => handleStart('boutique')} className="w-full flex items-center p-6 bg-amber-50 rounded-2xl border-2 border-transparent hover:border-amber-500 btn-active">
+                            <span className="text-3xl mr-4">🎁</span>
+                            <div className="text-left"><p className="font-black text-lg">精品/珠寶組</p><p className="text-xs text-amber-400">精品大類活動</p></div>
                         </button>
-                        <button onClick={() => setView('leaderboard')} className="w-full flex items-center p-6 bg-blue-50 rounded-3xl border-2 border-transparent hover:border-blue-500 btn-active">
-                            <i data-lucide="bar-chart-3" className="text-blue-500 mr-4"></i>
-                            <div className="text-left"><p className="font-black text-lg">即時總排行榜</p></div>
+                        <button onClick={() => setView('leaderboard')} className="w-full flex items-center p-6 bg-blue-50 rounded-2xl border-2 border-transparent hover:border-blue-500 btn-active">
+                            <span className="text-3xl mr-4">📊</span>
+                            <div className="text-left"><p className="font-black text-lg">總成績排行榜</p></div>
                         </button>
                     </div>
                 </div>
@@ -230,28 +213,34 @@
             if (view === 'quiz') {
                 const q = activeQuestions[currentIndex];
                 return (
-                    <div className="min-h-screen flex items-center justify-center p-4">
-                        <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col quiz-card">
-                            <div className="p-6 bg-gray-50 flex justify-between font-bold text-xs border-b">
+                    <div className="quiz-container">
+                        <div className="bg-white w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden flex flex-col" style={{minHeight:'500px'}}>
+                            <div className="px-6 py-4 bg-gray-50 flex justify-between font-bold text-xs border-b">
                                 <span>題目 {currentIndex + 1} / 20</span>
                                 <span className="text-gray-400 uppercase">{employeeId}</span>
                             </div>
                             <div className="p-8 flex-grow">
-                                <h3 className="text-lg font-black mb-8 leading-relaxed">{q.question}</h3>
+                                <h3 className="text-lg font-black text-gray-800 mb-6">{q.question}</h3>
                                 <div className="space-y-3">
                                     {q.options.map((opt, i) => {
-                                        let style = "w-full p-4 rounded-2xl border-2 text-left font-bold transition-all ";
+                                        let style = "w-full p-4 rounded-xl border-2 text-left font-bold transition-all ";
                                         if (isChecked) {
                                             if (i === q.correct) style += "border-green-500 bg-green-50 text-green-700";
-                                            else if (i === selectedIdx) style += "border-red-500 bg-red-50 text-red-700";
+                                            else if (i === selectedIdx) style += "border-red-500 bg-red-50 text-red-700 opacity-80";
                                             else style += "opacity-30 border-gray-100";
                                         } else style += "border-gray-100 active:bg-gray-50";
-                                        return <button key={i} onClick={() => checkAnswer(i)} className={style}>{opt}</button>;
+                                        return (
+                                            <button key={i} onClick={() => !isChecked && (setSelectedIdx(i), setIsChecked(true), i === q.correct && setScore(score + 1))} className={style}>{opt}</button>
+                                        );
                                     })}
                                 </div>
                             </div>
-                            <div className="p-8 border-t bg-gray-50">
-                                <button onClick={next} disabled={!isChecked} className="w-full bg-black text-white py-4 rounded-2xl font-black disabled:opacity-20 btn-active">下一題</button>
+                            <div className="p-6 bg-gray-50 border-t">
+                                <button 
+                                    onClick={() => currentIndex < 19 ? (setCurrentIndex(currentIndex + 1), setSelectedIdx(null), setIsChecked(false)) : submitResult()} 
+                                    disabled={!isChecked}
+                                    className="w-full bg-black text-white py-4 rounded-xl font-black disabled:opacity-20 btn-active"
+                                >{currentIndex === 19 ? '提交結果' : '下一題'}</button>
                             </div>
                         </div>
                     </div>
@@ -259,45 +248,43 @@
             }
 
             if (view === 'result') return (
-                <div className="min-h-screen flex flex-col items-center justify-center p-6">
+                <div className="quiz-container flex-col">
                     <div ref={resRef} className="bg-white w-full max-w-sm rounded-[3rem] shadow-2xl overflow-hidden mb-6 border">
-                        <div className={`p-12 text-center text-white ${score >= 16 ? 'bg-green-600' : 'bg-red-600'}`}>
-                            <i data-lucide="award" className="w-20 h-20 mx-auto mb-4"></i>
-                            <h2 className="text-5xl font-black mb-2">{score*5}%</h2>
-                            <p className="font-bold opacity-80">答對 {score} 題 / 工號 {employeeId}</p>
+                        <div className={`p-10 text-center text-white ${score >= 16 ? 'bg-green-600' : 'bg-red-600'}`}>
+                            <div className="text-6xl mb-4">🏅</div>
+                            <h2 className="text-7xl font-black mb-2">{score*5}%</h2>
+                            <p className="font-bold">答對 {score} 題 / 共 20 題</p>
+                            <p className="text-xs mt-2 opacity-70">測驗工號：{employeeId.toUpperCase()}</p>
                         </div>
                     </div>
-                    <button onClick={download} className="w-full max-w-sm bg-blue-600 text-white py-4 rounded-2xl font-black mb-3 btn-active">下載成績單截圖</button>
-                    <button onClick={() => location.reload()} className="w-full max-w-sm bg-gray-200 py-4 rounded-2xl font-black btn-active">返回主頁</button>
+                    <button onClick={downloadImage} className="w-full max-w-sm bg-blue-600 text-white py-4 rounded-xl font-black mb-3 btn-active shadow-lg">下載證書截圖</button>
+                    <button onClick={() => location.reload()} className="w-full max-w-sm bg-gray-200 text-gray-600 py-4 rounded-xl font-black btn-active">返回首頁</button>
                 </div>
             );
 
             if (view === 'leaderboard') return (
-                <div className="min-h-screen flex flex-col items-center justify-center p-4">
-                    <div className="bg-white w-full max-w-md rounded-[2rem] shadow-2xl h-[80vh] flex flex-col overflow-hidden">
+                <div className="quiz-container">
+                    <div className="bg-white w-full max-w-md rounded-[2rem] shadow-2xl h-[80vh] flex flex-col overflow-hidden border">
                         <div className="p-6 bg-blue-600 text-white text-center">
                             <h2 className="font-black text-xl mb-4">全體即時排行</h2>
                             <input 
                                 type="text" placeholder="搜尋工號..." 
-                                className="w-full p-2 rounded-lg text-black text-sm"
+                                className="w-full p-2 rounded-lg text-black outline-none font-bold"
                                 onChange={e => setSearchTerm(e.target.value.toUpperCase())}
                             />
                         </div>
                         <div className="flex-grow overflow-y-auto p-4 space-y-2">
-                            {processedRank.filter(i => i.employeeId.includes(searchTerm)).map((item, idx) => (
-                                <div key={idx} className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                            {rankList.filter(i => i.employeeId.includes(searchTerm)).map((item, idx) => (
+                                <div key={idx} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl border border-gray-100 shadow-sm">
                                     <div className="flex items-center">
-                                        <span className="w-8 font-black text-blue-300">#{idx+1}</span>
-                                        <span className="font-black text-gray-700">{item.employeeId}</span>
+                                        <span className={`w-8 h-8 flex items-center justify-center rounded-full text-xs font-black mr-4 ${idx < 3 ? 'bg-yellow-400 text-white' : 'bg-gray-200 text-gray-400'}`}>{idx+1}</span>
+                                        <div><p className="font-black text-gray-800">{item.employeeId}</p><p className="text-[10px] text-gray-400 uppercase">{item.mode === 'domestic' ? '國產' : '精品'}</p></div>
                                     </div>
-                                    <div className="text-right">
-                                        <div className="text-blue-600 font-black">{item.score} 題</div>
-                                        <div className="text-[10px] text-gray-400">{item.mode === 'domestic' ? '國產' : '精品'}</div>
-                                    </div>
+                                    <div className="text-right"><p className="text-blue-600 font-black text-lg leading-none">{item.score} <span className="text-[10px] font-bold text-gray-300">題</span></p></div>
                                 </div>
                             ))}
                         </div>
-                        <div className="p-6 border-t"><button onClick={() => setView('menu')} className="w-full py-4 bg-gray-100 rounded-2xl font-black">返回</button></div>
+                        <div className="p-6 border-t"><button onClick={() => setView('menu')} className="w-full py-4 bg-gray-100 rounded-xl font-black btn-active">返回選單</button></div>
                     </div>
                 </div>
             );
@@ -305,10 +292,8 @@
             return null;
         };
 
-        // 啟動圖示
-        const root = createRoot(document.getElementById('root'));
+        const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
-        setTimeout(() => lucide.createIcons(), 500);
     </script>
 </body>
 </html>
