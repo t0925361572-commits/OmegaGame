@@ -2,220 +2,807 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>昇恆昌「馬上 RICH 吉運來」教育訓練測驗</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>馬上 RICH 吉運來 - 2026馬年精緻版</title>
 <style>
-    :root { --primary: #B71C1C; --gold: #FFD700; --bg: #FFF5F5; }
-    body { font-family: "Microsoft JhengHei", sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
-    .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-top: 6px solid var(--primary); }
-    h1 { text-align: center; color: var(--primary); margin-bottom: 5px; font-size: 1.5em; }
-    h2 { text-align: center; color: #666; font-size: 1em; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-    .group-input { margin-bottom: 20px; }
-    .group-input label { display: block; font-weight: bold; margin-bottom: 5px; }
-    .group-input input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-    .question-block { margin-bottom: 20px; padding: 15px; background: #fdfdfd; border: 1px solid #eee; border-radius: 8px; }
-    .q-title { font-weight: bold; color: #A00; margin-bottom: 10px; }
-    .option { display: block; margin: 8px 0; cursor: pointer; }
-    .option input { margin-right: 10px; }
-    .btn { display: block; width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 1.1em; cursor: pointer; font-weight: bold; margin-top: 20px; }
-    .btn:hover { background: #900; }
-    #resultArea { display: none; text-align: center; margin-top: 30px; padding: 20px; background: #E8F5E9; border-radius: 10px; border: 2px solid #4CAF50; }
-    .score-text { font-size: 2.5em; color: #2E7D32; font-weight: bold; margin: 10px 0; }
-    .fill-blank { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-    .fill-blank input { flex: 1; min-width: 80px; padding: 5px; border: 1px solid #ddd; border-radius: 4px; }
-    .note { font-size: 0.8em; color: #888; margin-top: 5px; }
+    :root {
+        --primary-red: #c9182b; /* 中國紅 */
+        --dark-red: #8a0a16;
+        --gold: #ffd700;
+        --gold-dark: #ccac00;
+        --bg-color: #fff5f5;
+        --text-color: #2b2d42;
+        --success-color: #2a9d8f;
+        --error-color: #ef233c;
+        --boutique-color: #1a3c6e; 
+        --domestic-color: #c9182b;
+    }
+    body {
+        font-family: "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: var(--bg-color);
+        /* 祥雲背景紋理 */
+        background-image: 
+            radial-gradient(var(--gold) 15%, transparent 16%),
+            radial-gradient(var(--gold) 15%, transparent 16%);
+        background-size: 30px 30px;
+        background-position: 0 0, 15px 15px;
+        background-blend-mode: overlay;
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+        color: var(--text-color);
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+    /* 降低背景干擾 */
+    body::after {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(255, 245, 245, 0.95);
+        z-index: -1;
+    }
+
+    .app-container {
+        width: 100%;
+        max-width: 480px;
+        background: #fff;
+        min-height: 100vh;
+        box-shadow: 0 0 40px rgba(201, 24, 43, 0.2);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* === Header & Title === */
+    .header {
+        text-align: center;
+        padding: 60px 20px 20px; /* 增加上方留白給馬跑 */
+        background: linear-gradient(180deg, #fff 0%, #fff0f0 100%);
+        border-bottom: 2px solid #ffebeb;
+        position: relative;
+    }
+    
+    .brand-tag {
+        display: inline-block;
+        background: var(--dark-red);
+        color: var(--gold);
+        padding: 4px 16px;
+        border-radius: 50px;
+        font-weight: bold;
+        font-size: 0.85em;
+        letter-spacing: 2px;
+        margin-bottom: 25px; /* 增加間距 */
+        border: 1px solid var(--gold);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .title-wrapper {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+    .title-box {
+        background: var(--primary-red);
+        color: #fff;
+        padding: 15px 35px;
+        border-radius: 15px;
+        box-shadow: 5px 5px 0 var(--gold-dark);
+        border: 2px solid var(--gold);
+        position: relative;
+        z-index: 2;
+    }
+
+    /* 燈籠裝飾 */
+    .lantern {
+        position: absolute;
+        bottom: -15px; /* 改到底部垂掛 */
+        font-size: 24px;
+        animation: swing 3s ease-in-out infinite;
+        z-index: 1;
+    }
+    .lantern-left { left: 10px; transform-origin: top center; }
+    .lantern-right { right: 10px; transform-origin: top center; animation-delay: 1.5s; }
+
+    @keyframes swing {
+        0%, 100% { transform: rotate(-5deg); }
+        50% { transform: rotate(5deg); }
+    }
+
+    h1.main-title {
+        font-size: 1.8em;
+        margin: 0;
+        font-weight: 900;
+        letter-spacing: 2px;
+        text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+        line-height: 1.2;
+    }
+    h2.sub-title {
+        color: var(--dark-red);
+        font-size: 1.1em;
+        margin-top: 20px;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+
+    /* === Cute Horse Animation === */
+    .horse-container {
+        position: absolute;
+        top: -45px; /* 站在標題上面 */
+        left: 0;
+        width: 100%;
+        height: 50px;
+        pointer-events: none;
+        z-index: 3;
+    }
+    .cute-horse {
+        font-size: 42px;
+        position: absolute;
+        /* 馬的跑步動畫：左右來回 + 上下跳動 */
+        animation: run-cycle 6s linear infinite;
+        filter: drop-shadow(0 4px 2px rgba(0,0,0,0.2));
+    }
+
+    @keyframes run-cycle {
+        0% { left: 0%; transform: scaleX(-1) translateY(0); } /* 面向右跑 */
+        45% { left: 85%; transform: scaleX(-1) translateY(-5px); } /* 跑到右邊 */
+        50% { left: 85%; transform: scaleX(1) translateY(0); } /* 轉向左 */
+        95% { left: 0%; transform: scaleX(1) translateY(-5px); } /* 跑到左邊 */
+        100% { left: 0%; transform: scaleX(-1) translateY(0); } /* 轉向右 */
+    }
+
+    /* === Input & Cards === */
+    .card-panel {
+        margin: 20px 25px;
+        background: white;
+        padding: 30px 20px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(201, 24, 43, 0.08);
+        border: 1px solid #ffe5e5;
+        text-align: center;
+    }
+    
+    .input-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+    .input-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: var(--dark-red);
+        font-size: 0.95em;
+    }
+    .input-group input {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid #eee;
+        border-radius: 10px;
+        font-size: 1.1em;
+        box-sizing: border-box;
+        transition: all 0.3s;
+        background: #fafafa;
+    }
+    .input-group input:focus {
+        border-color: var(--primary-red);
+        background: #fff;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(201, 24, 43, 0.1);
+    }
+
+    /* === Quiz UI === */
+    .progress-bar-container {
+        height: 10px;
+        background: #eee;
+        width: 100%;
+    }
+    .progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--gold), var(--primary-red));
+        width: 0%;
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 0 5px 5px 0;
+    }
+    
+    .question-card {
+        padding: 25px;
+        background: #fff;
+    }
+    .q-text {
+        font-weight: bold;
+        font-size: 1.25em;
+        margin-bottom: 30px;
+        line-height: 1.6;
+        color: #2b2d42;
+    }
+    
+    .option {
+        display: flex;
+        align-items: center;
+        padding: 18px 15px;
+        margin-bottom: 15px;
+        background: #fff;
+        border: 2px solid #f0f0f0;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 1.05em;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    }
+    .option:active { transform: scale(0.98); }
+    .option.selected {
+        border-color: var(--primary-red);
+        background: #fff0f3;
+        color: var(--dark-red);
+        font-weight: bold;
+        box-shadow: 0 4px 12px rgba(201, 24, 43, 0.15);
+    }
+
+    .option-circle {
+        width: 24px;
+        height: 24px;
+        border: 2px solid #ccc;
+        border-radius: 50%;
+        margin-right: 15px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .option.selected .option-circle {
+        border-color: var(--primary-red);
+        background: var(--primary-red);
+    }
+
+    /* === Buttons === */
+    .btn-area {
+        padding: 20px;
+        background: #fff;
+        border-top: 1px solid #ffe5e5;
+        margin-top: auto;
+    }
+    .btn {
+        width: 100%;
+        padding: 18px;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.15em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    .btn:active { transform: scale(0.97); }
+
+    .btn-start {
+        background: linear-gradient(135deg, var(--primary-red), #ff4d6d);
+        color: white;
+        font-size: 1.2em;
+        box-shadow: 0 8px 20px rgba(201, 24, 43, 0.3);
+    }
+
+    .btn-boutique { background: linear-gradient(135deg, #003049, #023e8a); color: white; }
+    .btn-domestic { background: linear-gradient(135deg, #d00000, #9d0208); color: white; }
+    .btn-secondary { background: #6c757d; color: white; }
+    .btn-outline { background: #fff; border: 2px solid var(--primary-red); color: var(--primary-red); }
+    .btn-text { background: transparent; color: #888; font-size: 0.95em; padding: 10px; box-shadow: none; text-decoration: underline; }
+    
+    /* Result & Leaderboard Styles */
+    .result-header {
+        background: linear-gradient(135deg, #d90429 0%, #8d0801 100%);
+        color: white;
+        padding: 40px 20px 50px;
+        text-align: center;
+        border-radius: 0 0 40px 40px;
+        margin-bottom: 20px;
+    }
+    .score-big { font-size: 5em; font-weight: 800; margin: 10px 0; }
+    
+    .leaderboard-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+    .leaderboard-table td { padding: 15px 10px; background: #fff; }
+    .rank-num {
+        display: inline-block; width: 30px; height: 30px; line-height: 30px;
+        text-align: center; background: #eee; border-radius: 50%;
+    }
+    .rank-1 { background: #FFD700; color: #fff; }
+
 </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>🐎 馬上 RICH 吉運來</h1>
-    <h2>高雄機場教育訓練測驗卷</h2>
+<div class="app-container">
+    
+    <!-- 1. 登入畫面 (Login View) - 直接顯示，無需歡迎頁 -->
+    <div id="loginView" style="display:flex; height: 100vh; flex-direction: column;">
+        
+        <!-- Header with Horse Animation -->
+        <div class="header">
+            <div class="brand-tag">2026 丙午年</div>
+            <br>
+            
+            <div class="title-wrapper">
+                <!-- 一匹可愛的馬，在標題上跑 -->
+                <div class="horse-container">
+                    <div class="cute-horse">🐎</div>
+                </div>
 
-    <div class="group-input">
-        <label>組別：</label>
-        <input type="text" id="userGroup" placeholder="例如：精品A組">
-    </div>
-    <div class="group-input">
-        <label>姓名：</label>
-        <input type="text" id="userName" placeholder="請輸入您的姓名">
-    </div>
-
-    <form id="quizForm">
-        <div class="question-block">
-            <div class="q-title">1. [span_0](start_span)14大類飾品 (SWV、喬治傑森) 滿額現抵回饋[span_0](end_span)</div>
-            <div class="note">請依序填入：滿5000 / 滿10000 / 滿18000 / 基本門檻</div>
-            <div class="fill-blank">
-                <input type="text" placeholder="滿5000折?" data-ans="500">
-                <input type="text" placeholder="滿1萬折?" data-ans="1000">
-                <input type="text" placeholder="滿1.8萬折?" data-ans="1800">
-                <input type="text" placeholder="基本門檻?" data-ans="5000">
+                <div class="title-box">
+                    <div class="lantern lantern-left">🏮</div>
+                    <div class="lantern lantern-right">🏮</div>
+                    <h1 class="main-title">馬上 RICH<br>吉運來</h1>
+                </div>
             </div>
-        </div>
-
-        <div class="question-block">
-            <div class="q-title">2. [span_1](start_span)03/04/05/06大類 (正價) 滿額現抵回饋[span_1](end_span)</div>
-            <div class="note">請依序填入：滿8000 / 18000 / 25000 / 5萬 / 10萬 / 基本門檻</div>
-            <div class="fill-blank">
-                <input type="text" placeholder="滿8千折?" data-ans="800">
-                <input type="text" placeholder="滿1.8萬?" data-ans="1800">
-                <input type="text" placeholder="滿2.5萬?" data-ans="2500">
-                <input type="text" placeholder="滿5萬?" data-ans="5000">
-                <input type="text" placeholder="滿10萬?" data-ans="10000">
-                <input type="text" placeholder="門檻?" data-ans="8000">
-            </div>
-        </div>
-
-        <div class="question-block">
-            <div class="q-title">3. [span_2](start_span)滿額現抵回饋活動開跑日期？[span_2](end_span)</div>
-            <label class="option"><input type="radio" name="q3" value="A"> (A) 2/1</label>
-            <label class="option"><input type="radio" name="q3" value="B" data-correct="true"> (B) 1/10</label>
-            <label class="option"><input type="radio" name="q3" value="C"> (C) 2/16</label>
-        </div>
-
-        <div class="question-block">
-            <div class="q-title">4. [span_3](start_span)滿額現抵何者可參加？[span_3](end_span)</div>
-            <label class="option"><input type="radio" name="q4" value="A"> (A) 03大類5折特價品</label>
-            <label class="option"><input type="radio" name="q4" value="B"> (B) 特價手錶</label>
-            <label class="option"><input type="radio" name="q4" value="C"> (C) 5折特價珠寶</label>
-            <label class="option"><input type="radio" name="q4" value="D" data-correct="true"> (D) 以上皆非 (僅正價/黃金通常不含)</label>
-        </div>
-
-        <div class="question-block">
-            <div class="q-title">5. [span_4](start_span)喬治傑生滿$5000與SWV滿$8000可否併計？[span_4](end_span)</div>
-            <label class="option"><input type="radio" name="q5" value="A"> (A) 不可以</label>
-            <label class="option"><input type="radio" name="q5" value="B" data-correct="true"> (B) 可以併計</label>
-        </div>
-
-        <div class="question-block">
-            <div class="q-title">6. [span_5](start_span)單筆滿額贈何時開跑？[span_5](end_span)</div>
-            <label class="option"><input type="radio" name="q6" value="A"> (A) 2/1</label>
-            <label class="option"><input type="radio" name="q6" value="B" data-correct="true"> (B) 1/10</label>
-            <label class="option"><input type="radio" name="q6" value="C"> (C) 2/16</label>
-        </div>
-
-        <div class="question-block">
-            <div class="q-title">7. [span_6](start_span)全館滿額贈何時開跑？[span_6](end_span)</div>
-            <label class="option"><input type="radio" name="q7" value="A"> (A) 2/1</label>
-            <label class="option"><input type="radio" name="q7" value="B" data-correct="true"> (B) 1/10</label>
-            <label class="option"><input type="radio" name="q7" value="C"> (C) 2/16</label>
-        </div>
-
-        <div class="question-block">
-            <div class="q-title">8. [span_7](start_span)會員來店禮/滿額贈配對[span_7](end_span)</div>
-            <div class="note">請填代號：(A)Kurt包 (B)賀卡 (C)45000點 (D)iPhone17 (E)金手鍊 (F)紅包袋 (G)Switch (H)貼紙</div>
-            <div class="fill-blank" style="flex-direction:column;">
-                <div>1/10 第一波會員來店禮 <input type="text" data-ans="H"> (猜測)</div>
-                <div>14大類滿15800 <input type="text" data-ans="A"> (猜測)</div>
-                <div>2/1 第二波會員來店禮 <input type="text" data-ans="F"> (猜測)</div>
-                <div>2/16 會員來店禮 <input type="text" data-ans="B"> (猜測)</div>
-                <div>全館滿100萬 <input type="text" data-ans="D"> (猜測)</div>
-            </div>
-        </div>
-
-        <div class="question-block">
-            <div class="q-title">9. [span_8](start_span)RICH POINT 何時派發？[span_8](end_span)</div>
-            <label class="option"><input type="radio" name="q9" value="A"> (A) 每週三</label>
-            <label class="option"><input type="radio" name="q9" value="B" data-correct="true"> (B) 活動結束後</label>
-        </div>
-
-        <div class="question-block">
-            <div class="q-title">10. [span_9](start_span)領取全館滿額贈地點？[span_9](end_span)</div>
-            <label class="option"><input type="radio" name="q10" value="A"> (A) 各組櫃位</label>
-            <label class="option"><input type="radio" name="q10" value="B" data-correct="true"> (B) 客服櫃台</label>
-        </div>
-
-        <div class="question-block">
-            <div class="q-title">11. [span_10](start_span)單筆滿額贈是否需會員？[span_10](end_span)</div>
-            <label class="option"><input type="radio" name="q11" value="A" data-correct="true"> (A) 是</label>
-            <label class="option"><input type="radio" name="q11" value="B"> (B) 否</label>
-        </div>
-
-        <div class="question-block">
-            <div class="q-title">12. [span_11](start_span)台新聯名卡滿16萬送2000，高雄限量幾份？[span_11](end_span)</div>
-            <label class="option"><input type="radio" name="q12" value="A" data-correct="true"> (A) 10 份</label>
-            <label class="option"><input type="radio" name="q12" value="B"> (B) 50 份</label>
-        </div>
-
-        <div class="question-block">
-            <div class="q-title">13. [span_12](start_span)台新「$888送1元發財金」日期？[span_12](end_span)</div>
-            <label class="option"><input type="radio" name="q13" value="A"> (A) 1/10 - 2/24</label>
-            <label class="option"><input type="radio" name="q13" value="B" data-correct="true"> (B) 2/13 - 2/22</label>
-        </div>
-
-        <div class="question-block">
-            <div class="q-title">14. [span_13](start_span)星展滿10萬送2000條件？[span_13](end_span)</div>
-            <label class="option"><input type="radio" name="q14" value="A" data-correct="true"> (A) 單筆付清</label>
-            <label class="option"><input type="radio" name="q14" value="B"> (B) 分期累積</label>
-        </div>
-
-        <div class="question-block">
-            <div class="q-title">15. [span_14](start_span)銀行禮是否含菸酒藥？[span_14](end_span)</div>
-            <label class="option"><input type="radio" name="q15" value="A"> (A) 包含</label>
-            <label class="option"><input type="radio" name="q15" value="B" data-correct="true"> (B) 不包含</label>
+            
+            <h2 class="sub-title">高雄機場教育訓練測驗</h2>
         </div>
         
-        <div class="question-block">
-            <div class="q-title">16. [span_15](start_span)台新Q1 單日累積滿68000送？[span_15](end_span)</div>
-            <label class="option"><input type="radio" name="q16" value="A"> (A) 香氛禮盒</label>
-            <label class="option"><input type="radio" name="q16" value="B" data-correct="true"> (B) 25吋上掀旅行箱</label>
+        <!-- Login Form -->
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+            <div class="card-panel">
+                <div style="margin-bottom:20px; color:#555; font-size:0.9em;">
+                    請輸入您的資料以開始測驗
+                </div>
+                <div class="input-group">
+                    <label>您的姓名</label>
+                    <input type="text" id="inputName" placeholder="請輸入真實姓名">
+                </div>
+                <div class="input-group">
+                    <label>部門 / 工號</label>
+                    <input type="text" id="inputDept" placeholder="例如：精品A組 / 12345">
+                </div>
+                <button class="btn btn-start" onclick="performLogin()">確認登入</button>
+            </div>
+            
+            <div style="text-align:center;">
+                 <button class="btn btn-text" onclick="showLeaderboard()">🏆 偷看線上排行榜</button>
+            </div>
         </div>
-
-         <div class="question-block">
-            <div class="q-title">17. [span_16](start_span)國產單筆滿1880現抵多少？[span_16](end_span)</div>
-            <label class="option"><input type="radio" name="q17" value="B" data-correct="true"> (A) 200 (假設)</label>
-            <label class="option"><input type="radio" name="q17" value="A"> (B) 250</label>
-        </div>
-
-        <div class="question-block">
-            <div class="q-title">18. [span_17](start_span)國產單筆滿3000現抵多少？[span_17](end_span)</div>
-            <label class="option"><input type="radio" name="q18" value="C" data-correct="true"> (A) 300 (假設)</label>
-            <label class="option"><input type="radio" name="q18" value="B"> (B) 250</label>
-        </div>
-
-        <button type="button" class="btn" onclick="submitQuiz()">送出測驗並查看成績</button>
-    </form>
-
-    <div id="resultArea">
-        <p>測驗完成！</p>
-        <p>學員：<span id="resName"></span></p>
-        <div class="score-text"><span id="scoreVal"></span> / 100</div>
-        <p>請截圖此畫面回報給店長。</p>
     </div>
+
+    <!-- 2. 選單畫面 (Menu View) -->
+    <div id="menuView" style="display:none; height: 100vh; flex-direction: column;">
+        <div class="header" style="padding-top:40px;">
+            <h1 class="main-title" style="color:var(--primary-red);">選擇測驗項目</h1>
+            <h2 class="sub-title" id="welcomeText">Hi, 同仁</h2>
+        </div>
+        
+        <div style="flex:1; padding:20px; display:flex; flex-direction:column; justify-content:center;">
+             <div style="background: #fffcf2; border-left: 5px solid var(--gold); padding: 20px; border-radius: 12px; margin-bottom:30px;">
+                <h3 style="margin:0 0 10px 0; color:#e85d04;">📝 測驗說明</h3>
+                <ul style="padding-left: 20px; margin:0; color:#555; line-height:1.8;">
+                    <li>請依據您的業種選擇題庫。</li>
+                    <li>包含銀行、全館活動共同題。</li>
+                    <li>共 20 題，滿分 100 分。</li>
+                </ul>
+            </div>
+
+            <button class="btn btn-boutique" onclick="startQuiz('boutique')">
+                <div style="font-size:1.2em;">� 精品重點測驗</div>
+                <div style="font-size:0.8em; opacity:0.8; font-weight:normal;">含 03.04.05.06 類</div>
+            </button>
+            
+            <button class="btn btn-domestic" onclick="startQuiz('domestic')">
+                <div style="font-size:1.2em;">💄 國產/香化測驗</div>
+                <div style="font-size:0.8em; opacity:0.8; font-weight:normal;">排除精品與飾品</div>
+            </button>
+        </div>
+        <div class="btn-area">
+             <button class="btn btn-secondary" onclick="backToLogin()">🔙 返回登入</button>
+        </div>
+    </div>
+
+    <!-- 3. 測驗進行中 (Quiz View) -->
+    <div id="quizView" style="display:none; height: 100vh; flex-direction: column;">
+        <div class="header" style="padding: 15px 20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="brand-tag" id="quizSubjectTag" style="margin:0; font-size:0.75em; background:#eee; color:#555; box-shadow:none;">SUBJECT</div>
+                <div style="font-weight:900; color:#d90429; font-size:1.1em;">
+                    <span id="currentQNum" style="font-size:1.5em;">1</span> / <span id="totalQNum">20</span>
+                </div>
+            </div>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+
+        <div id="questionContainer" style="flex:1; overflow-y:auto;">
+            <!-- 題目將透過 JS 插入 -->
+        </div>
+
+        <div class="btn-area">
+            <button id="nextBtn" class="btn btn-boutique" onclick="nextQuestion()" disabled style="opacity:0.6; transform: none; background: var(--primary-red);">請選擇答案</button>
+        </div>
+    </div>
+
+    <!-- 4. 結果畫面 (Result View) -->
+    <div id="resultView" style="display:none; flex-direction: column;">
+        <div class="result-header">
+            <div style="font-size:1.1em; color:var(--gold); font-weight:bold;">FINAL SCORE</div>
+            <div class="score-big" id="finalScore">0</div>
+            <div style="background:rgba(0,0,0,0.2); display:inline-block; padding:5px 20px; border-radius:20px;" id="displayUserInfo">User Info</div>
+        </div>
+
+        <div style="padding: 0 25px;">
+            <h3 style="margin: 0 0 15px 0; color: #2b2d42; font-weight:800; border-bottom: 2px solid #eee; padding-bottom:10px;">
+                📊 答題檢討
+            </h3>
+        </div>
+        
+        <div class="review-container" id="reviewContainer" style="overflow-y: auto;">
+            <!-- 錯題列表 -->
+        </div>
+
+        <div class="btn-area">
+            <button class="btn btn-outline" onclick="copyResultText()">📋 複製成績 (傳LINE)</button>
+            <button class="btn btn-text" onclick="showLeaderboard()">🏆 查看線上英雄榜</button>
+            <button class="btn btn-secondary" onclick="location.reload()">🔄 回首頁</button>
+        </div>
+    </div>
+
+    <!-- 5. 排行榜畫面 (Leaderboard View) -->
+    <div id="leaderboardView" style="display:none; height: 100vh; flex-direction: column;">
+        <div class="header" style="padding-bottom:10px;">
+            <div class="title-box" style="transform:none; font-size:0.8em; padding:8px 20px;">
+                <h1 class="main-title" style="font-size:1.4em;">🏆 線上英雄榜</h1>
+            </div>
+            <h2 class="sub-title" style="margin-top:5px;">Top 10 Live Ranking</h2>
+        </div>
+        
+        <div style="flex: 1; overflow-y: auto; padding: 20px; background:#f8f9fa;">
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th width="15%">#</th>
+                        <th width="30%">NAME</th>
+                        <th width="35%">DEPT</th>
+                        <th width="20%">SCORE</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody">
+                    <tr><td colspan="4" style="text-align:center; padding:30px; color:#aaa;">資料讀取中...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="btn-area">
+            <button class="btn btn-secondary" onclick="backToLogin()">🔙 返回</button>
+        </div>
+    </div>
+
 </div>
 
-<script>
-function submitQuiz() {
-    var score = 0;
-    var totalQuestions = 18; // 總題數估算
-    var pointsPerQ = 100 / totalQuestions;
-    var name = document.getElementById("userName").value;
+<!-- Firebase Module Script -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    if(!name) { alert("請記得填寫姓名喔！"); return; }
+    const firebaseConfig = {
+      apiKey: "AIzaSyAk5ugWIjaeva-GNn54bbIJ4_V57mk__eo",
+      authDomain: "quiz-2dce6.firebaseapp.com",
+      projectId: "quiz-2dce6",
+      storageBucket: "quiz-2dce6.firebasestorage.app",
+      messagingSenderId: "1093040493998",
+      appId: "1:1093040493998:web:932bda3c48fa38b7e6e43f",
+      measurementId: "G-Q5D52QGSSF"
+    };
 
-    // 檢查選擇題 (Radio)
-    var radios = document.querySelectorAll('input[type="radio"]:checked');
-    radios.forEach(function(r) {
-        if(r.dataset.correct === "true") score += pointsPerQ;
-    });
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    // 檢查填空題 (簡單模糊比對)
-    var blanks = document.querySelectorAll('input[type="text"][data-ans]');
-    var blankCorrect = 0;
-    blanks.forEach(function(i) {
-        if(i.value.trim() == i.dataset.ans) blankCorrect++;
-    });
-    // 填空題加分邏輯(簡化)
-    if(blankCorrect > 0) score += (blankCorrect * 2); 
+    // --- 全域變數 ---
+    let currentQuestions = [];
+    let currentQIndex = 0;
+    let score = 0;
+    let selectedOptionIndex = null;
+    let userInfo = { name: "", dept: "" };
+    let userAnswers = [];
+    let currentQuizType = ""; 
 
-    // 顯示結果
-    if(score > 100) score = 100;
-    document.getElementById("quizForm").style.display = "none";
-    document.getElementById("resultArea").style.display = "block";
-    document.getElementById("resName").innerText = name;
-    document.getElementById("scoreVal").innerText = Math.round(score);
-    window.scrollTo(0, 0);
-}
+    // --- 題庫資料 (保持不變) ---
+    const commonQuestions = [
+        { q: "1/10 第一波會員來店禮是？", options: ["(A) 馬年紅包袋", "(B) 馬年轉運貼紙", "(C) 1元賀卡"], a: 1 },
+        { q: "2/1 第二波會員來店禮是？", options: ["(A) 馬年紅包袋", "(B) 掛繩包", "(C) 香盅禮盒"], a: 0 },
+        { q: "2/16 會員來店禮是？", options: ["(A) 1元賀卡", "(B) 轉運貼紙", "(C) 紅包袋"], a: 0 },
+        { q: "全館當日累計滿 $300,000 贈送？", options: ["(A) iPhone 17 PRO", "(B) SWITCH 2", "(C) 純金紅繩手鍊"], a: 2 },
+        { q: "全館當日累計滿 $500,000 贈送？", options: ["(A) 純金紅繩手鍊", "(B) SWITCH 2 單機版", "(C) iPhone 17 PRO"], a: 1 },
+        { q: "全館當日累計滿 $1,000,000 贈送？", options: ["(A) iPhone 17 PRO 256G", "(B) SWITCH 2", "(C) 50g 黃金"], a: 0 },
+        { q: "全館當日累計滿 $150,000 贈送多少 Rich Points？", options: ["(A) 30,000 點", "(B) 45,000 點", "(C) 50,000 點"], a: 1 },
+        { q: "全館滿額贈（含黃金及特價珠寶手錶）統一於何處兌換？", options: ["(A) 收銀櫃台", "(B) 服務台", "(C) 客服櫃檯"], a: 2 },
+        { q: "台新聯名卡滿 $160,000 送 $2,000 禮券，高雄機場限量幾份？", options: ["(A) 10 份", "(B) 50 份"], a: 0 },
+        { q: "台新銀行「$888 送台新 1 元發財金」活動日期區間？", options: ["(A) 1/10 - 2/24", "(B) 2/13 - 2/22"], a: 0 },
+        { q: "星展銀行滿 10 萬送 $2,000 刷卡金，條件為何？", options: ["(A) 單筆付清", "(B) 分期累積"], a: 0 },
+        { q: "關於銀行刷卡滿額禮，是否包含「菸酒藥類」的消費金額？", options: ["(A) 包含", "(B) 不包含"], a: 1 },
+        { q: "台新銀行 2026 Q1 單日累積多少贈阿原艾草旅行組？", options: ["(A) 22,000", "(B) 32,800"], a: 1 },
+        { q: "台新銀行 2026 Q1 單日累積滿 68,000 贈送？", options: ["(A) 香氛禮盒", "(B) 25吋上掀旅行箱"], a: 1 }
+    ];
+
+    const boutiqueSpecificQuestions = [
+        { q: "03.04.05.06 大類（皮件/眼鏡/珠寶/錶）的基本現抵門檻是？", options: ["(A) $5,000", "(B) $8,000", "(C) $18,000"], a: 1 },
+        { q: "03.04.05.06 大類滿 $8,000 現抵多少？", options: ["(A) $400", "(B) $650", "(C) $800"], a: 1 },
+        { q: "03.04.05.06 大類滿 $25,000 現抵多少？", options: ["(A) $2,000", "(B) $2,400", "(C) $2,500"], a: 1 },
+        { q: "03.04.05.06 大類滿 $50,000 現抵多少？", options: ["(A) $4,500", "(B) $4,800", "(C) $5,000"], a: 1 },
+        { q: "03.04.05.06 大類滿 $100,000 現抵多少？", options: ["(A) $9,000", "(B) $9,600", "(C) $10,000"], a: 1 },
+        { q: "03.04.05.06 大類單筆滿 $32,800 贈品為何？", options: ["(A) 掛繩包", "(B) 香盅禮盒", "(C) 旅行組"], a: 0 }
+    ];
+
+    const domesticSpecificQuestions = [
+        { q: "國產滿額現抵：單筆滿 $1,880 可以現抵多少？", options: ["(A) $100", "(B) $150", "(C) $200"], a: 1 },
+        { q: "國產單筆滿額 $3,000 可以現抵回饋多少？", options: ["(A) $250", "(B) $300", "(C) $350"], a: 1 },
+        { q: "國產單筆滿 $3,000 後，每滿 $1,000 以此類推回饋幾%？", options: ["(A) 10%", "(B) 8%", "(C) 12%"], a: 0 },
+        { q: "2/1 開跑活動，單筆滿 $1,000 可獲得？", options: ["(A) 抽獎券乙張", "(B) 抵用券乙張", "(C) 紅包袋"], a: 0 }
+    ];
+
+    function shuffleArray(array) {
+        let newArr = [...array];
+        for (let i = newArr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+        }
+        return newArr;
+    }
+
+    // --- 頁面切換與邏輯函式 ---
+
+    // 1. 執行登入 (驗證並切換到選單)
+    window.performLogin = function() {
+        const name = document.getElementById('inputName').value.trim();
+        const dept = document.getElementById('inputDept').value.trim();
+
+        if (!name || !dept) {
+            alert("⚠️ 請先輸入「姓名」與「部門/工號」！");
+            return;
+        }
+        userInfo = { name, dept };
+        
+        document.getElementById('welcomeText').innerText = `Hi, ${name}`;
+        document.getElementById('loginView').style.display = 'none';
+        document.getElementById('menuView').style.display = 'flex';
+    }
+
+    // 2. 開始測驗
+    window.startQuiz = function(type) {
+        currentQuizType = type;
+
+        // 組合題庫
+        let specificQs = (type === 'boutique') ? boutiqueSpecificQuestions : domesticSpecificQuestions;
+        let fullSet = [...specificQs, ...commonQuestions];
+        let shuffledSet = shuffleArray(fullSet);
+        currentQuestions = shuffledSet.slice(0, 20);
+        
+        currentQIndex = 0;
+        score = 0;
+        userAnswers = [];
+
+        // UI Update
+        document.getElementById('menuView').style.display = 'none';
+        document.getElementById('quizView').style.display = 'flex';
+        document.getElementById('totalQNum').innerText = currentQuestions.length;
+        
+        let tag = document.getElementById('quizSubjectTag');
+        let nextBtn = document.getElementById('nextBtn');
+        
+        if (type === 'boutique') {
+            tag.innerText = "精品重點";
+            tag.style.background = "#003049";
+            tag.style.color = "#fff";
+            nextBtn.className = "btn btn-boutique";
+        } else {
+            tag.innerText = "國產/香化";
+            tag.style.background = "#d00000";
+            tag.style.color = "#fff";
+            nextBtn.className = "btn btn-domestic";
+        }
+
+        window.loadQuestion();
+    }
+
+    window.loadQuestion = function() {
+        let qData = currentQuestions[currentQIndex];
+        let container = document.getElementById('questionContainer');
+        
+        document.getElementById('currentQNum').innerText = currentQIndex + 1;
+        let progressPercent = ((currentQIndex + 1) / currentQuestions.length) * 100;
+        document.getElementById('progressBar').style.width = progressPercent + "%";
+
+        container.innerHTML = `
+            <div class="question-card">
+                <div class="q-text">${qData.q}</div>
+                <div class="options-list">
+                    ${qData.options.map((opt, index) => `
+                        <div class="option" onclick="window.selectOption(this, ${index})">
+                            <div class="option-circle"></div>
+                            <div>${opt}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        
+        let nextBtn = document.getElementById('nextBtn');
+        nextBtn.disabled = true;
+        nextBtn.style.opacity = "0.6";
+        nextBtn.innerText = (currentQIndex === currentQuestions.length - 1) ? "送出試卷" : "下一題";
+        selectedOptionIndex = null;
+        container.scrollTop = 0;
+    }
+
+    window.selectOption = function(element, index) {
+        document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+        element.classList.add('selected');
+        selectedOptionIndex = index;
+        let nextBtn = document.getElementById('nextBtn');
+        nextBtn.disabled = false;
+        nextBtn.style.opacity = "1";
+    }
+
+    window.nextQuestion = function() {
+        if (selectedOptionIndex === null) return;
+
+        let currentQ = currentQuestions[currentQIndex];
+        let isCorrect = (selectedOptionIndex === currentQ.a);
+        if (isCorrect) score++;
+        
+        userAnswers.push({
+            question: currentQ.q,
+            userSelect: currentQ.options[selectedOptionIndex],
+            correctSelect: currentQ.options[currentQ.a],
+            isCorrect: isCorrect
+        });
+
+        if (currentQIndex < currentQuestions.length - 1) {
+            currentQIndex++;
+            window.loadQuestion();
+        } else {
+            window.showResult();
+        }
+    }
+
+    window.showResult = function() {
+        document.getElementById('quizView').style.display = 'none';
+        document.getElementById('resultView').style.display = 'flex';
+
+        let finalScore = Math.round((score / currentQuestions.length) * 100);
+        document.getElementById('finalScore').innerText = finalScore;
+        let typeName = (currentQuizType === 'boutique') ? "(精)" : "(國)";
+        document.getElementById('displayUserInfo').innerText = `${userInfo.name} / ${userInfo.dept} ${typeName}`;
+
+        window.saveToLeaderboard(userInfo.name, userInfo.dept + " " + typeName, finalScore);
+
+        let reviewHtml = "";
+        userAnswers.forEach((ans, idx) => {
+            let statusClass = ans.isCorrect ? "correct" : "wrong";
+            let statusBadge = ans.isCorrect ? 
+                `<span style="color:#2a9d8f;">⭕</span>` : 
+                `<span style="color:#ef233c;">❌</span>`;
+            let explanation = ans.isCorrect ? "" : `<div style="margin-top:8px; color:#c9182b; font-weight:bold; padding:5px; background:#fff0f0; border-radius:4px; font-size:0.9em;">正解：${ans.correctSelect}</div>`;
+
+            reviewHtml += `
+                <div class="review-item ${statusClass}">
+                    <div class="review-q">${statusBadge} ${idx + 1}. ${ans.question}</div>
+                    <div class="review-ans">
+                        你的選擇：${ans.userSelect}
+                        ${explanation}
+                    </div>
+                </div>
+            `;
+        });
+        document.getElementById('reviewContainer').innerHTML = reviewHtml;
+    }
+
+    window.copyResultText = function() {
+        let finalScore = Math.round((score / currentQuestions.length) * 100);
+        let typeText = (currentQuizType === 'boutique') ? "精品重點" : "國產/香化";
+        let text = `【${typeText}測驗結果】\n姓名：${userInfo.name}\n部門：${userInfo.dept}\n分數：${finalScore} 分\n日期：${new Date().toLocaleDateString()}`;
+        
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("✅ 成績已複製！\n請直接到 LINE 對話框貼上即可。");
+            }).catch(err => {
+                window.fallbackCopyTextToClipboard(text);
+            });
+        } else {
+            window.fallbackCopyTextToClipboard(text);
+        }
+    }
+
+    window.fallbackCopyTextToClipboard = function(text) {
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            var successful = document.execCommand('copy');
+            if (successful) {
+                alert("✅ 成績已複製！\n請直接到 LINE 對話框貼上即可。");
+            } else {
+                alert("⚠️ 複製失敗，可能是手機系統限制。\n請直接「螢幕截圖」傳送。");
+            }
+        } catch (err) {
+            alert("⚠️ 複製失敗，請直接「螢幕截圖」傳送。");
+        }
+        document.body.removeChild(textArea);
+    }
+
+    window.backToLogin = function() {
+        document.getElementById('menuView').style.display = 'none';
+        document.getElementById('leaderboardView').style.display = 'none';
+        document.getElementById('resultView').style.display = 'none';
+        document.getElementById('loginView').style.display = 'flex';
+        // 不清空資料，方便重測
+    }
+
+    // === Firebase Functions ===
+
+    window.saveToLeaderboard = async function(name, dept, score) {
+        try {
+            await addDoc(collection(db, "quiz_leaderboard_2026"), {
+                name: name,
+                dept: dept,
+                score: score,
+                timestamp: Date.now()
+            });
+            console.log("Score saved!");
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    }
+
+    window.showLeaderboard = async function() {
+        // Hide all views first
+        document.getElementById('loginView').style.display = 'none';
+        document.getElementById('menuView').style.display = 'none';
+        document.getElementById('resultView').style.display = 'none';
+        document.getElementById('leaderboardView').style.display = 'flex';
+
+        let tbody = document.getElementById('leaderboardBody');
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#aaa;">雲端資料讀取中...</td></tr>`;
+
+        try {
+            const q = query(collection(db, "quiz_leaderboard_2026"), orderBy("score", "desc"), orderBy("timestamp", "asc"), limit(10));
+            const querySnapshot = await getDocs(q);
+            
+            tbody.innerHTML = "";
+            let rank = 1;
+
+            if (querySnapshot.empty) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#aaa;">尚無紀錄<br>快來當第一個挑戰者！</td></tr>`;
+                return;
+            }
+
+            querySnapshot.forEach((doc) => {
+                const item = doc.data();
+                let rankClass = "";
+                if (rank === 1) rankClass = "rank-1";
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td><span class="rank-num ${rankClass}">${rank}</span></td>
+                        <td style="font-weight:bold; color:#555;">${item.name}</td>
+                        <td style="font-size:0.85em; color:#888;">${item.dept}</td>
+                        <td style="font-weight:bold; color:#d90429; font-size:1.1em;">${item.score}</td>
+                    </tr>
+                `;
+                rank++;
+            });
+
+        } catch (e) {
+            console.error("Error fetching leaderboard: ", e);
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:red;">無法讀取排行榜</td></tr>`;
+        }
+    }
 </script>
 
 </body>
