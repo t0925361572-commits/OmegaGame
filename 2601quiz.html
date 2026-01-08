@@ -3,459 +3,490 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>馬上 RICH 吉運來 - 2026極致版</title>
+<title>馬上 RICH 吉運來 - 2026年節特別企劃</title>
+<!-- 引入 FontAwesome 6 (使用 CDN 確保圖標顯示正常) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
     :root {
-        --primary-red: #c0392b; /* 較深沈的質感紅 */
-        --vivid-red: #e74c3c;   /* 亮紅 */
-        --bg-red: #922b21;      /* 背景深紅 */
-        --gold: #f1c40f;
-        --gold-dark: #d4ac0d;
-        --text-color: #2c3e50;
-        --boutique-color: #1a3c6e; 
-        --domestic-color: #c0392b;
+        /* == 色彩計畫：宮廷紅與流沙金 == */
+        --bg-color: #720e1e;       /* 深宮廷紅 */
+        --card-bg: #fffbf0;        /* 象牙白 */
+        --gold-main: #ffcc00;      /* 明亮金 */
+        --gold-dark: #c59d00;      /* 暗金 (陰影用) */
+        --text-dark: #2c3e50;      /* 深鐵灰 */
+        --btn-gradient-start: #d32f2f;
+        --btn-gradient-end: #b71c1c;
     }
+
     body {
-        font-family: "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
-        background-color: var(--bg-red);
-        /* 背景紋理：金色圓點與祥雲意象 */
+        font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
+        background-color: var(--bg-color);
+        /* 背景：傳統菱格紋與暗紋 */
         background-image: 
-            radial-gradient(var(--gold) 1px, transparent 1px),
-            radial-gradient(var(--gold) 1px, transparent 1px);
-        background-size: 40px 40px;
+            linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.05) 75%, rgba(0,0,0,0.05)),
+            linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.05) 75%, rgba(0,0,0,0.05));
         background-position: 0 0, 20px 20px;
+        background-size: 40px 40px;
         margin: 0;
         padding: 0;
-        color: var(--text-color);
+        color: var(--text-dark);
         display: flex;
         justify-content: center;
         min-height: 100vh;
         overflow-x: hidden;
     }
 
+    /* APP 主容器 */
     .app-container {
         width: 100%;
-        max-width: 420px; /*稍微縮窄讓比例更好看*/
+        max-width: 420px;
         background: #fff;
         min-height: 100vh;
-        box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        box-shadow: 0 0 60px rgba(0,0,0,0.8);
         display: flex;
         flex-direction: column;
         position: relative;
         overflow: hidden;
     }
-    
-    /* === Header & Title (更緊湊) === */
-    .header {
-        text-align: center;
-        padding: 60px 15px 15px; /* 縮減 padding */
-        background: linear-gradient(180deg, #fffbf0 0%, #fff 100%); /* 淡淡的米黃漸層 */
-        border-bottom: 1px solid #fcebb6;
-        position: relative;
-    }
-    
-    .brand-tag {
-        display: inline-block;
-        background: var(--bg-red);
-        color: var(--gold);
-        padding: 3px 12px;
-        border-radius: 50px;
-        font-weight: bold;
-        font-size: 0.75em;
-        letter-spacing: 1.5px;
-        margin-bottom: 25px; /* 縮減間距 */
-        border: 1px solid var(--gold);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-    }
 
-    .title-wrapper {
-        position: relative;
-        display: inline-block;
-        margin-bottom: 10px;
-    }
-
-    .title-box {
-        background: var(--primary-red);
+    /* ============================
+       1. 首頁 (登入) - 金馬視覺
+       ============================ */
+    #loginView {
+        /* 首頁全紅背景，帶有金色光暈 */
+        background: radial-gradient(circle at top, #a93226 0%, var(--bg-color) 80%);
         color: #fff;
-        padding: 10px 30px; /* 縮小內距 */
-        border-radius: 12px;
-        box-shadow: 0 4px 0 var(--bg-red), 0 8px 15px rgba(0,0,0,0.2);
-        border: 2px solid var(--gold);
+    }
+
+    .header-section {
+        text-align: center;
+        padding-top: 50px;
         position: relative;
         z-index: 2;
     }
 
-    /* 燈籠裝飾 (微調位置) */
-    .lantern {
-        position: absolute;
-        bottom: -18px;
-        font-size: 22px;
-        animation: swing 3s ease-in-out infinite;
-        z-index: 3;
-        filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
-    }
-    .lantern-left { left: 0px; transform-origin: top center; }
-    .lantern-right { right: 0px; transform-origin: top center; animation-delay: 1.5s; }
-
-    @keyframes swing {
-        0%, 100% { transform: rotate(-8deg); }
-        50% { transform: rotate(8deg); }
-    }
-
-    h1.main-title {
-        font-size: 1.7em; /* 字體微調 */
-        margin: 0;
+    /* 年份標籤：像匾額一樣 */
+    .year-tag {
+        display: inline-block;
+        background: linear-gradient(to right, var(--gold-dark), var(--gold-main), var(--gold-dark));
+        color: #5a0000;
+        padding: 6px 24px;
+        border-radius: 50px;
         font-weight: 900;
+        letter-spacing: 3px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        margin-bottom: 30px;
+        border: 2px solid #fff;
+        text-transform: uppercase;
+        position: relative;
+    }
+
+    /* === 金馬徽章 (CSS 組合術) === */
+    .horse-badge-container {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto 15px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* 外圈金環光芒 */
+    .badge-ring {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 4px solid var(--gold-main);
+        border-radius: 50%;
+        box-shadow: 0 0 20px rgba(255, 204, 0, 0.6), inset 0 0 20px rgba(255, 204, 0, 0.3);
+        animation: ring-pulse 3s infinite;
+        background: rgba(160, 0, 0, 0.3); /* 半透明底 */
+    }
+
+    /* 馬圖標 */
+    .main-horse-icon {
+        font-size: 85px;
+        color: var(--gold-main);
+        z-index: 2;
+        filter: drop-shadow(0 4px 2px rgba(0,0,0,0.5));
+        transform: translateY(-5px); /* 微調位置 */
+    }
+
+    /* 裝飾雲紋 (左右) */
+    .decor-cloud {
+        position: absolute;
+        font-size: 30px;
+        color: rgba(255,255,255,0.8);
+        bottom: 10px;
+        z-index: 1;
+    }
+    .cloud-left { left: -10px; transform: scaleX(-1); }
+    .cloud-right { right: -10px; }
+
+    @keyframes ring-pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.05); opacity: 0.8; }
+    }
+
+    /* 標題文字 */
+    .main-title {
+        font-size: 2.4em;
+        font-weight: 900;
+        margin: 10px 0 5px;
+        color: #fff;
+        text-shadow: 0 4px 0 #3d0000, 0 8px 15px rgba(0,0,0,0.5);
         letter-spacing: 2px;
-        text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
-        line-height: 1.2;
+        line-height: 1.1;
     }
-    h2.sub-title {
-        color: var(--bg-red);
-        font-size: 1em;
-        margin-top: 15px;
-        font-weight: bold;
-        letter-spacing: 1px;
-    }
-
-    /* === Auspicious Horse Animation (祥瑞馬) === */
-    .horse-container {
-        position: absolute;
-        top: -65px; /* 貼近標題 */
-        left: 0;
-        width: 100%;
-        height: 80px;
-        pointer-events: none;
-        z-index: 5;
-    }
-    .cute-horse {
-        width: 90px; /* 尺寸加大 */
-        height: 70px;
-        position: absolute;
-        /* 輕盈的奔跑動畫 */
-        animation: run-cycle 6s linear infinite; 
-        filter: drop-shadow(0 5px 3px rgba(0,0,0,0.2));
-        z-index: 5;
-    }
-
-    /* 祥瑞馬 SVG 樣式 */
-    .horse-main { fill: #d35400; } /* 駿馬紅棕色 */
-    .horse-mane { fill: #f1c40f; } /* 金色鬃毛 */
-    .horse-saddle { fill: #c0392b; stroke: #f1c40f; stroke-width: 1.5; } /* 紅色金邊馬鞍 */
-    .horse-detail { fill: #fff; } /* 白色細節 */
-
-    @keyframes run-cycle {
-        0% { left: 0%; transform: scaleX(-1) translateY(0) rotate(-2deg); }
-        45% { left: 80%; transform: scaleX(-1) translateY(-10px) rotate(5deg); }
-        50% { left: 80%; transform: scaleX(1) translateY(0) rotate(0deg); }
-        95% { left: 0%; transform: scaleX(1) translateY(-10px) rotate(-5deg); }
-        100% { left: 0%; transform: scaleX(-1) translateY(0) rotate(-2deg); }
-    }
-
-    /* === Input & Cards (更緊湊精緻) === */
-    .card-panel {
-        margin: 15px 20px;
-        background: white;
-        padding: 25px 20px; /* 縮減 Padding */
-        border-radius: 16px;
-        box-shadow: 0 5px 20px rgba(146, 43, 33, 0.1);
-        border: 1px solid #fadbd8;
-        text-align: center;
-    }
-    
-    .input-group {
-        margin-bottom: 20px;
-        text-align: left;
-    }
-    .input-group label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 6px;
-        color: var(--bg-red);
-        font-size: 0.95em;
-    }
-    .input-group input {
-        width: 100%;
-        padding: 12px;
-        border: 2px solid #eee;
-        border-radius: 10px;
+    .sub-title {
         font-size: 1.1em;
-        box-sizing: border-box;
-        transition: all 0.3s;
-        background: #fafafa;
-        text-align: center;
-        letter-spacing: 1px;
-        color: #333;
-    }
-    .input-group input:focus {
-        border-color: var(--primary-red);
-        background: #fff;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.15);
+        color: var(--gold-main);
+        margin-top: 10px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        opacity: 0.95;
     }
 
-    /* === Buttons (更有質感) === */
-    .btn-area {
-        padding: 15px 20px;
-        background: #fff;
-        border-top: 1px solid #f2f2f2;
-        margin-top: auto;
+    /* 輸入卡片區 */
+    .card-box {
+        background: var(--card-bg);
+        margin: 25px;
+        padding: 35px 25px;
+        border-radius: 24px;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        border: 4px solid var(--gold-dark);
+        color: var(--text-dark);
+        text-align: center;
+        position: relative;
     }
+    /* 卡片內裝飾線 */
+    .card-box::before {
+        content: "";
+        position: absolute;
+        top: 10px; left: 10px; right: 10px; bottom: 10px;
+        border: 1px dashed #c0392b;
+        border-radius: 18px;
+        pointer-events: none;
+    }
+
+    .input-label {
+        font-weight: bold;
+        color: #800000;
+        margin-bottom: 8px;
+        display: block;
+        font-size: 1.1em;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 16px;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        font-size: 1.2em;
+        text-align: center;
+        box-sizing: border-box;
+        margin-bottom: 20px;
+        background: #fff;
+        color: #333;
+        font-weight: bold;
+        letter-spacing: 1px;
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        transition: 0.3s;
+    }
+    .input-field:focus {
+        outline: none;
+        border-color: #c0392b;
+        box-shadow: 0 0 0 4px rgba(192, 57, 43, 0.15);
+    }
+
+    /* 通用按鈕 */
     .btn {
         width: 100%;
-        padding: 15px;
+        padding: 18px;
         border: none;
         border-radius: 50px;
-        font-size: 1.1em;
+        font-size: 1.2em;
         font-weight: bold;
         cursor: pointer;
-        transition: all 0.2s;
-        margin-bottom: 12px;
-        letter-spacing: 1px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
         position: relative;
         overflow: hidden;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        z-index: 2; /* 確保在裝飾線上層 */
     }
-    .btn:active { transform: scale(0.97); }
+    .btn:active { transform: scale(0.98); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
     .btn-start {
-        background: linear-gradient(135deg, var(--primary-red), #e74c3c);
+        background: linear-gradient(to bottom, #ff5f5f, #c0392b);
         color: white;
-        font-size: 1.2em;
-        box-shadow: 0 6px 15px rgba(192, 57, 43, 0.3);
-        border: 1px solid rgba(255,255,255,0.2);
+        border-bottom: 4px solid #922b21;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
 
-    .btn-boutique { background: linear-gradient(135deg, #1a3c6e, #2980b9); color: white; }
-    .btn-domestic { background: linear-gradient(135deg, #c0392b, #e67e22); color: white; }
-    .btn-secondary { background: #7f8c8d; color: white; }
-    .btn-outline { background: #fff; border: 2px solid var(--primary-red); color: var(--primary-red); }
-    .btn-text { background: transparent; color: #999; font-size: 0.9em; padding: 8px; box-shadow: none; text-decoration: underline; }
-    
-    /* === Quiz UI === */
-    .progress-bar-container { height: 8px; background: #eee; width: 100%; }
-    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--primary-red)); width: 0%; transition: width 0.4s ease; }
-    
-    .question-card { padding: 20px; background: #fff; }
-    .q-text { font-weight: bold; font-size: 1.15em; margin-bottom: 20px; line-height: 1.5; color: #2c3e50; }
-    
-    .option {
-        display: flex; align-items: center; padding: 14px 12px; margin-bottom: 12px;
-        background: #fff; border: 2px solid #f4f6f7; border-radius: 10px; cursor: pointer;
-        transition: all 0.2s; font-size: 1em; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    .btn-rank-link {
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.4);
+        padding: 10px 20px;
+        border-radius: 30px;
+        font-size: 0.95em;
+        margin-top: 20px;
+        backdrop-filter: blur(5px);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
     }
-    .option.selected { border-color: var(--primary-red); background: #fdedec; color: var(--bg-red); font-weight: bold; }
-    .option-circle { width: 20px; height: 20px; border: 2px solid #bdc3c7; border-radius: 50%; margin-right: 12px; flex-shrink: 0; }
-    .option.selected .option-circle { border-color: var(--primary-red); background: var(--primary-red); }
+    .btn-rank-link:hover { background: rgba(255,255,255,0.25); }
 
-    /* === Result & Leaderboard === */
-    .result-header {
-        background: linear-gradient(135deg, #922b21 0%, #c0392b 100%);
-        color: white; padding: 30px 20px 40px; text-align: center;
-        border-radius: 0 0 30px 30px; margin-bottom: 20px;
-        box-shadow: 0 5px 15px rgba(146, 43, 33, 0.3);
+    /* ============================
+       2. 選單頁面
+       ============================ */
+    .menu-header {
+        background: #fff;
+        padding: 50px 20px 30px;
+        text-align: center;
+        border-bottom: 1px solid #eee;
     }
-    .score-big { font-size: 4.5em; font-weight: 800; margin: 5px 0; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
-    
-    .leaderboard-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
-    .leaderboard-table td { padding: 12px 10px; background: #fff; border-bottom: 1px solid #eee; }
-    .leaderboard-table tr:first-child td { border-top: none; }
-    .rank-num { display: inline-block; width: 26px; height: 26px; line-height: 26px; text-align: center; background: #ecf0f1; border-radius: 50%; font-size: 0.9em; font-weight: bold; color: #7f8c8d; }
-    .rank-1 { background: var(--gold); color: #fff; box-shadow: 0 2px 5px rgba(241, 196, 15, 0.4); }
+    .menu-title { font-size: 1.8em; font-weight: 900; color: #800000; letter-spacing: 1px; }
+    .menu-welcome { color: #666; font-size: 1.1em; margin-top: 5px; }
 
+    .menu-content { flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center; gap: 20px; }
+    
+    .btn-large {
+        height: 110px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.4em;
+        border-radius: 20px;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        border: 2px solid rgba(255,255,255,0.2);
+    }
+    .btn-large i { margin-right: 15px; font-size: 1.6em; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
+    
+    .btn-boutique { background: linear-gradient(135deg, #2c3e50, #4ca1af); box-shadow: 0 10px 25px rgba(44, 62, 80, 0.3); }
+    .btn-domestic { background: linear-gradient(135deg, #d35400, #e67e22); box-shadow: 0 10px 25px rgba(211, 84, 0, 0.3); }
+
+    /* ============================
+       3. 測驗頁面
+       ============================ */
+    .quiz-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+    .progress-bar { height: 8px; background: #eee; width: 100%; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold-main), var(--btn-gradient-end)); width: 0%; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    
+    .question-box { padding: 30px 25px; font-size: 1.3em; font-weight: bold; line-height: 1.5; color: #333; }
+    
+    .option-item { 
+        padding: 20px; margin: 0 20px 15px; 
+        background: #fff; border: 2px solid #eee; border-radius: 16px; 
+        cursor: pointer; transition: 0.2s; 
+        display: flex; align-items: center; 
+        font-size: 1.1em;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    .option-item:active { transform: scale(0.98); }
+    .option-item.selected { 
+        border-color: #c0392b; background: #fff5f5; color: #c0392b; font-weight: bold; 
+        box-shadow: 0 4px 12px rgba(192, 57, 43, 0.2);
+    }
+    .option-circle { width: 24px; height: 24px; border: 2px solid #ccc; border-radius: 50%; margin-right: 15px; flex-shrink: 0; transition: 0.2s; }
+    .option-item.selected .option-circle { background: #c0392b; border-color: #c0392b; box-shadow: 0 0 0 3px #fff inset; }
+
+    /* ============================
+       4. 結果與排行榜
+       ============================ */
+    .result-banner {
+        background: linear-gradient(135deg, #c0392b, #800000);
+        color: white; padding: 40px 20px; text-align: center;
+        border-radius: 0 0 40px 40px; margin-bottom: 20px;
+        box-shadow: 0 10px 30px rgba(146, 43, 33, 0.4);
+        position: relative;
+    }
+    /* 金色彩帶裝飾 */
+    .result-banner::after {
+        content: ""; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
+        width: 60px; height: 4px; background: var(--gold-main); border-radius: 4px;
+    }
+
+    .score-display { font-size: 6em; font-weight: 900; line-height: 1; margin: 10px 0; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    
+    /* 排行榜表格 */
+    .rank-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; margin-top: 10px; }
+    .rank-table th { color: #888; font-size: 0.9em; padding: 0 10px; text-align: left; }
+    .rank-table td { padding: 15px 15px; background: #fff; border-bottom: 1px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+    .rank-table tr td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+    .rank-table tr td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+    
+    .rank-badge { 
+        display: inline-flex; justify-content: center; align-items: center;
+        width: 32px; height: 32px; background: #eee; border-radius: 50%; 
+        font-weight: bold; color: #666; 
+    }
+    .rank-1 { background: linear-gradient(135deg, #FFD700, #F39C12); color: #fff; box-shadow: 0 2px 5px rgba(241, 196, 15, 0.5); transform: scale(1.1); }
+    .rank-2 { background: linear-gradient(135deg, #E0E0E0, #BDBDBD); color: #fff; }
+    .rank-3 { background: linear-gradient(135deg, #E67E22, #D35400); color: #fff; }
+
+    /* 全螢幕排行榜視窗 */
+    #leaderboardView { 
+        background: #f9f9f9; 
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        z-index: 999; 
+        display: none; 
+        flex-direction: column; 
+    }
 </style>
+<!-- Firebase Compat (最穩定的版本) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 </head>
 <body>
 
 <div class="app-container">
     
-    <!-- 1. 登入畫面 (Login View) -->
+    <!-- 1. 首頁 (登入) -->
     <div id="loginView" style="display:flex; height: 100vh; flex-direction: column;">
-        
-        <div class="header">
-            <div class="brand-tag">2026 丙午年</div>
-            <br>
+        <div class="header-section">
+            <div class="year-tag">2026 丙午年</div>
             
-            <div class="title-wrapper">
-                <div class="horse-container">
-                    <div class="cute-horse">
-                        <!-- 重新設計的祥瑞福氣馬 SVG -->
-                        <svg viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
-                            <!-- 後腿 -->
-                            <path d="M20,60 Q15,70 18,75 L25,75 L25,60" class="horse-main" />
-                            <path d="M35,60 Q30,70 33,75 L40,75 L40,60" class="horse-main" />
-                            <!-- 前腿 -->
-                            <path d="M60,60 Q65,70 62,75 L55,75 L55,60" class="horse-main" />
-                            <path d="M75,60 Q80,70 77,75 L70,75 L70,60" class="horse-main" />
-                            
-                            <!-- 飄逸的尾巴 -->
-                            <path d="M10,40 Q0,30 5,20 Q15,25 20,40" class="horse-mane" />
-                            
-                            <!-- 圓潤的身體 -->
-                            <path d="M20,60 Q15,30 40,25 Q70,25 80,45 Q85,60 70,65 Q50,70 20,60" class="horse-main" />
-                            
-                            <!-- 脖子與頭 -->
-                            <path d="M70,30 Q80,10 90,15 Q95,20 85,35" class="horse-main" />
-                            <circle cx="85" cy="18" r="2" fill="white" /> <!-- 眼睛 -->
-                            
-                            <!-- 飄逸的鬃毛 -->
-                            <path d="M75,15 Q70,5 60,10 Q65,20 70,25" class="horse-mane" />
-                            <path d="M80,10 Q82,2 85,5" class="horse-mane" />
-                            
-                            <!-- 華麗馬鞍 -->
-                            <path d="M40,25 Q50,35 60,25 L60,35 Q50,45 40,35 Z" class="horse-saddle" />
-                            
-                            <!-- 雲紋裝飾 -->
-                            <circle cx="35" cy="45" r="3" fill="#f1c40f" opacity="0.6" />
-                            <circle cx="65" cy="45" r="2" fill="#f1c40f" opacity="0.6" />
-                        </svg>
-                    </div>
-                </div>
+            <!-- 金馬獻瑞 Badge (使用 FontAwesome 組合) -->
+            <div class="horse-badge-container">
+                <div class="badge-ring"></div>
+                <!-- 裝飾雲 -->
+                <i class="fa-solid fa-cloud decor-cloud cloud-left"></i>
+                <i class="fa-solid fa-cloud decor-cloud cloud-right"></i>
+                <!-- 主馬圖標 -->
+                <i class="fa-solid fa-horse main-horse-icon"></i>
+            </div>
 
-                <div class="title-box">
-                    <div class="lantern lantern-left">🏮</div>
-                    <div class="lantern lantern-right">🏮</div>
-                    <h1 class="main-title">馬上 RICH<br>吉運來</h1>
-                </div>
-            </div>
-            
-            <h2 class="sub-title">高雄機場教育訓練測驗</h2>
+            <h1 class="main-title">馬上 RICH<br>吉運來</h1>
+            <div class="sub-title">高雄機場教育訓練測驗</div>
         </div>
-        
-        <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
-            <div class="card-panel">
-                <div style="margin-bottom:15px; color:#555; font-size:0.95em; font-weight:bold;">
-                    👋 歡迎！請輸入工號
-                </div>
-                <div class="input-group">
-                    <label>您的工號 (ID)</label>
-                    <input type="text" id="inputId" placeholder="請輸入工號" inputmode="numeric">
-                </div>
-                
-                <button class="btn btn-start" onclick="performLogin()">確認登入</button>
+
+        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+            <div class="card-box">
+                <label class="input-label">
+                    <i class="fa-solid fa-id-card"></i> 請輸入工號
+                </label>
+                <input type="text" id="inputId" class="input-field" placeholder="Employee ID" inputmode="numeric">
+                <button class="btn btn-start" onclick="performLogin()">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> 確認登入
+                </button>
             </div>
             
-            <div style="text-align:center;">
-                 <button class="btn btn-text" onclick="showLeaderboard()">🏆 偷看線上英雄榜</button>
+            <div style="text-align: center;">
+                <button class="btn-rank-link" onclick="showLeaderboard()">
+                    <i class="fa-solid fa-trophy"></i> 偷看線上英雄榜
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- 2. 選單畫面 (Menu View) -->
+    <!-- 2. 選單頁 (Menu) -->
     <div id="menuView" style="display:none; height: 100vh; flex-direction: column;">
-        <div class="header" style="padding-top:40px;">
-            <h1 class="main-title" style="color:var(--primary-red); font-size:1.5em;">選擇測驗項目</h1>
-            <h2 class="sub-title" id="welcomeText" style="font-size:1em; margin-top:5px; color:#555;">Hi, 同仁</h2>
+        <div class="menu-header">
+            <div class="menu-title">選擇測驗項目</div>
+            <div class="menu-welcome" id="welcomeText">Hi, 同仁</div>
         </div>
-        
-        <div style="flex:1; padding:20px; display:flex; flex-direction:column; justify-content:center;">
-             <div style="background: #fffcf2; border-left: 4px solid var(--gold); padding: 15px; border-radius: 10px; margin-bottom:25px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                <h3 style="margin:0 0 8px 0; color:#d35400; font-size:1em;">📝 測驗說明</h3>
-                <ul style="padding-left: 20px; margin:0; color:#555; line-height:1.6; font-size:0.9em;">
-                    <li>請依據您的業種選擇題庫。</li>
-                    <li>包含銀行、全館活動共同題。</li>
-                    <li>共 20 題，滿分 100 分。</li>
-                </ul>
-            </div>
 
-            <button class="btn btn-boutique" onclick="startQuiz('boutique')">
-                <div style="font-size:1.2em;">👜 精品重點測驗</div>
+        <div class="menu-content">
+            <button class="btn btn-large btn-boutique" onclick="startQuiz('boutique')">
+                <i class="fa-solid fa-gem"></i> 
+                <div>精品重點測驗</div>
             </button>
-            
-            <button class="btn btn-domestic" onclick="startQuiz('domestic')">
-                <div style="font-size:1.2em;">🏺 國產食品測驗</div>
+
+            <button class="btn btn-large btn-domestic" onclick="startQuiz('domestic')">
+                <!-- 中式陶壺 (使用 fa-jar) -->
+                <i class="fa-solid fa-jar"></i> 
+                <div>國產食品測驗</div>
             </button>
         </div>
-        <div class="btn-area">
-             <button class="btn btn-secondary" onclick="backToLogin()">🔙 返回登入</button>
+
+        <div style="padding: 20px;">
+            <button class="btn" style="background:#ddd; color:#666; border-radius:15px; padding:12px;" onclick="location.reload()">
+                <i class="fa-solid fa-right-from-bracket"></i> 返回登入
+            </button>
         </div>
     </div>
 
-    <!-- 3. 測驗進行中 (Quiz View) -->
+    <!-- 3. 測驗進行中 (Quiz) -->
     <div id="quizView" style="display:none; height: 100vh; flex-direction: column;">
-        <div class="header" style="padding: 15px 20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div class="brand-tag" id="quizSubjectTag" style="margin:0; font-size:0.7em; background:#f4f6f7; color:#555; box-shadow:none; border-color:#ddd;">SUBJECT</div>
-                <div style="font-weight:900; color:var(--primary-red); font-size:1.1em;">
-                    <span id="currentQNum" style="font-size:1.4em;">1</span> / <span id="totalQNum">20</span>
-                </div>
-            </div>
+        <div class="quiz-header">
+            <span style="font-weight:bold; color:#888;" id="subjectTag">科目</span>
+            <span style="font-weight:900; color:var(--btn-red); font-size:1.2em;">
+                <span id="currentQ">1</span> / <span id="totalQ">20</span>
+            </span>
         </div>
-        <div class="progress-bar-container">
-            <div class="progress-bar-fill" id="progressBar"></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
+
+        <div style="flex:1; overflow-y:auto;">
+            <div class="question-box" id="qText">題目讀取中...</div>
+            <div id="optionsContainer"></div>
         </div>
 
-        <div id="questionContainer" style="flex:1; overflow-y:auto;">
-            <!-- 題目將透過 JS 插入 -->
-        </div>
-
-        <div class="btn-area">
-            <button id="nextBtn" class="btn btn-boutique" onclick="nextQuestion()" disabled style="opacity:0.6; transform: none; background: var(--primary-red);">請選擇答案</button>
+        <div style="padding: 20px;">
+            <button id="nextBtn" class="btn" style="background:#ddd; color:#888;" disabled onclick="nextQuestion()">請選擇答案</button>
         </div>
     </div>
 
-    <!-- 4. 結果畫面 (Result View) -->
-    <div id="resultView" style="display:none; flex-direction: column;">
-        <div class="result-header">
-            <div style="font-size:1em; color:var(--gold); font-weight:bold; letter-spacing:1px;">FINAL SCORE</div>
-            <div class="score-big" id="finalScore">0</div>
-            <div style="background:rgba(0,0,0,0.2); display:inline-block; padding:4px 15px; border-radius:20px; font-size:0.9em;" id="displayUserInfo">User Info</div>
+    <!-- 4. 結果頁 (Result) -->
+    <div id="resultView" style="display:none; height: 100vh; flex-direction: column;">
+        <div class="result-banner">
+            <div style="opacity:0.8; font-size:0.9em; letter-spacing: 2px;">FINAL SCORE</div>
+            <div class="score-display" id="finalScore">0</div>
+            <div id="userInfoDisplay" style="background:rgba(0,0,0,0.2); display:inline-block; padding:5px 20px; border-radius:20px; font-size:0.9em;">User</div>
         </div>
 
-        <div style="padding: 0 20px;">
-            <h3 style="margin: 0 0 15px 0; color: #2c3e50; font-weight:800; border-bottom: 2px solid #f0f0f0; padding-bottom:8px; font-size:1.1em;">
-                📊 答題檢討
+        <div style="flex:1; overflow-y:auto; padding: 0 20px;">
+            <h3 style="border-bottom: 2px solid #eee; padding-bottom: 10px; color:#333; margin-top:0;">
+                <i class="fa-solid fa-check-double"></i> 答題檢討
             </h3>
-        </div>
-        
-        <div class="review-container" id="reviewContainer" style="overflow-y: auto;">
-            <!-- 錯題列表 -->
+            <div id="reviewContainer"></div>
         </div>
 
-        <div class="btn-area">
-            <button class="btn btn-outline" onclick="copyResultText()">📋 複製成績 (傳LINE)</button>
-            <button class="btn btn-text" onclick="showLeaderboard()">🏆 查看線上英雄榜</button>
-            <button class="btn btn-secondary" onclick="location.reload()">🔄 回首頁</button>
+        <div style="padding: 20px; background: #fff; border-top: 1px solid #eee;">
+            <button class="btn" style="border: 2px solid #c0392b; color: #c0392b; background: white; margin-bottom: 10px;" onclick="copyResultText()">
+                <i class="fa-regular fa-copy"></i> 複製成績
+            </button>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn" style="background: #333; color: white; margin-bottom: 0; flex: 1;" onclick="showLeaderboard()">
+                    <i class="fa-solid fa-trophy"></i> 排行榜
+                </button>
+                <button class="btn" style="background: #eee; color: #555; margin-bottom: 0; flex: 1;" onclick="location.reload()">
+                    <i class="fa-solid fa-house"></i> 首頁
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- 5. 排行榜畫面 (Leaderboard View) -->
-    <div id="leaderboardView" style="display:none; height: 100vh; flex-direction: column;">
-        <div class="header" style="padding-bottom:10px;">
-            <div class="title-box" style="transform:none; font-size:0.8em; padding:8px 20px;">
-                <h1 class="main-title" style="font-size:1.4em;">🏆 線上英雄榜</h1>
-            </div>
-            <h2 class="sub-title" style="margin-top:5px; font-size:0.95em;">Top 10 Live Ranking</h2>
+    <!-- 5. 獨立排行榜頁面 (Leaderboard Overlay) -->
+    <div id="leaderboardView">
+        <div class="result-banner" style="border-radius: 0 0 30px 30px; padding-bottom: 30px; flex-shrink: 0;">
+            <h1 style="margin:0; font-size: 1.8em;">🏆 線上英雄榜</h1>
+            <div style="font-size: 0.9em; opacity: 0.8; margin-top: 5px;">Top 10 Live Ranking</div>
         </div>
         
-        <div style="flex: 1; overflow-y: auto; padding: 20px; background:#f8f9fa;">
-            <table class="leaderboard-table">
-                <thead>
-                    <tr>
-                        <th width="20%">#</th>
-                        <th width="50%">工號</th>
-                        <th width="30%">分數</th>
-                    </tr>
-                </thead>
-                <tbody id="leaderboardBody">
-                    <tr><td colspan="3" style="text-align:center; padding:30px; color:#aaa;">資料讀取中...</td></tr>
-                </tbody>
+        <div style="flex: 1; overflow-y: auto; padding: 20px;">
+            <table class="rank-table">
+                <thead><tr><th width="15%">排名</th><th>工號</th><th width="25%" style="text-align:right;">分數</th></tr></thead>
+                <tbody id="rankBody"><tr><td colspan="3" style="text-align:center; padding:30px; color:#999;">讀取中...</td></tr></tbody>
             </table>
         </div>
 
-        <div class="btn-area">
-            <button class="btn btn-secondary" onclick="backToLogin()">🔙 返回</button>
+        <div style="padding: 20px; background: #fff; border-top: 1px solid #eee; flex-shrink: 0;">
+            <button class="btn" style="background: #555; color: white; margin-bottom:0;" onclick="closeLeaderboard()">
+                <i class="fa-solid fa-arrow-left"></i> 返回
+            </button>
         </div>
     </div>
 
 </div>
 
-<!-- Firebase Module Script -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
+<script>
+    // --- 1. Firebase 初始化 (使用最穩定的 Compat 版) ---
     const firebaseConfig = {
       apiKey: "AIzaSyAk5ugWIjaeva-GNn54bbIJ4_V57mk__eo",
       authDomain: "quiz-2dce6.firebaseapp.com",
@@ -465,29 +496,29 @@
       appId: "1:1093040493998:web:932bda3c48fa38b7e6e43f",
       measurementId: "G-Q5D52QGSSF"
     };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
     
-    // 自動登入 Firebase
-    signInAnonymously(auth).then(() => {
-        console.log("Firebase Anonymous Auth Successful");
-    }).catch((error) => {
-        console.error("Firebase Auth Failed", error);
-    });
+    // 初始化 Firebase 並匿名登入 (解決權限問題)
+    try {
+        firebase.initializeApp(firebaseConfig);
+        firebase.auth().signInAnonymously().catch(err => console.error("Auth Fail:", err));
+    } catch(e) { console.error("Firebase Init Error:", e); }
 
-    // --- 全域變數 ---
+    const db = firebase.firestore();
+
+    // --- 2. 變數與狀態 ---
+    let userInfo = { id: "" };
     let currentQuestions = [];
-    let currentQIndex = 0;
+    let currentIdx = 0;
     let score = 0;
-    let selectedOptionIndex = null;
-    let userInfo = { name: "", dept: "" };
     let userAnswers = [];
-    let currentQuizType = ""; 
+    let selectedIdx = null;
+    let quizType = "";
+    // 記錄排行榜來源，用於返回
+    let previousViewId = "loginView"; 
 
-    // --- 題庫資料 (保持不變) ---
-    const commonQuestions = [
+    // --- 3. 題庫資料 ---
+    // A. 共同題
+    const commonQs = [
         { q: "1/10 第一波會員來店禮是？", options: ["(A) 馬年紅包袋", "(B) 馬年轉運貼紙", "(C) 1元賀卡"], a: 1 },
         { q: "2/1 第二波會員來店禮是？", options: ["(A) 馬年紅包袋", "(B) 掛繩包", "(C) 香盅禮盒"], a: 0 },
         { q: "2/16 會員來店禮是？", options: ["(A) 1元賀卡", "(B) 轉運貼紙", "(C) 紅包袋"], a: 0 },
@@ -504,7 +535,8 @@
         { q: "台新銀行 2026 Q1 單日累積滿 68,000 贈送？", options: ["(A) 香氛禮盒", "(B) 25吋上掀旅行箱"], a: 1 }
     ];
 
-    const boutiqueSpecificQuestions = [
+    // B. 精品專屬
+    const boutiqueQs = [
         { q: "03.04.05.06 大類（皮件/眼鏡/珠寶/錶）的基本現抵門檻是？", options: ["(A) $5,000", "(B) $8,000", "(C) $18,000"], a: 1 },
         { q: "03.04.05.06 大類滿 $8,000 現抵多少？", options: ["(A) $400", "(B) $650", "(C) $800"], a: 1 },
         { q: "03.04.05.06 大類滿 $25,000 現抵多少？", options: ["(A) $2,000", "(B) $2,400", "(C) $2,500"], a: 1 },
@@ -513,289 +545,224 @@
         { q: "03.04.05.06 大類單筆滿 $32,800 贈品為何？", options: ["(A) 掛繩包", "(B) 香盅禮盒", "(C) 旅行組"], a: 0 }
     ];
 
-    const domesticSpecificQuestions = [
-        { q: "國產滿額現抵：單筆滿 $1,880 可以現抵多少？", options: ["(A) $100", "(B) $150", "(C) $200"], a: 1 },
-        { q: "國產單筆滿額 $3,000 可以現抵回饋多少？", options: ["(A) $250", "(B) $300", "(C) $350"], a: 1 },
+    // C. 國產食品專屬 (答案已再次校對)
+    const domesticQs = [
+        { q: "國產滿額現抵：單筆滿 $1,880 可以現抵多少？", options: ["(A) $100", "(B) $200", "(C) $150"], a: 2 },
+        { q: "國產單筆滿額 $3,000 可以現抵回饋多少？", options: ["(A) $150", "(B) $250", "(C) $300"], a: 1 },
         { q: "國產單筆滿 $3,000 後，每滿 $1,000 以此類推回饋幾%？", options: ["(A) 10%", "(B) 8%", "(C) 12%"], a: 0 },
         { q: "2/1 開跑活動，單筆滿 $1,000 可獲得？", options: ["(A) 抽獎券乙張", "(B) 抵用券乙張", "(C) 紅包袋"], a: 0 }
     ];
 
-    function shuffleArray(array) {
-        let newArr = [...array];
-        for (let i = newArr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
-        }
-        return newArr;
-    }
+    // --- 4. 核心邏輯函式 ---
 
-    // --- 頁面切換與邏輯函式 ---
-
-    // 1. 執行登入 (驗證並切換到選單)
-    window.performLogin = function() {
-        // 使用工號
+    // 登入
+    function performLogin() {
         const id = document.getElementById('inputId').value.trim();
-
-        if (!id) {
-            alert("⚠️ 請先輸入「工號」！");
-            return;
-        }
-        // userInfo 只存工號，dept 預設為空 (後續不會用到)
-        userInfo = { name: id, dept: "" };
-        
+        if (!id) { alert("請輸入工號！"); return; }
+        userInfo.id = id;
         document.getElementById('welcomeText').innerText = `Hi, 工號 ${id}`;
+        
         document.getElementById('loginView').style.display = 'none';
         document.getElementById('menuView').style.display = 'flex';
     }
 
-    // 2. 開始測驗
-    window.startQuiz = function(type) {
-        currentQuizType = type;
-
-        // 組合題庫
-        let specificQs = (type === 'boutique') ? boutiqueSpecificQuestions : domesticSpecificQuestions;
-        let fullSet = [...specificQs, ...commonQuestions];
-        let shuffledSet = shuffleArray(fullSet);
-        currentQuestions = shuffledSet.slice(0, 20);
+    // 開始測驗
+    function startQuiz(type) {
+        quizType = type;
+        const specificQs = (type === 'boutique') ? boutiqueQs : domesticQs;
+        const fullSet = [...commonQs, ...specificQs];
+        // 隨機抽 20 題 (若不足 20 則全取)
+        currentQuestions = shuffle(fullSet).slice(0, 20);
         
-        currentQIndex = 0;
+        currentIdx = 0;
         score = 0;
         userAnswers = [];
 
-        // UI Update
+        document.getElementById('subjectTag').innerText = (type === 'boutique') ? "精品重點" : "國產食品";
+        // 動態設定總題數，修復 78 分問題
+        document.getElementById('totalQ').innerText = currentQuestions.length;
+        
         document.getElementById('menuView').style.display = 'none';
         document.getElementById('quizView').style.display = 'flex';
-        document.getElementById('totalQNum').innerText = currentQuestions.length;
-        
-        let tag = document.getElementById('quizSubjectTag');
-        let nextBtn = document.getElementById('nextBtn');
-        
-        if (type === 'boutique') {
-            tag.innerText = "精品重點";
-            tag.style.background = "#003049";
-            tag.style.color = "#fff";
-            nextBtn.className = "btn btn-boutique";
-        } else {
-            tag.innerText = "國產食品"; // Updated
-            tag.style.background = "#d00000";
-            tag.style.color = "#fff";
-            nextBtn.className = "btn btn-domestic";
-        }
-
-        window.loadQuestion();
+        renderQuestion();
     }
 
-    window.loadQuestion = function() {
-        let qData = currentQuestions[currentQIndex];
-        let container = document.getElementById('questionContainer');
+    // 渲染題目
+    function renderQuestion() {
+        const q = currentQuestions[currentIdx];
+        document.getElementById('currentQ').innerText = currentIdx + 1;
+        document.getElementById('progressBar').style.width = ((currentIdx + 1) / currentQuestions.length * 100) + "%";
+        document.getElementById('qText').innerText = q.q;
         
-        document.getElementById('currentQNum').innerText = currentQIndex + 1;
-        let progressPercent = ((currentQIndex + 1) / currentQuestions.length) * 100;
-        document.getElementById('progressBar').style.width = progressPercent + "%";
+        const container = document.getElementById('optionsContainer');
+        container.innerHTML = "";
+        selectedIdx = null;
+        
+        const btn = document.getElementById('nextBtn');
+        btn.disabled = true;
+        btn.style.background = "#ddd";
+        btn.style.color = "#888";
+        btn.innerText = (currentIdx === currentQuestions.length - 1) ? "送出試卷" : "下一題";
 
-        container.innerHTML = `
-            <div class="question-card">
-                <div class="q-text">${qData.q}</div>
-                <div class="options-list">
-                    ${qData.options.map((opt, index) => `
-                        <div class="option" onclick="window.selectOption(this, ${index})">
-                            <div class="option-circle"></div>
-                            <div>${opt}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        `;
-        
-        let nextBtn = document.getElementById('nextBtn');
-        nextBtn.disabled = true;
-        nextBtn.style.opacity = "0.6";
-        nextBtn.innerText = (currentQIndex === currentQuestions.length - 1) ? "送出試卷" : "下一題";
-        selectedOptionIndex = null;
-        container.scrollTop = 0;
+        q.options.forEach((opt, idx) => {
+            const div = document.createElement('div');
+            div.className = 'option-item';
+            div.innerHTML = `<div class="option-circle"></div><div>${opt}</div>`;
+            div.onclick = () => selectOption(idx, div);
+            container.appendChild(div);
+        });
     }
 
-    window.selectOption = function(element, index) {
-        document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
-        element.classList.add('selected');
-        selectedOptionIndex = index;
-        let nextBtn = document.getElementById('nextBtn');
-        nextBtn.disabled = false;
-        nextBtn.style.opacity = "1";
+    function selectOption(idx, el) {
+        document.querySelectorAll('.option-item').forEach(e => e.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedIdx = idx;
+        
+        const btn = document.getElementById('nextBtn');
+        btn.disabled = false;
+        btn.style.background = "var(--btn-red)"; // 使用 CSS 變數
+        btn.style.color = "white";
     }
 
-    window.nextQuestion = function() {
-        if (selectedOptionIndex === null) return;
-
-        let currentQ = currentQuestions[currentQIndex];
-        let isCorrect = (selectedOptionIndex === currentQ.a);
+    function nextQuestion() {
+        if (selectedIdx === null) return;
+        
+        const q = currentQuestions[currentIdx];
+        const isCorrect = (selectedIdx === q.a);
         if (isCorrect) score++;
         
         userAnswers.push({
-            question: currentQ.q,
-            userSelect: currentQ.options[selectedOptionIndex],
-            correctSelect: currentQ.options[currentQ.a],
+            q: q.q,
+            userSelect: q.options[selectedIdx],
+            correctSelect: q.options[q.a],
             isCorrect: isCorrect
         });
 
-        if (currentQIndex < currentQuestions.length - 1) {
-            currentQIndex++;
-            window.loadQuestion();
+        if (currentIdx < currentQuestions.length - 1) {
+            currentIdx++;
+            renderQuestion();
         } else {
-            window.showResult();
+            showResult();
         }
     }
 
-    window.showResult = function() {
+    // 顯示結果
+    function showResult() {
         document.getElementById('quizView').style.display = 'none';
         document.getElementById('resultView').style.display = 'flex';
-
-        let finalScore = Math.round((score / currentQuestions.length) * 100);
+        
+        // 分數計算：確保動態分母
+        const finalScore = Math.round((score / currentQuestions.length) * 100);
         document.getElementById('finalScore').innerText = finalScore;
-        let typeName = (currentQuizType === 'boutique') ? "(精)" : "(國)";
-        document.getElementById('displayUserInfo').innerText = `工號：${userInfo.name} ${typeName}`;
+        
+        const typeName = (quizType === 'boutique') ? "精品" : "國產食品";
+        document.getElementById('userInfoDisplay').innerText = `工號 ${userInfo.id} / ${typeName}`;
 
-        window.saveToLeaderboard(userInfo.name, "", finalScore); // 傳入空部門，不儲存
-
-        let reviewHtml = "";
-        userAnswers.forEach((ans, idx) => {
-            let statusClass = ans.isCorrect ? "correct" : "wrong";
-            let statusBadge = ans.isCorrect ? 
-                `<span style="color:#2a9d8f;">⭕</span>` : 
-                `<span style="color:#ef233c;">❌</span>`;
-            let explanation = ans.isCorrect ? "" : `<div style="margin-top:8px; color:#c9182b; font-weight:bold; padding:5px; background:#fff0f0; border-radius:4px; font-size:0.9em;">正解：${ans.correctSelect}</div>`;
-
-            reviewHtml += `
-                <div class="review-item ${statusClass}">
-                    <div class="review-q">${statusBadge} ${idx + 1}. ${ans.question}</div>
-                    <div class="review-ans">
-                        你的選擇：${ans.userSelect}
-                        ${explanation}
+        const reviewContainer = document.getElementById('reviewContainer');
+        if (finalScore === 100) {
+            reviewContainer.innerHTML = `<div style="text-align:center; padding:30px; color:#27ae60; font-weight:bold; font-size:1.2em;">🎉 太強了！全部答對！</div>`;
+        } else {
+            reviewContainer.innerHTML = userAnswers.map((ans, i) => `
+                <div style="margin-bottom:15px; padding:10px; background:#fff; border-left:4px solid ${ans.isCorrect ? '#2ecc71':'#e74c3c'}; border-radius:4px; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+                    <div style="font-weight:bold;">${i+1}. ${ans.q}</div>
+                    <div style="color:${ans.isCorrect ? 'green':'red'}; font-size:0.9em; margin-top:5px;">
+                        ${ans.isCorrect ? '⭕ 答對' : `❌ 答錯 <br><span style="color:#666">正解: ${ans.correctSelect}</span>`}
                     </div>
                 </div>
-            `;
+            `).join('');
+        }
+
+        // 上傳成績到 Firebase
+        db.collection("quiz_leaderboard_2026").add({
+            name: userInfo.id,
+            score: finalScore,
+            dept: "-", // 不記錄部門
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
-        document.getElementById('reviewContainer').innerHTML = reviewHtml;
     }
 
-    window.copyResultText = function() {
-        let finalScore = Math.round((score / currentQuestions.length) * 100);
-        let typeText = (currentQuizType === 'boutique') ? "精品重點" : "國產食品"; // Updated
-        // 修正：移除部門文字，只顯示工號
-        let text = `【${typeText}測驗結果】\n工號：${userInfo.name}\n分數：${finalScore} 分\n日期：${new Date().toLocaleDateString()}`;
+    // --- 5. 排行榜邏輯 (獨立視窗 + 自動切換) ---
+
+    async function loadLeaderboardData() {
+        const tbody = document.getElementById('rankBody');
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#999;">讀取中...</td></tr>';
         
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert("✅ 成績已複製！\n請直接到 LINE 對話框貼上即可。");
-            }).catch(err => {
-                window.fallbackCopyTextToClipboard(text);
-            });
-        } else {
-            window.fallbackCopyTextToClipboard(text);
-        }
-    }
-
-    window.fallbackCopyTextToClipboard = function(text) {
-        var textArea = document.createElement("textarea");
-        textArea.value = text;
-        textArea.style.top = "0";
-        textArea.style.left = "0";
-        textArea.style.position = "fixed";
-        textArea.style.opacity = "0";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
         try {
-            var successful = document.execCommand('copy');
-            if (successful) {
-                alert("✅ 成績已複製！\n請直接到 LINE 對話框貼上即可。");
-            } else {
-                alert("⚠️ 複製失敗，可能是手機系統限制。\n請直接「螢幕截圖」傳送。");
-            }
-        } catch (err) {
-            alert("⚠️ 複製失敗，請直接「螢幕截圖」傳送。");
-        }
-        document.body.removeChild(textArea);
-    }
-
-    window.backToLogin = function() {
-        document.getElementById('menuView').style.display = 'none';
-        document.getElementById('leaderboardView').style.display = 'none';
-        document.getElementById('resultView').style.display = 'none';
-        document.getElementById('loginView').style.display = 'flex';
-    }
-
-    // === Firebase Functions ===
-
-    window.saveToLeaderboard = async function(name, dept, score) {
-        try {
-            await addDoc(collection(db, "quiz_leaderboard_2026"), {
-                name: name,
-                dept: "-", // 不再紀錄部門，給個預設值
-                score: score,
-                timestamp: Date.now()
-            });
-            console.log("Score saved!");
-        } catch (e) {
-            console.error("Error adding document: ", e);
-            // alert("無法上傳成績"); // Silent fail to not disturb user
-        }
-    }
-
-    window.showLeaderboard = async function() {
-        document.getElementById('loginView').style.display = 'none';
-        document.getElementById('menuView').style.display = 'none';
-        document.getElementById('resultView').style.display = 'none';
-        document.getElementById('leaderboardView').style.display = 'flex';
-
-        let tbody = document.getElementById('leaderboardBody');
-        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:30px; color:#aaa;">雲端資料讀取中...</td></tr>`;
-
-        try {
-            const querySnapshot = await getDocs(collection(db, "quiz_leaderboard_2026"));
-            
+            const snap = await db.collection("quiz_leaderboard_2026").get(); 
             let data = [];
-            querySnapshot.forEach((doc) => {
-                data.push(doc.data());
-            });
-
+            snap.forEach(doc => data.push(doc.data()));
+            
+            // 前端排序：分數高->低，時間舊->新
             data.sort((a, b) => {
                 if (b.score !== a.score) return b.score - a.score;
-                return a.timestamp - b.timestamp;
+                return (a.timestamp?.seconds || 0) - (b.timestamp?.seconds || 0);
             });
-
-            data = data.slice(0, 10);
             
-            tbody.innerHTML = "";
-            let rank = 1;
+            data = data.slice(0, 10);
 
             if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:30px; color:#aaa;">尚無紀錄<br>快來當第一個挑戰者！</td></tr>`;
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">尚無紀錄</td></tr>';
                 return;
             }
 
-            data.forEach((item) => {
-                let rankClass = "";
-                if (rank === 1) rankClass = "rank-1";
-                
-                tbody.innerHTML += `
-                    <tr>
-                        <td><span class="rank-num ${rankClass}">${rank}</span></td>
-                        <td style="font-weight:bold; color:#555;">${item.name}</td>
-                        <td style="font-weight:bold; color:#d90429; font-size:1.1em;">${item.score}</td>
-                    </tr>
-                `;
-                rank++;
-            });
-
+            tbody.innerHTML = data.map((d, i) => `
+                <tr>
+                    <td><span class="rank-badge ${i===0?'rank-1':(i===1?'rank-2':(i===2?'rank-3':''))}">${i+1}</span></td>
+                    <td style="font-weight:bold;">${d.name}</td>
+                    <td style="color:#c0392b; font-weight:900; text-align:right;">${d.score}</td>
+                </tr>
+            `).join('');
         } catch (e) {
-            console.error("Error fetching leaderboard: ", e);
-            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:30px; color:red;">無法讀取排行榜</td></tr>`;
+            console.error(e);
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:red;">連線失敗</td></tr>';
         }
+    }
+
+    // 打開排行榜
+    window.showLeaderboard = function() {
+        // 判斷來源
+        if (document.getElementById('loginView').style.display === 'flex') previousViewId = 'loginView';
+        else if (document.getElementById('menuView').style.display === 'flex') previousViewId = 'menuView';
+        else if (document.getElementById('resultView').style.display === 'flex') previousViewId = 'resultView';
+        
+        // 隱藏所有
+        document.querySelectorAll('.app-container > div').forEach(div => {
+            if (div.id !== 'leaderboardView') div.style.display = 'none';
+        });
+        
+        // 顯示排行榜
+        document.getElementById('leaderboardView').style.display = 'flex';
+        loadLeaderboardData();
+    }
+
+    // 關閉排行榜
+    window.closeLeaderboard = function() {
+        document.getElementById('leaderboardView').style.display = 'none';
+        document.getElementById(previousViewId).style.display = 'flex';
+    }
+
+    window.copyResultText = function() {
+        const finalScore = Math.round((score / currentQuestions.length) * 100);
+        const tName = (quizType === 'boutique') ? "精品重點" : "國產食品";
+        const text = `【${tName}測驗結果】\n工號：${userInfo.id}\n分數：${finalScore} 分\n日期：${new Date().toLocaleDateString()}`;
+        
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        alert("✅ 成績已複製！");
+    }
+
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
     }
 </script>
 
 </body>
 </html>
-```
-```eof
