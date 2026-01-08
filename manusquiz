@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="2026 年節特別企劃 - 馬上 RICH 吉運來測驗應用">
+    <title>馬上 RICH 吉運來 - 2026年節特別企劃</title>
+    <!-- 引入 FontAwesome 6 (使用 CDN 確保圖標顯示正常) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* == 色彩計畫：宮廷紅與流沙金 == */
+            --bg-color: #720e1e;       /* 深宮廷紅 */
+            --card-bg: #fffbf0;        /* 象牙白 */
+            --gold-main: #ffcc00;      /* 明亮金 */
+            --gold-dark: #c59d00;      /* 暗金 (陰影用) */
+            --text-dark: #2c3e50;      /* 深鐵灰 */
+            --btn-gradient-start: #d32f2f;
+            --btn-gradient-end: #b71c1c;
+            --btn-red: #c0392b;        /* 新增：統一紅色按鈕 */
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
+            background-color: var(--bg-color);
+            /* 背景：傳統菱格紋與暗紋 */
+            background-image: 
+                linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.05) 75%, rgba(0,0,0,0.05)),
+                linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.05) 75%, rgba(0,0,0,0.05));
+            background-position: 0 0, 20px 20px;
+            background-size: 40px 40px;
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* APP 主容器 */
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 全視圖樣式 */
+        .full-view {
+            display: flex;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        /* ============================
+           1. 首頁 (登入) - 金馬視覺
+           ============================ */
+        #loginView {
+            /* 首頁全紅背景，帶有金色光暈 */
+            background: radial-gradient(circle at top, #a93226 0%, var(--bg-color) 80%);
+            color: #fff;
+        }
+
+        .header-section {
+            text-align: center;
+            padding-top: 50px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 年份標籤：像匾額一樣 */
+        .year-tag {
+            display: inline-block;
+            background: linear-gradient(to right, var(--gold-dark), var(--gold-main), var(--gold-dark));
+            color: #5a0000;
+            padding: 6px 24px;
+            border-radius: 50px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            margin-bottom: 30px;
+            border: 2px solid #fff;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        /* === 金馬徽章 (CSS 組合術) === */
+        .horse-badge-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 15px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 外圈金環光芒 */
+        .badge-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 4px solid var(--gold-main);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.6), inset 0 0 20px rgba(255, 204, 0, 0.3);
+            animation: ring-pulse 3s infinite;
+            background: rgba(160, 0, 0, 0.3); /* 半透明底 */
+        }
+
+        /* 馬圖標 */
+        .main-horse-icon {
+            font-size: 85px;
+            color: var(--gold-main);
+            z-index: 2;
+            filter: drop-shadow(0 4px 2px rgba(0,0,0,0.5));
+            transform: translateY(-5px); /* 微調位置 */
+        }
+
+        /* 裝飾雲紋 (左右) */
+        .decor-cloud {
+            position: absolute;
+            font-size: 30px;
+            color: rgba(255,255,255,0.8);
+            bottom: 10px;
+            z-index: 1;
+        }
+        .cloud-left { left: -10px; transform: scaleX(-1); }
+        .cloud-right { right: -10px; }
+
+        @keyframes ring-pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        /* 標題文字 */
+        .main-title {
+            font-size: 2.4em;
+            font-weight: 900;
+            margin: 10px 0 5px;
+            color: #fff;
+            text-shadow: 0 4px 0 #3d0000, 0 8px 15px rgba(0,0,0,0.5);
+            letter-spacing: 2px;
+            line-height: 1.1;
+        }
+        .sub-title {
+            font-size: 1.1em;
+            color: var(--gold-main);
+            margin-top: 10px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            opacity: 0.95;
+        }
+
+        /* 輸入卡片區 */
+        .card-box {
+            background: var(--card-bg);
+            margin: 25px;
+            padding: 35px 25px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            border: 4px solid var(--gold-dark);
+            color: var(--text-dark);
+            text-align: center;
+            position: relative;
+        }
+        /* 卡片內裝飾線 */
+        .card-box::before {
+            content: "";
+            position: absolute;
+            top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1px dashed #c0392b;
+            border-radius: 18px;
+            pointer-events: none;
+        }
+
+        .input-label {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 1.1em;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1.2em;
+            text-align: center;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            background: #fff;
+            color: #333;
+            font-weight: bold;
+            letter-spacing: 1px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #c0392b;
+            box-shadow: 0 0 0 4px rgba(192, 57, 43, 0.15);
+        }
+
+        /* 通用按鈕 */
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            z-index: 2; /* 確保在裝飾線上層 */
+        }
+        .btn:active { transform: scale(0.98); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
+        .btn-start {
+            background: linear-gradient(to bottom, #ff5f5f, #c0392b);
+            color: white;
+            border-bottom: 4px solid #922b21;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .btn-rank-link {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.4);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.95em;
+            margin-top: 20px;
+            backdrop-filter: blur(5px);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-rank-link:hover { background: rgba(255,255,255,0.25); }
+
+        /* ============================
+           2. 選單頁面
+           ============================ */
+        .menu-header {
+            background: #fff;
+            padding: 50px 20px 30px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        .menu-title { font-size: 1.8em; font-weight: 900; color: #800000; letter-spacing: 1px; }
+        .menu-welcome { color: #666; font-size: 1.1em; margin-top: 5px; }
+
+        .menu-content { flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center; gap: 20px; }
+        
+        .btn-large {
+            height: 110px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.4em;
+            border-radius: 20px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .btn-large i { margin-right: 15px; font-size: 1.6em; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
+        
+        .btn-boutique { background: linear-gradient(135deg, #2c3e50, #4ca1af); box-shadow: 0 10px 25px rgba(44, 62, 80, 0.3); }
+        .btn-domestic { background: linear-gradient(135deg, #d35400, #e67e22); box-shadow: 0 10px 25px rgba(211, 84, 0, 0.3); }
+
+        /* ============================
+           3. 測驗頁面
+           ============================ */
+        .quiz-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+        .progress-bar { height: 8px; background: #eee; width: 100%; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold-main), var(--btn-gradient-end)); width: 0%; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        .question-box { padding: 30px 25px; font-size: 1.3em; font-weight: bold; line-height: 1.5; color: #333; }
+        
+        .option-item { 
+            padding: 20px; margin: 0 20px 15px; 
+            background: #fff; border: 2px solid #eee; border-radius: 16px; 
+            cursor: pointer; transition: 0.2s; 
+            display: flex; align-items: center; 
+            font-size: 1.1em;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .option-item:active { transform: scale(0.98); }
+        .option-item.selected { 
+            border-color: var(--btn-red); background: #fff5f5; color: var(--btn-red); font-weight: bold; 
+            box-shadow: 0 4px 12px rgba(192, 57, 43, 0.2);
+        }
+        .option-circle { width: 24px; height: 24px; border: 2px solid #ccc; border-radius: 50%; margin-right: 15px; flex-shrink: 0; transition: 0.2s; }
+        .option-item.selected .option-circle { background: var(--btn-red); border-color: var(--btn-red); box-shadow: 0 0 0 3px #fff inset; }
+
+        /* ============================
+           4. 結果與排行榜
+           ============================ */
+        .result-banner {
+            background: linear-gradient(135deg, var(--btn-red), #800000);
+            color: white; padding: 40px 20px; text-align: center;
+            border-radius: 0 0 40px 40px; margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(146, 43, 33, 0.4);
+            position: relative;
+        }
+        /* 金色彩帶裝飾 */
+        .result-banner::after {
+            content: ""; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
+            width: 60px; height: 4px; background: var(--gold-main); border-radius: 4px;
+        }
+
+        .score-display { font-size: 6em; font-weight: 900; line-height: 1; margin: 10px 0; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        
+        /* 排行榜表格 */
+        .rank-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; margin-top: 10px; }
+        .rank-table th { color: #888; font-size: 0.9em; padding: 0 10px; text-align: left; }
+        .rank-table td { padding: 15px 15px; background: #fff; border-bottom: 1px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .rank-table tr td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+        .rank-table tr td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+        
+        .rank-badge { 
+            display: inline-flex; justify-content: center; align-items: center;
+            width: 32px; height: 32px; background: #eee; border-radius: 50%; 
+            font-weight: bold; color: #666; 
+        }
+        .rank-1 { background: linear-gradient(135deg, #FFD700, #F39C12); color: #fff; box-shadow: 0 2px 5px rgba(241, 196, 15, 0.5); transform: scale(1.1); }
+        .rank-2 { background: linear-gradient(135deg, #E0E0E0, #BDBDBD); color: #fff; }
+        .rank-3 { background: linear-gradient(135deg, #E67E22, #D35400); color: #fff; }
+
+        /* 全螢幕排行榜視窗 */
+        #leaderboardView { 
+            background: #f9f9f9; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 999; 
+            display: none; 
+            flex-direction: column; 
+        }
+
+        /* 媒體查詢：行動裝置調整 */
+        @media (max-width: 420px) {
+            .app-container { max-width: 100%; }
+            .background-size { background-size: 30px 30px; } /* 調整背景圖案密度 */
+        }
+
+        @media (min-width: 768px) {
+            .app-container { max-width: 600px; }
+        }
+
+        /* 無障礙：減少動畫 */
+        @media (prefers-reduced-motion: reduce) {
+            .badge-ring { animation: none; }
+        }
+    </style>
+    <!-- Firebase Compat (最穩定的版本) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <!-- 1. 首頁 (登入) -->
+    <div id="loginView" class="full-view">
+        <div class="header-section">
+            <div class="year-tag">2026 丙午年</div>
+            
+            <!-- 金馬獻瑞 Badge (使用 FontAwesome 組合) -->
+            <div class="horse-badge-container">
+                <div class="badge-ring"></div>
+                <!-- 裝飾雲 -->
+                <i class="fa-solid fa-cloud decor-cloud cloud-left"></i>
+                <i class="fa-solid fa-cloud decor-cloud cloud-right"></i>
+                <!-- 主馬圖標 -->
+                <i class="fa-solid fa-horse main-horse-icon" role="img" aria-label="金馬圖標"></i>
+            </div>
+
+            <h1 class="main-title">馬上 RICH<br>吉運來</h1>
+            <div class="sub-title">高雄機場教育訓練測驗</div>
+        </div>
+
+        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+            <div class="card-box">
+                <label class="input-label">
+                    <i class="fa-solid fa-id-card"></i> 請輸入工號
+                </label>
+                <input type="text" id="inputId" class="input-field" placeholder="請輸入工號" inputmode="numeric">
+                <button type="button" class="btn btn-start" onclick="performLogin()" aria-label="確認登入">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> 確認登入
+                </button>
+            </div>
+            
+            <div style="text-align: center;">
+                <button type="button" class="btn-rank-link" onclick="showLeaderboard()" aria-label="查看排行榜">
+                    <i class="fa-solid fa-trophy"></i> 偷看線上英雄榜
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 選單頁 (Menu) -->
+    <div id="menuView" class="full-view" style="display:none;">
+        <div class="menu-header">
+            <div class="menu-title">選擇測驗項目</div>
+            <div class="menu-welcome" id="welcomeText">Hi, 同仁</div>
+        </div>
+
+        <div class="menu-content">
+            <button type="button" class="btn btn-large btn-boutique" onclick="startQuiz('boutique')" aria-label="開始精品重點測驗">
+                <i class="fa-solid fa-gem"></i> 
+                <div>精品重點測驗</div>
+            </button>
+
+            <button type="button" class="btn btn-large btn-domestic" onclick="startQuiz('domestic')" aria-label="開始國產食品測驗">
+                <i class="fa-solid fa-jar"></i> 
+                <div>國產食品測驗</div>
+            </button>
+        </div>
+
+        <div style="padding: 20px;">
+            <button type="button" class="btn" style="background:#ddd; color:#666; border-radius:15px; padding:12px;" onclick="location.reload()" aria-label="返回登入">
+                <i class="fa-solid fa-right-from-bracket"></i> 返回登入
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. 測驗進行中 (Quiz) -->
+    <div id="quizView" class="full-view" style="display:none;">
+        <div class="quiz-header">
+            <span style="font-weight:bold; color:#888;" id="subjectTag">科目</span>
+            <span style="font-weight:900; color:var(--btn-red); font-size:1.2em;">
+                <span id="currentQ">1</span> / <span id="totalQ">20</span>
+            </span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
+
+        <div style="flex:1; overflow-y:auto;">
+            <div class="question-box" id="qText">題目讀取中...</div>
+            <div id="optionsContainer"></div>
+        </div>
+
+        <div style="padding: 20px;">
+            <button type="button" id="nextBtn" class="btn" style="background:#ddd; color:#888;" disabled onclick="nextQuestion()" aria-label="下一題">請選擇答案</button>
+        </div>
+    </div>
+
+    <!-- 4. 結果頁 (Result) -->
+    <div id="resultView" class="full-view" style="display:none;">
+        <div class="result-banner">
+            <div style="opacity:0.8; font-size:0.9em; letter-spacing: 2px;">FINAL SCORE</div>
+            <div class="score-display" id="finalScore">0</div>
+            <div id="userInfoDisplay" style="background:rgba(0,0,0,0.2); display:inline-block; padding:5px 20px; border-radius:20px; font-size:0.9em;">User</div>
+        </div>
+
+        <div style="flex:1; overflow-y:auto; padding: 0 20px;">
+            <h3 style="border-bottom: 2px solid #eee; padding-bottom: 10px; color:#333; margin-top:0;">
+                <i class="fa-solid fa-check-double"></i> 答題檢討
+            </h3>
+            <div id="reviewContainer"></div>
+        </div>
+
+        <div style="padding: 20px; background: #fff; border-top: 1px solid #eee;">
+            <button type="button" class="btn" style="border: 2px solid var(--btn-red); color: var(--btn-red); background: white; margin-bottom: 10px;" onclick="copyResultText()" aria-label="複製成績">
+                <i class="fa-regular fa-copy"></i> 複製成績
+            </button>
+            <div style="display: flex; gap: 10px;">
+                <button type="button" class="btn" style="background: #333; color: white; margin-bottom: 0; flex: 1;" onclick="showLeaderboard()" aria-label="查看排行榜">
+                    <i class="fa-solid fa-trophy"></i> 排行榜
+                </button>
+                <button type="button" class="btn" style="background: #eee; color: #555; margin-bottom: 0; flex: 1;" onclick="location.reload()" aria-label="返回首頁">
+                    <i class="fa-solid fa-house"></i> 首頁
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. 獨立排行榜頁面 (Leaderboard Overlay) -->
+    <div id="leaderboardView" class="full-view" style="display:none;">
+        <div class="result-banner" style="border-radius: 0 0 30px 30px; padding-bottom: 30px; flex-shrink: 0;">
+            <h1 style="margin:0; font-size: 1.8em;">🏆 線上英雄榜</h1>
+            <div style="font-size: 0.9em; opacity: 0.8; margin-top: 5px;">Top 10 Live Ranking</div>
+        </div>
+        
+        <div style="flex: 1; overflow-y: auto; padding: 20px;">
+            <table class="rank-table">
+                <thead><tr><th width="15%">排名</th><th>工號</th><th width="25%" style="text-align:right;">分數</th></tr></thead>
+                <tbody id="rankBody"><tr><td colspan="3" style="text-align:center; padding:30px; color:#999;">讀取中...</td></tr></tbody>
+            </table>
+        </div>
+
+        <div style="padding: 20px; background: #fff; border-top: 1px solid #eee; flex-shrink: 0;">
+            <button type="button" class="btn" style="background: #555; color: white; margin-bottom:0;" onclick="closeLeaderboard()" aria-label="返回">
+                <i class="fa-solid fa-arrow-left"></i> 返回
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // 注意：Firebase 配置在生產環境應移至後端 API，以避免暴露 API 金鑰。
+    // 目前為客戶端示範，建議設定 Firestore 安全規則限制濫用。
+    const firebaseConfig = {
+      apiKey: "AIzaSyAk5ugWIjaeva-GNn54bbIJ4_V57mk__eo",
+      authDomain: "quiz-2dce6.firebaseapp.com",
+      projectId: "quiz-2dce6",
+      storageBucket: "quiz-2dce6.firebasestorage.app",
+      messagingSenderId: "1093040493998",
+      appId: "1:1093040493998:web:932bda3c48fa38b7e6e43f",
+      measurementId: "G-Q5D52QGSSF"
+    };
+    
+    // 初始化 Firebase
+    let db;
+    try {
+        firebase.initializeApp(firebaseConfig);
+        firebase.auth().signInAnonymously()
+            .then(() => {
+                console.log('匿名登入成功');
+                db = firebase.firestore();
+            })
+            .catch(err => {
+                console.error("登入失敗:", err);
+                alert("連線失敗，請檢查網路或稍後再試。");
+            });
+    } catch(e) { 
+        console.error("Firebase 初始化錯誤:", e); 
+        alert("應用初始化失敗，請重新載入頁面。");
+    }
+
+    // --- 變數與狀態 ---
+    let userInfo = { id: "" };
+    let currentQuestions = [];
+    let currentIdx = 0;
+    let score = 0;
+    let userAnswers = [];
+    let selectedIdx = null;
+    let quizType = "";
+    let previousViewId = "loginView"; // 記錄排行榜來源
+
+    // --- 題庫資料 ---
+    // A. 共同題
+    const commonQs = [
+        { id: "c1", q: "1/10 第一波會員來店禮是？", options: ["(A) 馬年紅包袋", "(B) 馬年轉運貼紙", "(C) 1元賀卡"], a: 1 },
+        { id: "c2", q: "2/1 第二波會員來店禮是？", options: ["(A) 馬年紅包袋", "(B) 掛繩包", "(C) 香盅禮盒"], a: 0 },
+        { id: "c3", q: "2/16 會員來店禮是？", options: ["(A) 1元賀卡", "(B) 轉運貼紙", "(C) 紅包袋"], a: 0 },
+        { id: "c4", q: "全館當日累計滿 $300,000 贈送？", options: ["(A) iPhone 17 PRO", "(B) SWITCH 2", "(C) 純金紅繩手鍊"], a: 2 },
+        { id: "c5", q: "全館當日累計滿 $500,000 贈送？", options: ["(A) 純金紅繩手鍊", "(B) SWITCH 2 單機版", "(C) iPhone 17 PRO"], a: 1 },
+        { id: "c6", q: "全館當日累計滿 $1,000,000 贈送？", options: ["(A) iPhone 17 PRO 256G", "(B) SWITCH 2", "(C) 50g 黃金"], a: 0 },
+        { id: "c7", q: "全館當日累計滿 $150,000 贈送多少 Rich Points？", options: ["(A) 30,000 點", "(B) 45,000 點", "(C) 50,000 點"], a: 1 },
+        { id: "c8", q: "全館滿額贈（含黃金及特價珠寶手錶）統一於何處兌換？", options: ["(A) 收銀櫃台", "(B) 服務台", "(C) 客服櫃檯"], a: 2 },
+        { id: "c9", q: "台新聯名卡滿 $160,000 送 $2,000 禮券，高雄機場限量幾份？", options: ["(A) 10 份", "(B) 50 份"], a: 0 },
+        { id: "c10", q: "台新銀行「$888 送台新 1 元發財金」活動日期區間？", options: ["(A) 1/10 - 2/24", "(B) 2/13 - 2/22"], a: 0 },
+        { id: "c11", q: "星展銀行滿 10 萬送 $2,000 刷卡金，條件為何？", options: ["(A) 單筆付清", "(B) 分期累積"], a: 0 },
+        { id: "c12", q: "關於銀行刷卡滿額禮，是否包含「菸酒藥類」的消費金額？", options: ["(A) 包含", "(B) 不包含"], a: 1 },
+        { id: "c13", q: "台新銀行 2026 Q1 單日累積多少贈阿原艾草旅行組？", options: ["(A) 22,000", "(B) 32,800"], a: 1 },
+        { id: "c14", q: "台新銀行 2026 Q1 單日累積滿 68,000 贈送？", options: ["(A) 香氛禮盒", "(B) 25吋上掀旅行箱"], a: 1 }
+    ];
+
+    // B. 精品專屬
+    const boutiqueQs = [
+        { id: "b1", q: "03.04.05.06 大類（皮件/眼鏡/珠寶/錶）的基本現抵門檻是？", options: ["(A) $5,000", "(B) $8,000", "(C) $18,000"], a: 1 },
+        { id: "b2", q: "03.04.05.06 大類滿 $8,000 現抵多少？", options: ["(A) $400", "(B) $650", "(C) $800"], a: 1 },
+        { id: "b3", q: "03.04.05.06 大類滿 $25,000 現抵多少？", options: ["(A) $2,000", "(B) $2,400", "(C) $2,500"], a: 1 },
+        { id: "b4", q: "03.04.05.06 大類滿 $50,000 現抵多少？", options: ["(A) $4,500", "(B) $4,800", "(C) $5,000"], a: 1 },
+        { id: "b5", q: "03.04.05.06 大類滿 $100,000 現抵多少？", options: ["(A) $9,000", "(B) $9,600", "(C) $10,000"], a: 1 },
+        { id: "b6", q: "03.04.05.06 大類單筆滿 $32,800 贈品為何？", options: ["(A) 掛繩包", "(B) 香盅禮盒", "(C) 旅行組"], a: 0 }
+    ];
+
+    // C. 國產食品專屬
+    const domesticQs = [
+        { id: "d1", q: "國產滿額現抵：單筆滿 $1,880 可以現抵多少？", options: ["(A) $100", "(B) $200", "(C) $150"], a: 2 },
+        { id: "d2", q: "國產單筆滿額 $3,000 可以現抵回饋多少？", options: ["(A) $150", "(B) $250", "(C) $300"], a: 1 },
+        { id: "d3", q: "國產單筆滿 $3,000 後，每滿 $1,000 以此類推回饋幾%？", options: ["(A) 10%", "(B) 8%", "(C) 12%"], a: 0 },
+        { id: "d4", q: "2/1 開跑活動，單筆滿 $1,000 可獲得？", options: ["(A) 抽獎券乙張", "(B) 抵用券乙張", "(C) 紅包袋"], a: 0 }
+    ];
+
+    // --- 核心邏輯函式 ---
+
+    // 登入
+    function performLogin() {
+        const id = document.getElementById('inputId').value.trim();
+        if (!id) { alert("請輸入工號！"); return; }
+        userInfo.id = id;
+        document.getElementById('welcomeText').innerText = `Hi, 工號 ${id}`;
+        
+        document.getElementById('loginView').style.display = 'none';
+        document.getElementById('menuView').style.display = 'flex';
+    }
+
+    // 開始測驗
+    function startQuiz(type) {
+        quizType = type;
+        const specificQs = (type === 'boutique') ? boutiqueQs : domesticQs;
+        const fullSet = [...commonQs, ...specificQs];
+        if (fullSet.length < 20) {
+            console.warn("題庫不足 20 題，將使用所有題目。");
+        }
+        currentQuestions = shuffle(fullSet).slice(0, Math.min(20, fullSet.length));
+        
+        currentIdx = 0;
+        score = 0;
+        userAnswers = [];
+
+        document.getElementById('subjectTag').innerText = (type === 'boutique') ? "精品重點" : "國產食品";
+        document.getElementById('totalQ').innerText = currentQuestions.length;
+        
+        document.getElementById('menuView').style.display = 'none';
+        document.getElementById('quizView').style.display = 'flex';
+        renderQuestion();
+    }
+
+    // 渲染題目
+    function renderQuestion() {
+        const q = currentQuestions[currentIdx];
+        document.getElementById('currentQ').innerText = currentIdx + 1;
+        document.getElementById('progressBar').style.width = ((currentIdx + 1) / currentQuestions.length * 100) + "%";
+        document.getElementById('qText').innerText = q.q;
+        
+        const container = document.getElementById('optionsContainer');
+        container.innerHTML = "";
+        selectedIdx = null;
+        
+        const btn = document.getElementById('nextBtn');
+        btn.disabled = true;
+        btn.style.background = "#ddd";
+        btn.style.color = "#888";
+        btn.innerText = (currentIdx === currentQuestions.length - 1) ? "送出試卷" : "下一題";
+
+        q.options.forEach((opt, idx) => {
+            const div = document.createElement('div');
+            div.className = 'option-item';
+            div.innerHTML = `<div class="option-circle"></div><div>${opt}</div>`;
+            div.onclick = () => selectOption(idx, div);
+            container.appendChild(div);
+        });
+    }
+
+    function selectOption(idx, el) {
+        document.querySelectorAll('.option-item').forEach(e => e.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedIdx = idx;
+        
+        const btn = document.getElementById('nextBtn');
+        btn.disabled = false;
+        btn.style.background = "var(--btn-red)";
+        btn.style.color = "white";
+        
+        // 添加振動回饋（如果支援）
+        if (navigator.vibrate) navigator.vibrate(50);
+    }
+
+    // 防抖函式（防止連按）
+    function debounce(func, delay) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func(...args), delay);
+        };
+    }
+
+    const debouncedNextQuestion = debounce(nextQuestion, 300);
+
+    function nextQuestion() {
+        if (selectedIdx === null) return;
+        
+        const q = currentQuestions[currentIdx];
+        const isCorrect = (selectedIdx === q.a);
+        if (isCorrect) score++;
+        
+        userAnswers.push({
+            q: q.q,
+            userSelect: q.options[selectedIdx],
+            correctSelect: q.options[q.a],
+            isCorrect: isCorrect
+        });
+
+        if (currentIdx < currentQuestions.length - 1) {
+            currentIdx++;
+            renderQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    // 顯示結果
+    async function showResult() {
+        document.getElementById('quizView').style.display = 'none';
+        document.getElementById('resultView').style.display = 'flex';
+        
+        const finalScore = Math.round((score / currentQuestions.length) * 100);
+        document.getElementById('finalScore').innerText = finalScore;
+        
+        const typeName = (quizType === 'boutique') ? "精品" : "國產食品";
+        document.getElementById('userInfoDisplay').innerText = `工號 ${userInfo.id} / ${typeName}`;
+
+        const reviewContainer = document.getElementById('reviewContainer');
+        if (finalScore === 100) {
+            reviewContainer.innerHTML = `<div style="text-align:center; padding:30px; color:#27ae60; font-weight:bold; font-size:1.2em;">🎉 太強了！全部答對！</div>`;
+        } else {
+            reviewContainer.innerHTML = userAnswers.map((ans, i) => `
+                <div style="margin-bottom:15px; padding:10px; background:#fff; border-left:4px solid ${ans.isCorrect ? '#2ecc71':'#e74c3c'}; border-radius:4px; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+                    <div style="font-weight:bold;">${i+1}. ${ans.q}</div>
+                    <div style="color:${ans.isCorrect ? 'green':'red'}; font-size:0.9em; margin-top:5px;">
+                        ${ans.isCorrect ? '⭕ 答對' : `❌ 答錯 <br><span style="color:#666">正解: ${ans.correctSelect}</span>`}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 上傳成績到 Firebase
+        try {
+            await db.collection("quiz_leaderboard_2026").add({
+                name: userInfo.id,
+                score: finalScore,
+                dept: "-", // 不記錄部門
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        } catch (e) {
+            console.error("上傳成績失敗:", e);
+            alert("成績上傳失敗，請檢查網路。");
+        }
+    }
+
+    // --- 排行榜邏輯 ---
+
+    async function loadLeaderboardData() {
+        const tbody = document.getElementById('rankBody');
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#999;"><i class="fa fa-spinner fa-spin"></i> 讀取中...</td></tr>';
+        
+        try {
+            const snap = await db.collection("quiz_leaderboard_2026")
+                .orderBy("score", "desc")
+                .orderBy("timestamp", "asc")
+                .limit(10)
+                .get(); 
+            
+            const data = snap.docs.map(doc => doc.data());
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">尚無紀錄</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map((d, i) => `
+                <tr>
+                    <td><span class="rank-badge \( {i===0?'rank-1':(i===1?'rank-2':(i===2?'rank-3':''))}"> \){i+1}</span></td>
+                    <td style="font-weight:bold;">${d.name}</td>
+                    <td style="color:var(--btn-red); font-weight:900; text-align:right;">${d.score}</td>
+                </tr>
+            `).join('');
+        } catch (e) {
+            console.error(e);
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:red;">連線失敗</td></tr>';
+        }
+    }
+
+    // 打開排行榜
+    window.showLeaderboard = function() {
+        if (document.getElementById('loginView').style.display === 'flex') previousViewId = 'loginView';
+        else if (document.getElementById('menuView').style.display === 'flex') previousViewId = 'menuView';
+        else if (document.getElementById('resultView').style.display === 'flex') previousViewId = 'resultView';
+        
+        document.querySelectorAll('.app-container > div:not(#leaderboardView)').forEach(div => div.style.display = 'none');
+        
+        document.getElementById('leaderboardView').style.display = 'flex';
+        loadLeaderboardData();
+    }
+
+    // 關閉排行榜
+    window.closeLeaderboard = function() {
+        document.getElementById('leaderboardView').style.display = 'none';
+        document.getElementById(previousViewId).style.display = 'flex';
+    }
+
+    window.copyResultText = async function() {
+        const finalScore = document.getElementById('finalScore').innerText;
+        const tName = (quizType === 'boutique') ? "精品重點" : "國產食品";
+        const text = `【\( {tName}測驗結果】\n工號： \){userInfo.id}\n分數：\( {finalScore} 分\n日期： \){new Date().toLocaleDateString()}`;
+        
+        try {
+            await navigator.clipboard.writeText(text);
+            alert("✅ 成績已複製！");
+        } catch (err) {
+            console.error('複製失敗:', err);
+            alert("❌ 複製失敗，請手動複製。");
+        }
+    }
+
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+</script>
+
+</body>
+</html>
