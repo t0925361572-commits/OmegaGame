@@ -60,7 +60,7 @@
     /* === Header & Title === */
     .header {
         text-align: center;
-        padding: 70px 20px 20px; /* 增加上方留白給馬跑 */
+        padding: 80px 20px 20px; /* 上方留白給馬跑 */
         background: linear-gradient(180deg, #fff 0%, #fff0f0 100%);
         border-bottom: 2px solid #ffebeb;
         position: relative;
@@ -75,7 +75,7 @@
         font-weight: bold;
         font-size: 0.85em;
         letter-spacing: 2px;
-        margin-bottom: 30px; /* 增加間距 */
+        margin-bottom: 35px; /* 增加間距避免擋到馬 */
         border: 1px solid var(--gold);
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
@@ -89,9 +89,9 @@
     .title-box {
         background: var(--primary-red);
         color: #fff;
-        padding: 15px 35px;
-        border-radius: 15px;
-        box-shadow: 5px 5px 0 var(--gold-dark);
+        padding: 15px 40px;
+        border-radius: 18px;
+        box-shadow: 0 6px 0 var(--dark-red), 0 10px 10px rgba(0,0,0,0.15);
         border: 2px solid var(--gold);
         position: relative;
         z-index: 2;
@@ -100,70 +100,68 @@
     /* 燈籠裝飾 */
     .lantern {
         position: absolute;
-        bottom: -15px; /* 改到底部垂掛 */
-        font-size: 24px;
+        bottom: -20px;
+        font-size: 28px;
         animation: swing 3s ease-in-out infinite;
-        z-index: 1;
+        z-index: 3;
+        filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
     }
-    .lantern-left { left: 10px; transform-origin: top center; }
-    .lantern-right { right: 10px; transform-origin: top center; animation-delay: 1.5s; }
+    .lantern-left { left: 5px; transform-origin: top center; }
+    .lantern-right { right: 5px; transform-origin: top center; animation-delay: 1.5s; }
 
     @keyframes swing {
-        0%, 100% { transform: rotate(-5deg); }
-        50% { transform: rotate(5deg); }
+        0%, 100% { transform: rotate(-8deg); }
+        50% { transform: rotate(8deg); }
     }
 
     h1.main-title {
-        font-size: 1.8em;
+        font-size: 1.9em;
         margin: 0;
         font-weight: 900;
-        letter-spacing: 2px;
+        letter-spacing: 3px;
         text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
         line-height: 1.2;
     }
     h2.sub-title {
         color: var(--dark-red);
         font-size: 1.1em;
-        margin-top: 20px;
+        margin-top: 25px;
         font-weight: bold;
         letter-spacing: 1px;
     }
 
-    /* === Cute Chubby Horse Animation === */
+    /* === Cute Chubby Horse Animation (Updated) === */
     .horse-container {
         position: absolute;
-        top: -55px; /* 站在標題上面 */
+        top: -65px; /* 調整位置，站在標題上 */
         left: 0;
         width: 100%;
-        height: 60px;
+        height: 70px;
         pointer-events: none;
-        z-index: 3;
+        z-index: 1; /* 在標題後面一點點，或上方 */
     }
     .cute-horse {
-        width: 70px;  /* 變大變肥 */
-        height: 55px;
+        width: 80px; 
+        height: 65px;
         position: absolute;
-        /* 馬的跑步動畫：左右來回 + 上下跳動 */
-        animation: run-cycle 6s linear infinite;
-        filter: drop-shadow(0 4px 2px rgba(0,0,0,0.1));
+        animation: run-cycle 5s linear infinite;
+        filter: drop-shadow(0 5px 3px rgba(0,0,0,0.15));
+        z-index: 5;
     }
 
-    /* 胖胖馬的 SVG 樣式 */
-    .horse-svg path {
-        fill: #d35400; /* 馬身顏色 */
-        stroke: #873900;
-        stroke-width: 1;
-    }
-    .horse-eye { fill: #fff; }
-    .horse-pupil { fill: #000; }
-    .horse-hair { fill: #f39c12; }
+    /* 胖胖馬 SVG 樣式優化 */
+    .horse-body { fill: #e67e22; } /* 橘色馬身 */
+    .horse-hair { fill: #d35400; } /* 深橘鬃毛 */
+    .horse-hoof { fill: #5d4037; } /* 深色蹄子 */
+    .horse-saddle { fill: #c0392b; } /* 紅色馬鞍 */
+    .horse-saddle-detail { fill: #f1c40f; } /* 金色裝飾 */
 
     @keyframes run-cycle {
-        0% { left: 5%; transform: scaleX(-1) translateY(0); } /* 面向右跑 */
-        45% { left: 80%; transform: scaleX(-1) translateY(-6px); } /* 跑到右邊 */
-        50% { left: 80%; transform: scaleX(1) translateY(0); } /* 轉向左 */
-        95% { left: 5%; transform: scaleX(1) translateY(-6px); } /* 跑到左邊 */
-        100% { left: 5%; transform: scaleX(-1) translateY(0); } /* 轉向右 */
+        0% { left: 0%; transform: scaleX(-1) translateY(0) rotate(0deg); }
+        45% { left: 82%; transform: scaleX(-1) translateY(-8px) rotate(5deg); }
+        50% { left: 82%; transform: scaleX(1) translateY(0) rotate(0deg); }
+        95% { left: 0%; transform: scaleX(1) translateY(-8px) rotate(-5deg); }
+        100% { left: 0%; transform: scaleX(-1) translateY(0) rotate(0deg); }
     }
 
     /* === Input & Cards === */
@@ -178,7 +176,7 @@
     }
     
     .input-group {
-        margin-bottom: 20px;
+        margin-bottom: 25px;
         text-align: left;
     }
     .input-group label {
@@ -186,23 +184,25 @@
         font-weight: bold;
         margin-bottom: 8px;
         color: var(--dark-red);
-        font-size: 0.95em;
+        font-size: 1em;
     }
     .input-group input {
         width: 100%;
-        padding: 14px;
+        padding: 15px;
         border: 2px solid #eee;
-        border-radius: 10px;
-        font-size: 1.1em;
+        border-radius: 12px;
+        font-size: 1.2em; /* 字體加大更好點 */
         box-sizing: border-box;
         transition: all 0.3s;
         background: #fafafa;
+        text-align: center;
+        letter-spacing: 1px;
     }
     .input-group input:focus {
         border-color: var(--primary-red);
         background: #fff;
         outline: none;
-        box-shadow: 0 0 0 3px rgba(201, 24, 43, 0.1);
+        box-shadow: 0 0 0 4px rgba(201, 24, 43, 0.1);
     }
 
     /* === Quiz UI === */
@@ -331,42 +331,45 @@
 
 <div class="app-container">
     
-    <!-- 1. 登入畫面 (Login View) - 直接顯示 -->
+    <!-- 1. 登入畫面 (Login View) -->
     <div id="loginView" style="display:flex; height: 100vh; flex-direction: column;">
         
-        <!-- Header with Horse Animation -->
         <div class="header">
             <div class="brand-tag">2026 丙午年</div>
             <br>
             
             <div class="title-wrapper">
-                <!-- 一匹精緻可愛的小胖馬 -->
+                <!-- 修正版：更精緻肥胖的 Q 版馬 -->
                 <div class="horse-container">
                     <div class="cute-horse">
-                        <svg class="horse-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <!-- 尾巴 -->
-                            <path d="M10,50 Q5,40 15,35 Q20,30 25,45" class="horse-hair" stroke="none" />
-                            <!-- 後腿 -->
-                            <path d="M25,70 L25,85 A3,3 0 0,0 28,88 L32,85 L32,70" />
-                            <path d="M35,70 L35,85 A3,3 0 0,0 38,88 L42,85 L42,70" />
-                            <!-- 前腿 -->
-                            <path d="M65,70 L65,85 A3,3 0 0,0 68,88 L72,85 L72,70" />
-                            <path d="M75,70 L75,85 A3,3 0 0,0 78,88 L82,85 L82,70" />
-                            <!-- 身體 (圓滾滾) -->
-                            <ellipse cx="50" cy="60" rx="35" ry="25" />
+                        <svg viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 肥肥的身體 -->
+                            <ellipse cx="50" cy="50" rx="30" ry="22" class="horse-body" />
                             <!-- 脖子 -->
-                            <path d="M70,50 Q80,20 90,30 L80,60" stroke="none" />
-                            <!-- 頭 -->
-                            <ellipse cx="85" cy="30" rx="12" ry="15" transform="rotate(-10, 85, 30)" />
+                            <path d="M65,40 Q75,15 85,20 L75,50" class="horse-body" stroke-width="0" />
+                            <!-- 頭 (大一點圓一點) -->
+                            <circle cx="85" cy="22" r="14" class="horse-body" />
                             <!-- 耳朵 -->
-                            <path d="M80,18 L82,10 L88,16" class="horse-hair" stroke="none" />
+                            <path d="M80,10 L82,2 L88,8" class="horse-body" />
+                            <path d="M90,10 L92,2 L98,8" class="horse-body" />
                             <!-- 鬃毛 -->
-                            <path d="M75,25 Q70,40 65,30 Q60,35 70,50" class="horse-hair" stroke="none" />
+                            <path d="M78,15 Q70,30 65,25 Q60,30 70,45" class="horse-hair" stroke="none" />
+                            <circle cx="85" cy="12" r="5" class="horse-hair" />
+                            <!-- 尾巴 (短胖) -->
+                            <path d="M20,45 Q10,40 15,30" class="horse-hair" stroke-width="4" stroke="#d35400" fill="none" stroke-linecap="round" />
+                            <!-- 腿 (短圓) -->
+                            <rect x="35" y="65" width="6" height="12" rx="3" class="horse-body" />
+                            <rect x="55" y="65" width="6" height="12" rx="3" class="horse-body" />
+                            <rect x="35" y="75" width="6" height="3" class="horse-hoof" />
+                            <rect x="55" y="75" width="6" height="3" class="horse-hoof" />
                             <!-- 眼睛 -->
-                            <circle cx="88" cy="28" r="3" class="horse-eye" />
-                            <circle cx="89" cy="28" r="1" class="horse-pupil" />
-                            <!-- 鼻子 -->
-                            <circle cx="92" cy="35" r="1" fill="#5a2d0c" />
+                            <circle cx="88" cy="20" r="2.5" fill="white" />
+                            <circle cx="89" cy="20" r="1" fill="black" />
+                            <!-- 腮紅 -->
+                            <circle cx="82" cy="25" r="2" fill="#ff9999" opacity="0.6" />
+                            <!-- 馬鞍 -->
+                            <path d="M40,40 Q50,35 60,40 L60,50 Q50,55 40,50 Z" class="horse-saddle" />
+                            <circle cx="50" cy="45" r="3" class="horse-saddle-detail" />
                         </svg>
                     </div>
                 </div>
@@ -381,17 +384,16 @@
             <h2 class="sub-title">高雄機場教育訓練測驗</h2>
         </div>
         
-        <!-- Login Form -->
         <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
             <div class="card-panel">
-                <div style="margin-bottom:20px; color:#555; font-size:0.95em; font-weight:bold;">
-                    請輸入工號以開始測驗
+                <div style="margin-bottom:20px; color:#555; font-size:1em; font-weight:bold;">
+                    👋 歡迎！請輸入工號
                 </div>
                 <div class="input-group">
-                    <label>您的工號</label>
-                    <input type="text" id="inputId" placeholder="請輸入工號 (必填)">
+                    <label>您的工號 (ID)</label>
+                    <input type="text" id="inputId" placeholder="請輸入工號" inputmode="numeric">
                 </div>
-                <!-- 部門欄位已移除 -->
+                <!-- 部門欄位已完全移除 -->
                 
                 <button class="btn btn-start" onclick="performLogin()">確認登入</button>
             </div>
@@ -603,7 +605,7 @@
             alert("⚠️ 請先輸入「工號」！");
             return;
         }
-        // userInfo 只存工號，dept 預設為空
+        // userInfo 只存工號，dept 預設為空 (後續不會用到)
         userInfo = { name: id, dept: "" };
         
         document.getElementById('welcomeText').innerText = `Hi, 工號 ${id}`;
@@ -718,7 +720,7 @@
         let typeName = (currentQuizType === 'boutique') ? "(精)" : "(國)";
         document.getElementById('displayUserInfo').innerText = `工號：${userInfo.name} ${typeName}`;
 
-        window.saveToLeaderboard(userInfo.name, "", finalScore); // 傳入空部門
+        window.saveToLeaderboard(userInfo.name, "", finalScore); // 傳入空部門，不儲存
 
         let reviewHtml = "";
         userAnswers.forEach((ans, idx) => {
@@ -744,6 +746,7 @@
     window.copyResultText = function() {
         let finalScore = Math.round((score / currentQuestions.length) * 100);
         let typeText = (currentQuizType === 'boutique') ? "精品重點" : "國產/香化";
+        // 修正：移除部門文字，只顯示工號
         let text = `【${typeText}測驗結果】\n工號：${userInfo.name}\n分數：${finalScore} 分\n日期：${new Date().toLocaleDateString()}`;
         
         if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -793,14 +796,14 @@
         try {
             await addDoc(collection(db, "quiz_leaderboard_2026"), {
                 name: name,
-                dept: "-", // 預設值
+                dept: "-", // 不再紀錄部門，給個預設值
                 score: score,
                 timestamp: Date.now()
             });
             console.log("Score saved!");
         } catch (e) {
             console.error("Error adding document: ", e);
-            alert("無法上傳成績，請檢查網路或聯繫管理員。");
+            // alert("無法上傳成績"); // Silent fail to not disturb user
         }
     }
 
