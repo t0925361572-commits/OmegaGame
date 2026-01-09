@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>馬上 RICH 吉運來 - 富貴唐馬版</title>
+<title>馬上 RICH 吉運來 - 極致福氣版</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
     :root {
@@ -12,10 +12,8 @@
         --card-bg: #fffcf5;        /* 溫潤的宣紙白 */
         --gold-main: #FFD700;      /* 正金 */
         --gold-dark: #B8860B;      /* 暗金 */
-        --text-dark: #2c3e50;
+        --text-dark: #2c3e50;      /* 深鐵灰 */
         --btn-red: #c0392b;
-        --btn-disabled-bg: #e0e0e0;
-        --btn-disabled-text: #999;
     }
 
     body {
@@ -38,7 +36,7 @@
 
     .app-container {
         width: 100%;
-        max-width: 420px;
+        max-width: 400px; /* 保持緊湊比例 */
         background: #fff;
         min-height: 100vh;
         box-shadow: 0 0 60px rgba(0,0,0,0.9);
@@ -53,21 +51,29 @@
         background: radial-gradient(circle at top, #b91e1e 0%, var(--bg-red) 80%);
         color: #fff;
         position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
     }
     
-    /* 祥雲裝飾 */
-    .cloud-deco {
+    /* 背景旋轉光芒 */
+    .sunburst {
         position: absolute;
-        width: 100%;
-        height: 100px;
-        background: url('https://www.transparenttextures.com/patterns/black-scales.png'); /* 紋理模擬 */
-        opacity: 0.1;
-        top: 0;
+        top: -200px;
+        left: 50%;
+        margin-left: -300px;
+        width: 600px;
+        height: 600px;
+        background: repeating-conic-gradient(from 0deg, rgba(255, 215, 0, 0.05) 0deg 10deg, transparent 10deg 20deg);
+        animation: spin 30s linear infinite;
+        z-index: 0;
+        pointer-events: none;
     }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
 
     .header-section {
         text-align: center;
-        padding-top: 60px;
+        padding-top: 40px;
         position: relative;
         z-index: 2;
     }
@@ -76,92 +82,118 @@
         display: inline-block;
         background: linear-gradient(to bottom, var(--gold-main), var(--gold-dark));
         color: #5a0000;
-        padding: 6px 20px;
+        padding: 4px 18px;
         border-radius: 50px;
         font-weight: 900;
-        letter-spacing: 3px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
-        margin-bottom: 20px;
+        letter-spacing: 2px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
+        margin-bottom: 15px;
         border: 2px solid #fff;
+        font-size: 0.9em;
     }
 
-    /* === 招財胖唐馬 (SVG) === */
-    .horse-icon-wrapper {
+    /* === 「吉」字春聯徽章 === */
+    .fortune-badge-wrapper {
         position: relative;
-        height: 180px;
-        margin-bottom: 15px;
+        height: 110px;
+        margin-bottom: 10px;
         display: flex;
         justify-content: center;
         align-items: center;
     }
 
-    .tang-horse-svg {
-        width: 200px;
-        height: 180px;
-        filter: drop-shadow(0 10px 5px rgba(0,0,0,0.3));
-        /* 懸浮動畫 */
-        animation: float-horse 3s ease-in-out infinite;
+    /* 菱形紅紙 */
+    .fortune-diamond {
+        width: 90px;
+        height: 90px;
+        background: #d32f2f;
+        transform: rotate(45deg);
+        border: 3px solid var(--gold-main);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.3), inset 0 0 10px rgba(0,0,0,0.2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: float-badge 3s ease-in-out infinite;
+        position: relative;
+    }
+    
+    .fortune-diamond::after {
+        content: "";
+        position: absolute;
+        top: 4px; left: 4px; right: 4px; bottom: 4px;
+        border: 1px dashed var(--gold-dark);
     }
 
-    @keyframes float-horse {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-8px); }
+    /* 吉字 */
+    .fortune-text {
+        transform: rotate(-45deg);
+        font-size: 55px;
+        font-weight: 900;
+        color: var(--gold-main);
+        text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+        font-family: "Kaiti TC", "STKaiti", "標楷體", serif;
+        line-height: 1;
+        margin-top: -5px;
     }
 
-    /* SVG 樣式定義 */
-    .horse-skin { fill: #d63031; stroke: #fab1a0; stroke-width: 2px; } /* 紅色馬身 */
-    .horse-belly { fill: #ff7675; opacity: 0.3; } /* 肚子高光 */
-    .horse-mane { fill: #fdcb6e; } /* 金色鬃毛 */
-    .horse-saddle { fill: #6c5ce7; stroke: #fff; stroke-width: 2px; } /* 紫色馬鞍 */
-    .horse-hoof { fill: #2d3436; } /* 蹄 */
-    .gold-ingot { fill: url(#goldGradient); stroke: #e17055; stroke-width: 1px; } /* 元寶 */
-    .cloud-base { fill: #dfe6e9; opacity: 0.8; }
+    .ribbon {
+        position: absolute;
+        top: 50%;
+        width: 50px;
+        height: 10px;
+        background: var(--gold-dark);
+        z-index: -1;
+        border-radius: 2px;
+    }
+    .ribbon-left { left: 50%; margin-left: -80px; transform: rotate(-10deg); }
+    .ribbon-right { right: 50%; margin-right: -80px; transform: rotate(10deg); }
+
+    @keyframes float-badge {
+        0%, 100% { transform: rotate(45deg) translateY(0); }
+        50% { transform: rotate(45deg) translateY(-5px); }
+    }
 
     .main-title {
-        font-size: 2.4em;
+        font-size: 2em;
         font-weight: 900;
         margin: 5px 0;
         color: #fff;
-        text-shadow: 0 4px 0 #3d0000, 0 8px 15px rgba(0,0,0,0.5);
+        text-shadow: 0 3px 0 #3d0000, 0 6px 12px rgba(0,0,0,0.5);
         letter-spacing: 2px;
         line-height: 1.1;
     }
     .sub-title {
-        font-size: 1.1em;
+        font-size: 1em;
         color: var(--gold-main);
-        margin-top: 10px;
+        margin-top: 5px;
         font-weight: bold;
-        letter-spacing: 3px;
-        opacity: 0.9;
+        letter-spacing: 2px;
+        opacity: 0.95;
     }
 
     /* 卡片區 */
     .card-box {
         background: var(--card-bg);
-        margin: 30px 25px;
-        padding: 30px 20px;
+        margin: 20px;
+        padding: 25px 20px;
         border-radius: 20px;
         box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        border: 4px solid var(--gold-dark);
+        border: 3px solid var(--gold-dark);
         color: var(--text-dark);
         text-align: center;
         position: relative;
+        z-index: 2;
     }
-    /* 內框線 */
-    .card-box::after {
-        content: ""; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
-        border: 1px solid #e0c0a0; border-radius: 15px; pointer-events: none;
-    }
-
+    
     .input-field {
         width: 100%;
-        padding: 16px;
+        padding: 14px;
         border: 2px solid #ddd;
         border-radius: 12px;
-        font-size: 1.2em;
+        font-size: 1.1em;
         text-align: center;
         box-sizing: border-box;
-        margin-top: 15px;
+        margin-top: 10px;
         background: #fff;
         color: #333;
         font-weight: bold;
@@ -175,127 +207,122 @@
         box-shadow: 0 0 0 4px rgba(192, 57, 43, 0.15);
     }
 
-    /* 通用按鈕樣式 */
+    /* 按鈕 (修復 CSS 邏輯) */
     .btn {
         width: 100%;
-        padding: 18px;
+        padding: 16px;
         border: none;
         border-radius: 50px;
-        font-size: 1.2em;
+        font-size: 1.1em;
         font-weight: bold;
         cursor: pointer;
         transition: all 0.2s;
-        margin-bottom: 15px;
+        margin-bottom: 12px;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 6px 0 rgba(0,0,0,0.15);
+        box-shadow: 0 4px 0 rgba(0,0,0,0.15);
         z-index: 2;
         color: white;
-    }
-    .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.15); }
-
-    /* 啟用狀態 (紅色) */
-    .btn-active {
         background: linear-gradient(135deg, #e74c3c, #c0392b);
-        color: white !important; /* 強制白色 */
     }
-    /* 禁用狀態 (灰色) */
-    .btn-disabled {
-        background: #e0e0e0 !important;
-        color: #999 !important; /* 強制深灰 */
+    .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.15); }
+
+    .btn:disabled {
+        background: #e0e0e0;
+        color: #999;
         cursor: not-allowed;
         box-shadow: none;
-        transform: none !important;
+        transform: none;
     }
 
     .btn-rank-link {
         background: rgba(255,255,255,0.15);
         color: #fff;
         border: 1px solid rgba(255,255,255,0.4);
-        padding: 10px 20px;
+        padding: 8px 20px;
         border-radius: 30px;
-        font-size: 0.95em;
-        margin-top: 15px;
+        font-size: 0.9em;
+        margin-top: 10px;
         backdrop-filter: blur(5px);
         display: inline-flex;
         align-items: center;
         gap: 8px;
         cursor: pointer;
         text-decoration: none;
+        position: relative; z-index: 2;
     }
 
     /* === 2. 選單頁面 === */
     .menu-header {
         background: #fff;
-        padding: 40px 20px 20px;
+        padding: 30px 20px 15px;
         text-align: center;
         border-bottom: 1px solid #f0f0f0;
     }
-    .menu-title { font-size: 1.6em; font-weight: 900; color: var(--btn-red); }
-    .menu-welcome { color: #666; font-size: 1.1em; margin-top: 5px; }
+    .menu-title { font-size: 1.5em; font-weight: 900; color: var(--btn-red); }
+    .menu-welcome { color: #666; font-size: 1em; margin-top: 5px; }
 
-    .menu-content { flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center; gap: 20px; }
+    .menu-content { flex: 1; padding: 20px; display: flex; flex-direction: column; justify-content: center; gap: 15px; }
     
     .btn-large {
-        height: 110px;
+        height: 100px;
         display: flex;
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        font-size: 1.4em;
-        border-radius: 20px;
+        font-size: 1.3em;
+        border-radius: 16px;
         color: white;
         text-shadow: 0 2px 3px rgba(0,0,0,0.2);
         border: 2px solid rgba(255,255,255,0.2);
     }
-    .btn-large i { margin-right: 15px; font-size: 1.5em; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
+    .btn-large i { margin-right: 15px; font-size: 1.4em; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
     
     .btn-boutique { background: linear-gradient(135deg, #2c3e50, #4ca1af); }
     .btn-domestic { background: linear-gradient(135deg, #d35400, #e67e22); }
 
     /* === 3. 測驗頁面 === */
-    .quiz-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: #fff; }
-    .progress-bar { height: 8px; background: #f0f0f0; width: 100%; }
+    .quiz-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+    .progress-bar { height: 6px; background: #f0f0f0; width: 100%; }
     .progress-fill { height: 100%; background: var(--btn-red); width: 0%; transition: width 0.3s ease; }
     
-    .question-box { padding: 30px 25px; font-size: 1.3em; font-weight: bold; line-height: 1.5; color: #333; }
+    .question-box { padding: 25px 20px; font-size: 1.2em; font-weight: bold; line-height: 1.5; color: #333; }
     
     .option-item { 
-        padding: 20px; margin: 0 20px 15px; 
-        background: #fff; border: 2px solid #eee; border-radius: 16px; 
+        padding: 16px; margin: 0 20px 12px; 
+        background: #fff; border: 2px solid #eee; border-radius: 12px; 
         cursor: pointer; transition: 0.2s; 
         display: flex; align-items: center; 
-        font-size: 1.1em;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        font-size: 1.05em;
+        box-shadow: 0 3px 5px rgba(0,0,0,0.05);
     }
-    .option-item:active { transform: scale(0.98); }
     .option-item.selected { 
         border-color: #c0392b; background: #fff5f5; color: #c0392b; font-weight: bold; 
-        box-shadow: 0 4px 12px rgba(192, 57, 43, 0.2);
+        box-shadow: 0 4px 10px rgba(192, 57, 43, 0.2);
     }
-    .option-circle { width: 24px; height: 24px; border: 2px solid #ccc; border-radius: 50%; margin-right: 15px; flex-shrink: 0; transition: 0.2s; }
+    .option-circle { width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%; margin-right: 12px; flex-shrink: 0; transition: 0.2s; }
     .option-item.selected .option-circle { background: #c0392b; border-color: #c0392b; box-shadow: 0 0 0 3px #fff inset; }
 
     /* === 4. 結果與排行榜 === */
     .result-banner {
         background: linear-gradient(135deg, #c0392b, #800000);
-        color: white; padding: 40px 20px; text-align: center;
-        border-radius: 0 0 40px 40px; margin-bottom: 20px;
-        box-shadow: 0 10px 30px rgba(146, 43, 33, 0.4);
+        color: white; padding: 30px 20px; text-align: center;
+        border-radius: 0 0 30px 30px; margin-bottom: 15px;
+        box-shadow: 0 10px 20px rgba(146, 43, 33, 0.4);
     }
-    .score-display { font-size: 6em; font-weight: 900; line-height: 1; margin: 10px 0; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .score-display { font-size: 5em; font-weight: 900; line-height: 1; margin: 5px 0; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
     
     /* 排行榜表格 */
-    .rank-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; margin-top: 10px; }
-    .rank-table th { color: #888; font-size: 0.9em; padding: 0 10px; text-align: left; }
-    .rank-table td { padding: 15px 15px; background: #fff; border-bottom: 1px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+    .rank-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; margin-top: 10px; }
+    .rank-table th { color: #888; font-size: 0.85em; padding: 0 10px; text-align: left; }
+    .rank-table td { padding: 12px 15px; background: #fff; border-bottom: 1px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
     .rank-table tr td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
     .rank-table tr td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
     
     .rank-badge { 
         display: inline-flex; justify-content: center; align-items: center;
-        width: 32px; height: 32px; background: #eee; border-radius: 50%; 
-        font-weight: bold; color: #666; 
+        width: 28px; height: 28px; background: #eee; border-radius: 50%; 
+        font-weight: bold; color: #666; font-size: 0.9em;
     }
     .rank-1 { background: linear-gradient(135deg, #FFD700, #F39C12); color: #fff; box-shadow: 0 2px 5px rgba(241, 196, 15, 0.5); transform: scale(1.1); }
     .rank-2 { background: linear-gradient(135deg, #E0E0E0, #BDBDBD); color: #fff; }
@@ -319,86 +346,38 @@
 <div class="app-container">
     
     <!-- 1. 首頁 (登入) -->
-    <div id="loginView" style="display:flex; height: 100vh; flex-direction: column;">
-        <div class="cloud-deco"></div>
-        <div class="header-section">
-            <div class="year-tag">2026 丙午年</div>
+    <div id="loginView">
+        <div class="sunburst"></div> <!-- 旋轉光芒背景 -->
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
             
-            <!-- 招財胖唐馬 SVG (完全重繪) -->
-            <div class="horse-icon-wrapper">
-                <svg class="tang-horse-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="goldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#B8860B;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    
-                    <!-- 祥雲底座 -->
-                    <path d="M40,160 Q60,140 80,160 Q100,140 120,160 Q140,140 160,160" stroke="#fff" stroke-width="5" fill="none" opacity="0.3" stroke-linecap="round"/>
+            <div class="header-section">
+                <div class="year-tag">2026 丙午年</div>
+                
+                <!-- 吉字春聯圖騰 -->
+                <div class="fortune-badge-wrapper">
+                    <div class="ribbon ribbon-left"></div>
+                    <div class="ribbon ribbon-right"></div>
+                    <div class="fortune-diamond">
+                        <div class="fortune-text">吉</div>
+                    </div>
+                </div>
 
-                    <!-- 馬身 (肥圓飽滿) -->
-                    <ellipse cx="100" cy="110" rx="60" ry="45" class="horse-skin" />
-                    
-                    <!-- 頭 (大圓頭，福氣) -->
-                    <circle cx="50" cy="80" r="25" class="horse-skin" />
-                    <!-- 嘴巴 -->
-                    <path d="M35,85 Q40,95 50,90" fill="none" stroke="#a00" stroke-width="2" stroke-linecap="round"/>
-                    
-                    <!-- 耳朵 -->
-                    <path d="M40,60 L45,45 L55,60" class="horse-skin" />
-                    <path d="M55,60 L60,45 L65,60" class="horse-skin" />
-
-                    <!-- 鬃毛 (金色) -->
-                    <path d="M55,55 Q65,40 75,55" class="horse-mane" />
-                    <path d="M65,55 Q75,40 85,55" class="horse-mane" />
-                    <path d="M75,55 Q85,40 95,55" class="horse-mane" />
-
-                    <!-- 腿 (四條小短腿) -->
-                    <path d="M70,150 L70,170" stroke="#d63031" stroke-width="12" stroke-linecap="round"/>
-                    <path d="M130,150 L130,170" stroke="#d63031" stroke-width="12" stroke-linecap="round"/>
-                    <path d="M90,150 L90,170" stroke="#d63031" stroke-width="12" stroke-linecap="round"/>
-                    <path d="M110,150 L110,170" stroke="#d63031" stroke-width="12" stroke-linecap="round"/>
-                    
-                    <!-- 蹄 -->
-                    <rect x="64" y="170" width="12" height="6" rx="2" class="horse-hoof" />
-                    <rect x="84" y="170" width="12" height="6" rx="2" class="horse-hoof" />
-                    <rect x="104" y="170" width="12" height="6" rx="2" class="horse-hoof" />
-                    <rect x="124" y="170" width="12" height="6" rx="2" class="horse-hoof" />
-
-                    <!-- 馬鞍 (紫色顯貴氣) -->
-                    <path d="M80,80 Q100,70 120,80 L120,110 Q100,120 80,110 Z" class="horse-saddle" />
-                    
-                    <!-- 金元寶 (背上) -->
-                    <path d="M85,75 Q100,50 115,75 L115,80 Q100,90 85,80 Z" class="gold-ingot" />
-                    
-                    <!-- 尾巴 -->
-                    <path d="M155,100 Q170,90 175,110" stroke="#fdcb6e" stroke-width="8" fill="none" stroke-linecap="round"/>
-
-                    <!-- 眼睛 -->
-                    <circle cx="45" cy="75" r="3" fill="#2d3436" />
-                    <circle cx="47" cy="73" r="1" fill="#fff" />
-                </svg>
+                <h1 class="main-title">馬上 RICH<br>吉運來</h1>
+                <div class="sub-title">高雄機場教育訓練測驗</div>
             </div>
 
-            <h1 class="main-title">馬上 RICH<br>吉運來</h1>
-            <div class="sub-title">高雄機場教育訓練測驗</div>
-        </div>
-
-        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
             <div class="card-box">
-                <div style="font-size: 1.1em; font-weight: bold; margin-bottom: 10px; color: var(--btn-red);">
+                <div style="font-size: 1.1em; font-weight: bold; margin-bottom: 5px; color: var(--btn-red);">
                     <i class="fa-solid fa-id-card"></i> 同仁登入
                 </div>
-                <div style="color:#666; font-size:0.9em; margin-bottom:10px;">請輸入工號以開始</div>
-                <input type="text" id="inputId" class="input-field" placeholder="工號 (ID)" inputmode="numeric">
+                <input type="text" id="inputId" class="input-field" placeholder="請輸入工號" inputmode="numeric">
                 <!-- 登入按鈕 -->
-                <button class="btn btn-active btn-start" onclick="performLogin()">
+                <button class="btn" style="margin-top:20px;" onclick="performLogin()">
                     確認登入
                 </button>
             </div>
             
-            <div style="text-align: center;">
+            <div style="text-align: center; padding-bottom: 20px;">
                 <button class="btn-rank-link" onclick="showLeaderboard()">
                     <i class="fa-solid fa-trophy"></i> 偷看線上英雄榜
                 </button>
@@ -414,12 +393,12 @@
         </div>
 
         <div class="menu-content">
-            <button class="btn btn btn-large btn-boutique" onclick="startQuiz('boutique')">
+            <button class="btn btn-large btn-boutique" onclick="startQuiz('boutique')">
                 <i class="fa-solid fa-gem"></i> 
                 <div>精品重點測驗</div>
             </button>
 
-            <button class="btn btn btn-large btn-domestic" onclick="startQuiz('domestic')">
+            <button class="btn btn-large btn-domestic" onclick="startQuiz('domestic')">
                 <!-- 中式陶壺圖示 -->
                 <i class="fa-solid fa-jar"></i> 
                 <div>國產食品測驗</div>
@@ -449,8 +428,8 @@
         </div>
 
         <div style="padding: 20px;">
-            <!-- 按鈕狀態切換的核心 -->
-            <button id="nextBtn" class="btn btn-disabled" disabled onclick="nextQuestion()">請選擇答案</button>
+            <!-- 按鈕：預設 disabled，使用標準屬性 -->
+            <button id="nextBtn" class="btn" disabled onclick="nextQuestion()">請選擇答案</button>
         </div>
     </div>
 
@@ -534,7 +513,7 @@
     let quizType = "";
     let previousViewId = "loginView"; // 導航記錄
 
-    // --- 題庫 (答案已校對) ---
+    // --- 題庫 (最終校正版) ---
     const commonQs = [
         { q: "1/10 第一波會員來店禮是？", options: ["(A) 馬年紅包袋", "(B) 馬年轉運貼紙", "(C) 1元賀卡"], a: 1 },
         { q: "2/1 第二波會員來店禮是？", options: ["(A) 馬年紅包袋", "(B) 掛繩包", "(C) 香盅禮盒"], a: 0 },
@@ -545,10 +524,10 @@
         { q: "全館當日累計滿 $150,000 贈送多少 Rich Points？", options: ["(A) 30,000 點", "(B) 45,000 點", "(C) 50,000 點"], a: 1 },
         { q: "全館滿額贈（含黃金及特價珠寶手錶）統一於何處兌換？", options: ["(A) 收銀櫃台", "(B) 服務台", "(C) 客服櫃檯"], a: 2 },
         { q: "台新聯名卡滿 $160,000 送 $2,000 禮券，高雄機場限量幾份？", options: ["(A) 10 份", "(B) 50 份"], a: 0 },
-        { q: "台新銀行「$888 送台新 1 元發財金」活動日期區間？", options: ["(A) 1/10 - 2/24", "(B) 2/13 - 2/22"], a: 0 },
-        { q: "星展銀行滿 10 萬送 $2,000 刷卡金，條件為何？", options: ["(A) 單筆付清", "(B) 分期累積"], a: 0 },
+        { q: "台新銀行「$888 送台新 1 元發財金」活動日期區間？", options: ["(A) 1/10 - 2/24", "(B) 2/13 - 2/22"], a: 1 }, // 修正為 2/13 - 2/22
+        { q: "星展銀行滿 10 萬送 $2,000 刷卡金，條件為何？", options: ["(A) 單筆付清", "(B) 分期累積"], a: 1 }, // 修正為 分期累積
         { q: "關於銀行刷卡滿額禮，是否包含「菸酒藥類」的消費金額？", options: ["(A) 包含", "(B) 不包含"], a: 1 },
-        { q: "台新銀行 2026 Q1 單日累積多少贈阿原艾草旅行組？", options: ["(A) 22,000", "(B) 32,800"], a: 1 },
+        { q: "台新銀行 2026 Q1 單日累積多少贈阿原艾草旅行組？", options: ["(A) 22,000", "(B) 32,800"], a: 0 },
         { q: "台新銀行 2026 Q1 單日累積滿 68,000 贈送？", options: ["(A) 香氛禮盒", "(B) 25吋上掀旅行箱"], a: 1 }
     ];
 
@@ -562,8 +541,8 @@
     ];
 
     const domesticQs = [
-        { q: "國產滿額現抵：單筆滿 $1,880 可以現抵多少？", options: ["(A) $100", "(B) $200", "(C) $150"], a: 2 },
-        { q: "國產單筆滿額 $3,000 可以現抵回饋多少？", options: ["(A) $150", "(B) $250", "(C) $300"], a: 1 },
+        { q: "國產滿額現抵：單筆滿 $1,880 可以現抵多少？", options: ["(A) $100", "(B) $200", "(C) $150"], a: 2 }, // C=$150
+        { q: "國產單筆滿額 $3,000 可以現抵回饋多少？", options: ["(A) $150", "(B) $250", "(C) $300"], a: 2 }, // C=$300
         { q: "國產單筆滿 $3,000 後，每滿 $1,000 以此類推回饋幾%？", options: ["(A) 10%", "(B) 8%", "(C) 12%"], a: 0 },
         { q: "2/1 開跑活動，單筆滿 $1,000 可獲得？", options: ["(A) 抽獎券乙張", "(B) 抵用券乙張", "(C) 紅包袋"], a: 0 }
     ];
@@ -582,8 +561,9 @@
         quizType = type;
         const specificQs = (type === 'boutique') ? boutiqueQs : domesticQs;
         const fullSet = [...commonQs, ...specificQs];
-        // 隨機抽題
-        currentQuestions = shuffle(fullSet).slice(0, 20);
+        // 隨機抽 20 題 (若不足 20 則全取)
+        const count = Math.min(20, fullSet.length);
+        currentQuestions = shuffle(fullSet).slice(0, count);
         
         currentIdx = 0;
         score = 0;
@@ -611,7 +591,6 @@
         // 重置按鈕狀態
         const btn = document.getElementById('nextBtn');
         btn.disabled = true;
-        btn.className = "btn btn-disabled"; // 使用 CSS Class 控制
         btn.innerText = (currentIdx === currentQuestions.length - 1) ? "送出試卷" : "下一題";
 
         q.options.forEach((opt, idx) => {
@@ -631,7 +610,6 @@
         // 啟用按鈕
         const btn = document.getElementById('nextBtn');
         btn.disabled = false;
-        btn.className = "btn btn-active"; // 切換為紅色
     }
 
     function nextQuestion() {
@@ -669,7 +647,7 @@
 
         const reviewContainer = document.getElementById('reviewContainer');
         if (finalScore === 100) {
-            reviewContainer.innerHTML = `<div style="text-align:center; padding:30px; color:#27ae60; font-weight:bold; font-size:1.2em;">🎉 太強了！全部答對！</div>`;
+            reviewContainer.innerHTML = `<div style="text-align:center; padding:30px; color:#c0392b; font-weight:bold; font-size:1.2em;">🎉 太強了！全部答對！</div>`;
         } else {
             reviewContainer.innerHTML = userAnswers.map((ans, i) => `
                 <div style="margin-bottom:15px; padding:10px; background:#fff; border-left:4px solid ${ans.isCorrect ? '#2ecc71':'#e74c3c'}; border-radius:4px; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
