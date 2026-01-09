@@ -3,25 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>馬上 RICH 吉運來 - 富貴唐馬版</title>
+<title>馬上 RICH 吉運來 - 極致福氣版</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
     :root {
         /* == 色彩計畫：故宮紅 x 帝王金 == */
-        --bg-red: #8a0a0a;
-        --card-bg: #fffcf5;
-        --gold-main: #FFD700;
-        --gold-dark: #B8860B;
+        --bg-red: #8a0a0a;         /* 深沉的故宮紅 */
+        --card-bg: #fffcf5;        /* 溫潤的宣紙白 */
+        --gold-main: #FFD700;      /* 正金 */
+        --gold-dark: #B8860B;      /* 暗金 */
         --text-dark: #2c3e50;
         --btn-red: #c0392b;
-        --btn-disabled-bg: #e0e0e0;
-        --btn-disabled-text: #999;
     }
 
     body {
         font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
         background-color: var(--bg-red);
-        background-image:
+        /* 背景：萬字紋隱喻 */
+        background-image: 
             radial-gradient(var(--gold-dark) 1px, transparent 1px),
             radial-gradient(var(--gold-dark) 1px, transparent 1px);
         background-size: 40px 40px;
@@ -37,7 +36,7 @@
 
     .app-container {
         width: 100%;
-        max-width: 420px;
+        max-width: 400px; /* 縮窄一點讓比例更緊湊 */
         background: #fff;
         min-height: 100vh;
         box-shadow: 0 0 60px rgba(0,0,0,0.9);
@@ -48,23 +47,33 @@
 
     /* === 1. 首頁 (登入) === */
     #loginView {
+        /* 漸層紅底 */
         background: radial-gradient(circle at top, #b91e1e 0%, var(--bg-red) 80%);
         color: #fff;
         position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
     }
-
-    .cloud-deco {
+    
+    /* 背景旋轉光芒 */
+    .sunburst {
         position: absolute;
-        width: 100%;
-        height: 110px;
-        background: url('https://www.transparenttextures.com/patterns/black-scales.png');
-        opacity: 0.1;
-        top: 0;
+        top: -200px;
+        left: 50%;
+        margin-left: -300px;
+        width: 600px;
+        height: 600px;
+        background: repeating-conic-gradient(from 0deg, rgba(255, 215, 0, 0.05) 0deg 10deg, transparent 10deg 20deg);
+        animation: spin 30s linear infinite;
+        z-index: 0;
+        pointer-events: none;
     }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
 
     .header-section {
         text-align: center;
-        padding-top: 60px;
+        padding-top: 40px; /* 縮減頂部留白 */
         position: relative;
         z-index: 2;
     }
@@ -73,82 +82,120 @@
         display: inline-block;
         background: linear-gradient(to bottom, var(--gold-main), var(--gold-dark));
         color: #5a0000;
-        padding: 6px 20px;
+        padding: 4px 18px;
         border-radius: 50px;
         font-weight: 900;
-        letter-spacing: 3px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
-        margin-bottom: 20px;
+        letter-spacing: 2px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
+        margin-bottom: 15px; /* 縮減間距 */
         border: 2px solid #fff;
+        font-size: 0.9em;
     }
 
-    .horse-icon-wrapper {
+    /* === 「吉」字春聯徽章 (置中修正) === */
+    .fortune-badge-wrapper {
         position: relative;
-        height: 190px;
+        height: 110px; /* 緊湊高度 */
         margin-bottom: 10px;
         display: flex;
         justify-content: center;
         align-items: center;
     }
 
-    .tang-horse-svg {
-        width: 220px;
-        height: 190px;
-        filter: drop-shadow(0 12px 10px rgba(0,0,0,0.35));
-        animation: float-horse 3s ease-in-out infinite;
+    /* 菱形紅紙 */
+    .fortune-diamond {
+        width: 90px;
+        height: 90px;
+        background: #d32f2f;
+        transform: rotate(45deg);
+        border: 3px solid var(--gold-main);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.3), inset 0 0 10px rgba(0,0,0,0.2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: float-badge 3s ease-in-out infinite;
+        position: relative;
     }
-    @keyframes float-horse {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-8px); }
+    
+    /* 內圈裝飾線 */
+    .fortune-diamond::after {
+        content: "";
+        position: absolute;
+        top: 4px; left: 4px; right: 4px; bottom: 4px;
+        border: 1px dashed var(--gold-dark);
     }
-    @keyframes sparkle {
-        0%, 100% { opacity: 0.15; transform: scale(0.95); }
-        50% { opacity: 0.9; transform: scale(1.05); }
+
+    /* 吉字 (轉回來) */
+    .fortune-text {
+        transform: rotate(-45deg);
+        font-size: 55px;
+        font-weight: 900;
+        color: var(--gold-main);
+        text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+        font-family: "Kaiti TC", "STKaiti", "標楷體", serif; /* 指定書法字體 */
+        line-height: 1; /* 修正垂直置中 */
+        margin-top: -5px; /* 微調視覺中心 */
+    }
+
+    /* 左右飄帶 */
+    .ribbon {
+        position: absolute;
+        top: 50%;
+        width: 50px;
+        height: 10px;
+        background: var(--gold-dark);
+        z-index: -1;
+        border-radius: 2px;
+    }
+    .ribbon-left { left: 50%; margin-left: -80px; transform: rotate(-10deg); }
+    .ribbon-right { right: 50%; margin-right: -80px; transform: rotate(10deg); }
+
+    @keyframes float-badge {
+        0%, 100% { transform: rotate(45deg) translateY(0); }
+        50% { transform: rotate(45deg) translateY(-5px); }
     }
 
     .main-title {
-        font-size: 2.4em;
+        font-size: 2em;
         font-weight: 900;
         margin: 5px 0;
         color: #fff;
-        text-shadow: 0 4px 0 #3d0000, 0 8px 15px rgba(0,0,0,0.5);
+        text-shadow: 0 3px 0 #3d0000, 0 6px 12px rgba(0,0,0,0.5);
         letter-spacing: 2px;
         line-height: 1.1;
     }
     .sub-title {
-        font-size: 1.1em;
+        font-size: 1em;
         color: var(--gold-main);
-        margin-top: 10px;
+        margin-top: 5px;
         font-weight: bold;
-        letter-spacing: 3px;
-        opacity: 0.9;
+        letter-spacing: 2px;
+        opacity: 0.95;
     }
 
+    /* 卡片區 (緊湊化) */
     .card-box {
         background: var(--card-bg);
-        margin: 30px 25px;
-        padding: 30px 20px;
+        margin: 20px; /* 縮減邊距 */
+        padding: 25px 20px; /* 縮減內距 */
         border-radius: 20px;
         box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        border: 4px solid var(--gold-dark);
+        border: 3px solid var(--gold-dark);
         color: var(--text-dark);
         text-align: center;
         position: relative;
+        z-index: 2;
     }
-    .card-box::after {
-        content: ""; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
-        border: 1px solid #e0c0a0; border-radius: 15px; pointer-events: none;
-    }
-
+    
     .input-field {
         width: 100%;
-        padding: 16px;
+        padding: 14px;
         border: 2px solid #ddd;
         border-radius: 12px;
-        font-size: 1.2em;
+        font-size: 1.1em;
         text-align: center;
         box-sizing: border-box;
-        margin-top: 15px;
+        margin-top: 10px;
         background: #fff;
         color: #333;
         font-weight: bold;
@@ -162,279 +209,181 @@
         box-shadow: 0 0 0 4px rgba(192, 57, 43, 0.15);
     }
 
+    /* === 按鈕 (修復壞掉問題) === */
     .btn {
         width: 100%;
-        padding: 18px;
+        padding: 16px;
         border: none;
         border-radius: 50px;
-        font-size: 1.2em;
+        font-size: 1.1em;
         font-weight: bold;
         cursor: pointer;
         transition: all 0.2s;
-        margin-bottom: 15px;
+        margin-bottom: 12px;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 6px 0 rgba(0,0,0,0.15);
+        box-shadow: 0 4px 0 rgba(0,0,0,0.15);
         z-index: 2;
         color: white;
+        background: linear-gradient(135deg, #e74c3c, #c0392b); /* 預設紅色 */
     }
-    .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.15); }
+    .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.15); }
 
-    .btn-active {
-        background: linear-gradient(135deg, #e74c3c, #c0392b);
-        color: white !important;
-    }
-    .btn-disabled {
-        background: #e0e0e0 !important;
-        color: #999 !important;
+    /* 禁用狀態 (透過 :disabled 控制) */
+    .btn:disabled {
+        background: #e0e0e0;
+        color: #999;
         cursor: not-allowed;
         box-shadow: none;
-        transform: none !important;
+        transform: none;
     }
 
     .btn-rank-link {
         background: rgba(255,255,255,0.15);
         color: #fff;
         border: 1px solid rgba(255,255,255,0.4);
-        padding: 10px 20px;
+        padding: 8px 20px;
         border-radius: 30px;
-        font-size: 0.95em;
-        margin-top: 15px;
+        font-size: 0.9em;
+        margin-top: 10px;
         backdrop-filter: blur(5px);
         display: inline-flex;
         align-items: center;
         gap: 8px;
         cursor: pointer;
         text-decoration: none;
+        position: relative; z-index: 2;
     }
 
     /* === 2. 選單頁面 === */
     .menu-header {
         background: #fff;
-        padding: 40px 20px 20px;
+        padding: 30px 20px 15px;
         text-align: center;
         border-bottom: 1px solid #f0f0f0;
     }
-    .menu-title { font-size: 1.6em; font-weight: 900; color: var(--btn-red); }
-    .menu-welcome { color: #666; font-size: 1.1em; margin-top: 5px; }
+    .menu-title { font-size: 1.5em; font-weight: 900; color: var(--btn-red); }
+    .menu-welcome { color: #666; font-size: 1em; margin-top: 5px; }
 
-    .menu-content { flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center; gap: 20px; }
-
+    .menu-content { flex: 1; padding: 20px; display: flex; flex-direction: column; justify-content: center; gap: 15px; }
+    
     .btn-large {
-        height: 110px;
+        height: 100px;
         display: flex;
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        font-size: 1.4em;
-        border-radius: 20px;
+        font-size: 1.3em;
+        border-radius: 16px;
         color: white;
         text-shadow: 0 2px 3px rgba(0,0,0,0.2);
         border: 2px solid rgba(255,255,255,0.2);
     }
-    .btn-large i { margin-right: 15px; font-size: 1.5em; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
+    .btn-large i { margin-right: 15px; font-size: 1.4em; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
+    
     .btn-boutique { background: linear-gradient(135deg, #2c3e50, #4ca1af); }
     .btn-domestic { background: linear-gradient(135deg, #d35400, #e67e22); }
 
     /* === 3. 測驗頁面 === */
-    .quiz-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: #fff; }
-    .progress-bar { height: 8px; background: #f0f0f0; width: 100%; }
+    .quiz-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+    .progress-bar { height: 6px; background: #f0f0f0; width: 100%; }
     .progress-fill { height: 100%; background: var(--btn-red); width: 0%; transition: width 0.3s ease; }
-    .question-box { padding: 30px 25px; font-size: 1.3em; font-weight: bold; line-height: 1.5; color: #333; }
-
-    .option-item {
-        padding: 20px; margin: 0 20px 15px;
-        background: #fff; border: 2px solid #eee; border-radius: 16px;
-        cursor: pointer; transition: 0.2s;
-        display: flex; align-items: center;
-        font-size: 1.1em;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    
+    .question-box { padding: 25px 20px; font-size: 1.2em; font-weight: bold; line-height: 1.5; color: #333; }
+    
+    .option-item { 
+        padding: 16px; margin: 0 20px 12px; 
+        background: #fff; border: 2px solid #eee; border-radius: 12px; 
+        cursor: pointer; transition: 0.2s; 
+        display: flex; align-items: center; 
+        font-size: 1.05em;
+        box-shadow: 0 3px 5px rgba(0,0,0,0.05);
     }
     .option-item:active { transform: scale(0.98); }
-    .option-item.selected {
-        border-color: #c0392b; background: #fff5f5; color: #c0392b; font-weight: bold;
-        box-shadow: 0 4px 12px rgba(192, 57, 43, 0.2);
+    .option-item.selected { 
+        border-color: #c0392b; background: #fff5f5; color: #c0392b; font-weight: bold; 
+        box-shadow: 0 4px 10px rgba(192, 57, 43, 0.2);
     }
-    .option-circle { width: 24px; height: 24px; border: 2px solid #ccc; border-radius: 50%; margin-right: 15px; flex-shrink: 0; transition: 0.2s; }
+    .option-circle { width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%; margin-right: 12px; flex-shrink: 0; transition: 0.2s; }
     .option-item.selected .option-circle { background: #c0392b; border-color: #c0392b; box-shadow: 0 0 0 3px #fff inset; }
 
     /* === 4. 結果與排行榜 === */
     .result-banner {
         background: linear-gradient(135deg, #c0392b, #800000);
-        color: white; padding: 40px 20px; text-align: center;
-        border-radius: 0 0 40px 40px; margin-bottom: 20px;
-        box-shadow: 0 10px 30px rgba(146, 43, 33, 0.4);
+        color: white; padding: 30px 20px; text-align: center;
+        border-radius: 0 0 30px 30px; margin-bottom: 15px;
+        box-shadow: 0 10px 20px rgba(146, 43, 33, 0.4);
     }
-    .score-display { font-size: 6em; font-weight: 900; line-height: 1; margin: 10px 0; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-
-    .rank-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; margin-top: 10px; }
-    .rank-table th { color: #888; font-size: 0.9em; padding: 0 10px; text-align: left; }
-    .rank-table td { padding: 15px 15px; background: #fff; border-bottom: 1px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+    .score-display { font-size: 5em; font-weight: 900; line-height: 1; margin: 5px 0; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    
+    /* 排行榜表格 */
+    .rank-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; margin-top: 10px; }
+    .rank-table th { color: #888; font-size: 0.85em; padding: 0 10px; text-align: left; }
+    .rank-table td { padding: 12px 15px; background: #fff; border-bottom: 1px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
     .rank-table tr td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
     .rank-table tr td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
-
-    .rank-badge {
+    
+    .rank-badge { 
         display: inline-flex; justify-content: center; align-items: center;
-        width: 32px; height: 32px; background: #eee; border-radius: 50%;
-        font-weight: bold; color: #666;
+        width: 28px; height: 28px; background: #eee; border-radius: 50%; 
+        font-weight: bold; color: #666; font-size: 0.9em;
     }
     .rank-1 { background: linear-gradient(135deg, #FFD700, #F39C12); color: #fff; box-shadow: 0 2px 5px rgba(241, 196, 15, 0.5); transform: scale(1.1); }
     .rank-2 { background: linear-gradient(135deg, #E0E0E0, #BDBDBD); color: #fff; }
     .rank-3 { background: linear-gradient(135deg, #E67E22, #D35400); color: #fff; }
 
-    #leaderboardView {
-        background: #f9f9f9;
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        z-index: 9999;
-        display: none;
-        flex-direction: column;
+    /* 全螢幕排行榜視窗 */
+    #leaderboardView { 
+        background: #f9f9f9; 
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        z-index: 9999; 
+        display: none; 
+        flex-direction: column; 
     }
 </style>
-
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 </head>
-
 <body>
+
 <div class="app-container">
-
+    
     <!-- 1. 首頁 (登入) -->
-    <div id="loginView" style="display:flex; height: 100vh; flex-direction: column;">
-        <div class="cloud-deco"></div>
-        <div class="header-section">
-            <div class="year-tag">2026 丙午年</div>
+    <div id="loginView">
+        <div class="sunburst"></div> <!-- 旋轉光芒背景 -->
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+            
+            <div class="header-section">
+                <div class="year-tag">2026 丙午年</div>
+                
+                <!-- 吉字春聯圖騰 (絕對置中) -->
+                <div class="fortune-badge-wrapper">
+                    <div class="ribbon ribbon-left"></div>
+                    <div class="ribbon ribbon-right"></div>
+                    <div class="fortune-diamond">
+                        <div class="fortune-text">吉</div>
+                    </div>
+                </div>
 
-            <!-- 招財胖唐馬 SVG (美化版) -->
-            <div class="horse-icon-wrapper">
-                <svg class="tang-horse-svg" viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg" aria-label="招財唐馬">
-                    <defs>
-                        <radialGradient id="halo" cx="50%" cy="40%" r="60%">
-                            <stop offset="0%" stop-color="#FFD700" stop-opacity="0.65"/>
-                            <stop offset="70%" stop-color="#FFD700" stop-opacity="0.12"/>
-                            <stop offset="100%" stop-color="#FFD700" stop-opacity="0"/>
-                        </radialGradient>
-
-                        <linearGradient id="goldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stop-color="#FFF2B0"/>
-                            <stop offset="45%" stop-color="#FFD700"/>
-                            <stop offset="100%" stop-color="#B8860B"/>
-                        </linearGradient>
-
-                        <linearGradient id="horseShade" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#ff6b6b"/>
-                            <stop offset="70%" stop-color="#d63031"/>
-                            <stop offset="100%" stop-color="#a01818"/>
-                        </linearGradient>
-
-                        <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
-                            <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000" flood-opacity="0.25"/>
-                        </filter>
-                    </defs>
-
-                    <!-- 金色光暈 -->
-                    <ellipse cx="120" cy="95" rx="95" ry="80" fill="url(#halo)"/>
-
-                    <!-- 祥雲底座 -->
-                    <path d="M40,175
-                             C55,160 75,160 90,175
-                             C105,155 135,155 150,175
-                             C165,160 185,160 200,175"
-                          fill="none" stroke="#fff" stroke-width="7" opacity="0.28" stroke-linecap="round"/>
-
-                    <!-- 星光（閃爍） -->
-                    <g style="animation:sparkle 2.4s ease-in-out infinite;" opacity="0.7">
-                        <path d="M205 70 l4 10 l10 4 l-10 4 l-4 10 l-4-10 l-10-4 l10-4 z" fill="url(#goldGradient)"/>
-                    </g>
-                    <g style="animation:sparkle 1.9s ease-in-out infinite;" opacity="0.6">
-                        <path d="M40 85 l3 7 l7 3 l-7 3 l-3 7 l-3-7 l-7-3 l7-3 z" fill="url(#goldGradient)"/>
-                    </g>
-
-                    <!-- 唐馬本體（圓潤 + 層次） -->
-                    <g filter="url(#softShadow)">
-                        <!-- 身體 -->
-                        <ellipse cx="132" cy="125" rx="70" ry="52" fill="url(#horseShade)" stroke="#ffd1d1" stroke-width="3"/>
-                        <!-- 肚子高光 -->
-                        <ellipse cx="150" cy="140" rx="40" ry="26" fill="#fff" opacity="0.12"/>
-
-                        <!-- 頭 -->
-                        <circle cx="70" cy="92" r="30" fill="url(#horseShade)" stroke="#ffd1d1" stroke-width="3"/>
-                        <!-- 嘴巴 -->
-                        <path d="M50,100 Q62,115 76,107" fill="none" stroke="#8a0a0a" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
-
-                        <!-- 耳朵 -->
-                        <path d="M58,72 L65,50 L78,70 Z" fill="url(#horseShade)" stroke="#ffd1d1" stroke-width="3" stroke-linejoin="round"/>
-                        <path d="M76,70 L83,50 L95,72 Z" fill="url(#horseShade)" stroke="#ffd1d1" stroke-width="3" stroke-linejoin="round"/>
-                        <!-- 耳內 -->
-                        <path d="M65,70 L69,60 L76,70 Z" fill="#ffb3b3" opacity="0.65"/>
-                        <path d="M83,70 L87,60 L93,70 Z" fill="#ffb3b3" opacity="0.65"/>
-
-                        <!-- 鬃毛（分層金色） -->
-                        <path d="M82,62 Q95,45 110,62 Q98,75 82,62 Z" fill="#ffd86b" opacity="0.95"/>
-                        <path d="M95,62 Q108,45 123,62 Q110,78 95,62 Z" fill="#f5c44c" opacity="0.95"/>
-                        <path d="M108,62 Q121,45 136,62 Q124,78 108,62 Z" fill="#e7b635" opacity="0.95"/>
-
-                        <!-- 眼睛 -->
-                        <circle cx="64" cy="88" r="4.6" fill="#2d3436"/>
-                        <circle cx="66" cy="86" r="1.6" fill="#fff"/>
-                        <!-- 腮紅 -->
-                        <ellipse cx="58" cy="98" rx="7" ry="5" fill="#ff7aa2" opacity="0.45"/>
-
-                        <!-- 馬鞍（更像裝飾） -->
-                        <path d="M105,92
-                                 Q132,75 158,92
-                                 L162,120
-                                 Q132,140 102,122 Z"
-                              fill="#6c5ce7" stroke="#fff" stroke-width="3" opacity="0.95"/>
-                        <!-- 鞍飾金邊 -->
-                        <path d="M112,98 Q132,86 152,98" fill="none" stroke="url(#goldGradient)" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
-
-                        <!-- 元寶（立體） -->
-                        <path d="M112,92
-                                 Q132,58 152,92
-                                 Q132,110 112,92 Z"
-                              fill="url(#goldGradient)" stroke="#e17055" stroke-width="2"/>
-                        <path d="M120,92 Q132,72 144,92" fill="none" stroke="#fff" stroke-width="3" opacity="0.35" stroke-linecap="round"/>
-
-                        <!-- 腿（圓短可愛） -->
-                        <g stroke="#b81f1f" stroke-width="14" stroke-linecap="round">
-                            <path d="M110,166 L110,190"/>
-                            <path d="M132,166 L132,190"/>
-                            <path d="M154,166 L154,190"/>
-                            <path d="M176,166 L176,190"/>
-                        </g>
-                        <!-- 蹄 -->
-                        <g fill="#2d3436">
-                            <rect x="103" y="190" width="14" height="7" rx="3"/>
-                            <rect x="125" y="190" width="14" height="7" rx="3"/>
-                            <rect x="147" y="190" width="14" height="7" rx="3"/>
-                            <rect x="169" y="190" width="14" height="7" rx="3"/>
-                        </g>
-
-                        <!-- 尾巴（金色） -->
-                        <path d="M195,118 Q214,110 218,132" stroke="#fdcb6e" stroke-width="10" fill="none" stroke-linecap="round"/>
-                        <path d="M194,125 Q212,120 216,135" stroke="#ffeaa7" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.7"/>
-                    </g>
-                </svg>
+                <h1 class="main-title">馬上 RICH<br>吉運來</h1>
+                <div class="sub-title">高雄機場教育訓練測驗</div>
             </div>
 
-            <h1 class="main-title">馬上 RICH<br>吉運來</h1>
-            <div class="sub-title">高雄機場教育訓練測驗</div>
-        </div>
-
-        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
             <div class="card-box">
-                <div style="font-size: 1.1em; font-weight: bold; margin-bottom: 10px; color: var(--btn-red);">
+                <div style="font-size: 1.1em; font-weight: bold; margin-bottom: 5px; color: var(--btn-red);">
                     <i class="fa-solid fa-id-card"></i> 同仁登入
                 </div>
-                <div style="color:#666; font-size:0.9em; margin-bottom:10px;">請輸入工號以開始</div>
-                <input type="text" id="inputId" class="input-field" placeholder="工號 (ID)" inputmode="numeric" autocomplete="off">
-                <button class="btn btn-active btn-start" onclick="performLogin()">確認登入</button>
+                <input type="text" id="inputId" class="input-field" placeholder="請輸入工號" inputmode="numeric">
+                <!-- 登入按鈕 -->
+                <button class="btn" style="margin-top:20px;" onclick="performLogin()">
+                    確認登入
+                </button>
             </div>
-
-            <div style="text-align: center;">
+            
+            <div style="text-align: center; padding-bottom: 20px;">
                 <button class="btn-rank-link" onclick="showLeaderboard()">
-                    <i class="fa-solid fa-trophy"></i> 查看線上英雄榜
+                    <i class="fa-solid fa-trophy"></i> 偷看線上英雄榜
                 </button>
             </div>
         </div>
@@ -444,18 +393,18 @@
     <div id="menuView" style="display:none; height: 100vh; flex-direction: column;">
         <div class="menu-header">
             <div class="menu-title">選擇測驗項目</div>
-            <div class="menu-welcome" id="welcomeText">您好，同仁</div>
+            <div class="menu-welcome" id="welcomeText">Hi, 同仁</div>
         </div>
 
         <div class="menu-content">
-            <!-- 修正：btn 重複 class -->
             <button class="btn btn-large btn-boutique" onclick="startQuiz('boutique')">
-                <i class="fa-solid fa-gem"></i>
+                <i class="fa-solid fa-gem"></i> 
                 <div>精品重點測驗</div>
             </button>
 
             <button class="btn btn-large btn-domestic" onclick="startQuiz('domestic')">
-                <i class="fa-solid fa-jar"></i>
+                <!-- 中式陶壺圖示 -->
+                <i class="fa-solid fa-jar"></i> 
                 <div>國產食品測驗</div>
             </button>
         </div>
@@ -483,7 +432,8 @@
         </div>
 
         <div style="padding: 20px;">
-            <button id="nextBtn" class="btn btn-disabled" disabled onclick="nextQuestion()">請先選擇答案</button>
+            <!-- 按鈕：預設 disabled，選取後移除 disabled -->
+            <button id="nextBtn" class="btn" disabled onclick="nextQuestion()">請選擇答案</button>
         </div>
     </div>
 
@@ -504,7 +454,7 @@
 
         <div style="padding: 20px; background: #fff; border-top: 1px solid #eee;">
             <button class="btn" style="border: 2px solid #c0392b; color: #c0392b; background: white; margin-bottom: 10px;" onclick="copyResultText()">
-                <i class="fa-regular fa-copy"></i> 複製成績（分享 LINE）
+                <i class="fa-regular fa-copy"></i> 複製成績
             </button>
             <div style="display: flex; gap: 10px;">
                 <button class="btn" style="background: #333; color: white; margin-bottom: 0; flex: 1;" onclick="showLeaderboard()">
@@ -523,7 +473,7 @@
             <h1 style="margin:0; font-size: 1.8em;">🏆 線上英雄榜</h1>
             <div style="font-size: 0.9em; opacity: 0.8; margin-top: 5px;">Top 10 Live Ranking</div>
         </div>
-
+        
         <div style="flex: 1; overflow-y: auto; padding: 20px;">
             <table class="rank-table">
                 <thead><tr><th width="15%">排名</th><th>工號</th><th width="25%" style="text-align:right;">分數</th></tr></thead>
@@ -551,15 +501,10 @@
       appId: "1:1093040493998:web:932bda3c48fa38b7e6e43f",
       measurementId: "G-Q5D52QGSSF"
     };
-
-    let authReady = Promise.resolve();
     try {
         firebase.initializeApp(firebaseConfig);
-        authReady = firebase.auth().signInAnonymously()
-            .catch(err => { console.error("Auth Fail:", err); });
-    } catch(e) {
-        console.error("Firebase Init Error:", e);
-    }
+        firebase.auth().signInAnonymously().catch(err => console.error("Auth Fail:", err));
+    } catch(e) { console.error("Firebase Init Error:", e); }
 
     const db = firebase.firestore();
 
@@ -570,9 +515,9 @@
     let userAnswers = [];
     let selectedIdx = null;
     let quizType = "";
-    let previousViewId = "loginView";
+    let previousViewId = "loginView"; // 導航記錄
 
-    // --- 題庫 (答案已校對) ---
+    // --- 題庫 ---
     const commonQs = [
         { q: "1/10 第一波會員來店禮是？", options: ["(A) 馬年紅包袋", "(B) 馬年轉運貼紙", "(C) 1元賀卡"], a: 1 },
         { q: "2/1 第二波會員來店禮是？", options: ["(A) 馬年紅包袋", "(B) 掛繩包", "(C) 香盅禮盒"], a: 0 },
@@ -610,8 +555,8 @@
         const id = document.getElementById('inputId').value.trim();
         if (!id) { alert("請輸入工號！"); return; }
         userInfo.id = id;
-        document.getElementById('welcomeText').innerText = `您好，工號 ${id}`;
-
+        document.getElementById('welcomeText').innerText = `Hi, 工號 ${id}`;
+        
         document.getElementById('loginView').style.display = 'none';
         document.getElementById('menuView').style.display = 'flex';
     }
@@ -620,15 +565,18 @@
         quizType = type;
         const specificQs = (type === 'boutique') ? boutiqueQs : domesticQs;
         const fullSet = [...commonQs, ...specificQs];
-
-        currentQuestions = shuffle(fullSet).slice(0, 20);
+        // 隨機抽題，若題庫不足 20 題則取全部
+        const count = Math.min(20, fullSet.length);
+        currentQuestions = shuffle(fullSet).slice(0, count);
+        
         currentIdx = 0;
         score = 0;
         userAnswers = [];
 
         document.getElementById('subjectTag').innerText = (type === 'boutique') ? "精品重點" : "國產食品";
+        // 動態設定總題數
         document.getElementById('totalQ').innerText = currentQuestions.length;
-
+        
         document.getElementById('menuView').style.display = 'none';
         document.getElementById('quizView').style.display = 'flex';
         renderQuestion();
@@ -639,17 +587,15 @@
         document.getElementById('currentQ').innerText = currentIdx + 1;
         document.getElementById('progressBar').style.width = ((currentIdx + 1) / currentQuestions.length * 100) + "%";
         document.getElementById('qText').innerText = q.q;
-
+        
         const container = document.getElementById('optionsContainer');
         container.innerHTML = "";
         selectedIdx = null;
-
+        
+        // 重置按鈕狀態
         const btn = document.getElementById('nextBtn');
         btn.disabled = true;
-        btn.className = "btn btn-disabled";
         btn.innerText = (currentIdx === currentQuestions.length - 1) ? "送出試卷" : "下一題";
-        // 文字提示更清楚
-        if (currentIdx !== currentQuestions.length - 1) btn.innerText = "下一題（請先選擇答案）";
 
         q.options.forEach((opt, idx) => {
             const div = document.createElement('div');
@@ -664,20 +610,19 @@
         document.querySelectorAll('.option-item').forEach(e => e.classList.remove('selected'));
         el.classList.add('selected');
         selectedIdx = idx;
-
+        
+        // 啟用按鈕
         const btn = document.getElementById('nextBtn');
         btn.disabled = false;
-        btn.className = "btn btn-active";
-        btn.innerText = (currentIdx === currentQuestions.length - 1) ? "送出試卷" : "下一題";
     }
 
     function nextQuestion() {
         if (selectedIdx === null) return;
-
+        
         const q = currentQuestions[currentIdx];
         const isCorrect = (selectedIdx === q.a);
         if (isCorrect) score++;
-
+        
         userAnswers.push({
             q: q.q,
             userSelect: q.options[selectedIdx],
@@ -693,13 +638,14 @@
         }
     }
 
-    async function showResult() {
+    function showResult() {
         document.getElementById('quizView').style.display = 'none';
         document.getElementById('resultView').style.display = 'flex';
-
+        
+        // 計分修正：(答對 / 總題數) * 100
         const finalScore = Math.round((score / currentQuestions.length) * 100);
         document.getElementById('finalScore').innerText = finalScore;
-
+        
         const typeName = (quizType === 'boutique') ? "精品" : "國產食品";
         document.getElementById('userInfoDisplay').innerText = `工號 ${userInfo.id} / ${typeName}`;
 
@@ -717,41 +663,29 @@
             `).join('');
         }
 
-        // 上傳：等待匿名登入完成，避免偶發失敗
-        try {
-            await authReady;
-            await db.collection("quiz_leaderboard_2026").add({
-                name: userInfo.id,
-                score: finalScore,
-                dept: "-",
-                quizType: quizType,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-        } catch (e) {
-            console.error("Upload Fail:", e);
-        }
+        // 上傳
+        db.collection("quiz_leaderboard_2026").add({
+            name: userInfo.id,
+            score: finalScore,
+            dept: "-",
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
     }
 
     async function loadLeaderboardData() {
         const tbody = document.getElementById('rankBody');
         tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#999;">讀取中...</td></tr>';
-
+        
         try {
-            await authReady;
-
-            // 你目前用 get() 是一次性讀取；如果要真正 Live，可改 onSnapshot（但先保持你原本行為）
-            const snap = await db.collection("quiz_leaderboard_2026").get();
+            const snap = await db.collection("quiz_leaderboard_2026").get(); 
             let data = [];
             snap.forEach(doc => data.push(doc.data()));
-
+            
             data.sort((a, b) => {
-                if ((b.score ?? 0) !== (a.score ?? 0)) return (b.score ?? 0) - (a.score ?? 0);
-                // 同分：較早達成排前（timestamp 越小越前）
-                const at = a.timestamp?.seconds ?? 9999999999;
-                const bt = b.timestamp?.seconds ?? 9999999999;
-                return at - bt;
+                if (b.score !== a.score) return b.score - a.score;
+                return (a.timestamp?.seconds || 0) - (b.timestamp?.seconds || 0);
             });
-
+            
             data = data.slice(0, 10);
 
             if (data.length === 0) {
@@ -762,8 +696,8 @@
             tbody.innerHTML = data.map((d, i) => `
                 <tr>
                     <td><span class="rank-badge ${i===0?'rank-1':(i===1?'rank-2':(i===2?'rank-3':''))}">${i+1}</span></td>
-                    <td style="font-weight:bold;">${d.name ?? '-'}</td>
-                    <td style="color:#c0392b; font-weight:900; text-align:right;">${d.score ?? 0}</td>
+                    <td style="font-weight:bold;">${d.name}</td>
+                    <td style="color:#c0392b; font-weight:900; text-align:right;">${d.score}</td>
                 </tr>
             `).join('');
         } catch (e) {
@@ -772,19 +706,18 @@
         }
     }
 
-    // 排行榜導航（修正：display 判斷可能為空字串，改用 getComputedStyle 比較穩）
+    // 排行榜導航
     window.showLeaderboard = function() {
-        const isFlex = (id) => window.getComputedStyle(document.getElementById(id)).display !== "none";
-
-        if (isFlex('loginView')) previousViewId = 'loginView';
-        else if (isFlex('menuView')) previousViewId = 'menuView';
-        else if (isFlex('resultView')) previousViewId = 'resultView';
-        else previousViewId = 'loginView';
-
+        // 紀錄來源
+        if (document.getElementById('loginView').style.display === 'flex') previousViewId = 'loginView';
+        else if (document.getElementById('menuView').style.display === 'flex') previousViewId = 'menuView';
+        else if (document.getElementById('resultView').style.display === 'flex') previousViewId = 'resultView';
+        
+        // 隱藏其他
         document.querySelectorAll('.app-container > div').forEach(div => {
-            if (div.id !== 'leaderboardView') div.style.display = 'none';
+            if(div.id !== 'leaderboardView') div.style.display = 'none';
         });
-
+        
         document.getElementById('leaderboardView').style.display = 'flex';
         loadLeaderboardData();
     }
@@ -798,7 +731,7 @@
         const finalScore = Math.round((score / currentQuestions.length) * 100);
         const tName = (quizType === 'boutique') ? "精品重點" : "國產食品";
         const text = `【${tName}測驗結果】\n工號：${userInfo.id}\n分數：${finalScore} 分\n日期：${new Date().toLocaleDateString()}`;
-
+        
         const ta = document.createElement("textarea");
         ta.value = text;
         document.body.appendChild(ta);
@@ -816,5 +749,6 @@
         return array;
     }
 </script>
+
 </body>
 </html>
