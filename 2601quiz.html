@@ -3,30 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>馬上 RICH 吉運來 - 2026年節特別企劃</title>
-<!-- 引入 FontAwesome 6 (使用 CDN 確保圖標顯示正常) -->
+<title>馬上 RICH 吉運來 - 富貴唐馬版</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
     :root {
-        /* == 色彩計畫：宮廷紅與流沙金 == */
-        --bg-color: #720e1e;       /* 深宮廷紅 */
-        --card-bg: #fffbf0;        /* 象牙白 */
-        --gold-main: #ffcc00;      /* 明亮金 */
-        --gold-dark: #c59d00;      /* 暗金 (陰影用) */
-        --text-dark: #2c3e50;      /* 深鐵灰 */
-        --btn-gradient-start: #d32f2f;
-        --btn-gradient-end: #b71c1c;
+        /* == 色彩計畫：故宮紅 x 帝王金 == */
+        --bg-red: #8a0a0a;         /* 深沉的故宮紅 */
+        --card-bg: #fffcf5;        /* 溫潤的宣紙白 */
+        --gold-main: #FFD700;      /* 正金 */
+        --gold-dark: #B8860B;      /* 暗金 */
+        --text-dark: #2c3e50;
+        --btn-red: #c0392b;
+        --btn-disabled-bg: #e0e0e0;
+        --btn-disabled-text: #999;
     }
 
     body {
         font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
-        background-color: var(--bg-color);
-        /* 背景：傳統菱格紋與暗紋 */
+        background-color: var(--bg-red);
+        /* 背景：萬字紋隱喻 */
         background-image: 
-            linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.05) 75%, rgba(0,0,0,0.05)),
-            linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.05) 75%, rgba(0,0,0,0.05));
-        background-position: 0 0, 20px 20px;
+            radial-gradient(var(--gold-dark) 1px, transparent 1px),
+            radial-gradient(var(--gold-dark) 1px, transparent 1px);
         background-size: 40px 40px;
+        background-position: 0 0, 20px 20px;
         margin: 0;
         padding: 0;
         color: var(--text-dark);
@@ -36,104 +36,91 @@
         overflow-x: hidden;
     }
 
-    /* APP 主容器 */
     .app-container {
         width: 100%;
         max-width: 420px;
         background: #fff;
         min-height: 100vh;
-        box-shadow: 0 0 60px rgba(0,0,0,0.8);
+        box-shadow: 0 0 60px rgba(0,0,0,0.9);
         display: flex;
         flex-direction: column;
         position: relative;
-        overflow: hidden;
     }
 
-    /* ============================
-       1. 首頁 (登入) - 金馬視覺
-       ============================ */
+    /* === 1. 首頁 (登入) === */
     #loginView {
-        /* 首頁全紅背景，帶有金色光暈 */
-        background: radial-gradient(circle at top, #a93226 0%, var(--bg-color) 80%);
+        /* 漸層紅底 */
+        background: radial-gradient(circle at top, #b91e1e 0%, var(--bg-red) 80%);
         color: #fff;
+        position: relative;
+    }
+    
+    /* 祥雲裝飾 */
+    .cloud-deco {
+        position: absolute;
+        width: 100%;
+        height: 100px;
+        background: url('https://www.transparenttextures.com/patterns/black-scales.png'); /* 紋理模擬 */
+        opacity: 0.1;
+        top: 0;
     }
 
     .header-section {
         text-align: center;
-        padding-top: 50px;
+        padding-top: 60px;
         position: relative;
         z-index: 2;
     }
 
-    /* 年份標籤：像匾額一樣 */
     .year-tag {
         display: inline-block;
-        background: linear-gradient(to right, var(--gold-dark), var(--gold-main), var(--gold-dark));
+        background: linear-gradient(to bottom, var(--gold-main), var(--gold-dark));
         color: #5a0000;
-        padding: 6px 24px;
+        padding: 6px 20px;
         border-radius: 50px;
         font-weight: 900;
         letter-spacing: 3px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-        margin-bottom: 30px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
+        margin-bottom: 20px;
         border: 2px solid #fff;
-        text-transform: uppercase;
-        position: relative;
     }
 
-    /* === 金馬徽章 (CSS 組合術) === */
-    .horse-badge-container {
-        width: 150px;
-        height: 150px;
-        margin: 0 auto 15px;
+    /* === 招財胖唐馬 (SVG) === */
+    .horse-icon-wrapper {
         position: relative;
+        height: 180px;
+        margin-bottom: 15px;
         display: flex;
         justify-content: center;
         align-items: center;
     }
 
-    /* 外圈金環光芒 */
-    .badge-ring {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        border: 4px solid var(--gold-main);
-        border-radius: 50%;
-        box-shadow: 0 0 20px rgba(255, 204, 0, 0.6), inset 0 0 20px rgba(255, 204, 0, 0.3);
-        animation: ring-pulse 3s infinite;
-        background: rgba(160, 0, 0, 0.3); /* 半透明底 */
+    .tang-horse-svg {
+        width: 200px;
+        height: 180px;
+        filter: drop-shadow(0 10px 5px rgba(0,0,0,0.3));
+        /* 懸浮動畫 */
+        animation: float-horse 3s ease-in-out infinite;
     }
 
-    /* 馬圖標 */
-    .main-horse-icon {
-        font-size: 85px;
-        color: var(--gold-main);
-        z-index: 2;
-        filter: drop-shadow(0 4px 2px rgba(0,0,0,0.5));
-        transform: translateY(-5px); /* 微調位置 */
+    @keyframes float-horse {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
     }
 
-    /* 裝飾雲紋 (左右) */
-    .decor-cloud {
-        position: absolute;
-        font-size: 30px;
-        color: rgba(255,255,255,0.8);
-        bottom: 10px;
-        z-index: 1;
-    }
-    .cloud-left { left: -10px; transform: scaleX(-1); }
-    .cloud-right { right: -10px; }
+    /* SVG 樣式定義 */
+    .horse-skin { fill: #d63031; stroke: #fab1a0; stroke-width: 2px; } /* 紅色馬身 */
+    .horse-belly { fill: #ff7675; opacity: 0.3; } /* 肚子高光 */
+    .horse-mane { fill: #fdcb6e; } /* 金色鬃毛 */
+    .horse-saddle { fill: #6c5ce7; stroke: #fff; stroke-width: 2px; } /* 紫色馬鞍 */
+    .horse-hoof { fill: #2d3436; } /* 蹄 */
+    .gold-ingot { fill: url(#goldGradient); stroke: #e17055; stroke-width: 1px; } /* 元寶 */
+    .cloud-base { fill: #dfe6e9; opacity: 0.8; }
 
-    @keyframes ring-pulse {
-        0%, 100% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.05); opacity: 0.8; }
-    }
-
-    /* 標題文字 */
     .main-title {
         font-size: 2.4em;
         font-weight: 900;
-        margin: 10px 0 5px;
+        margin: 5px 0;
         color: #fff;
         text-shadow: 0 4px 0 #3d0000, 0 8px 15px rgba(0,0,0,0.5);
         letter-spacing: 2px;
@@ -144,63 +131,51 @@
         color: var(--gold-main);
         margin-top: 10px;
         font-weight: bold;
-        letter-spacing: 2px;
-        opacity: 0.95;
+        letter-spacing: 3px;
+        opacity: 0.9;
     }
 
-    /* 輸入卡片區 */
+    /* 卡片區 */
     .card-box {
         background: var(--card-bg);
-        margin: 25px;
-        padding: 35px 25px;
-        border-radius: 24px;
-        box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        margin: 30px 25px;
+        padding: 30px 20px;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         border: 4px solid var(--gold-dark);
         color: var(--text-dark);
         text-align: center;
         position: relative;
     }
-    /* 卡片內裝飾線 */
-    .card-box::before {
-        content: "";
-        position: absolute;
-        top: 10px; left: 10px; right: 10px; bottom: 10px;
-        border: 1px dashed #c0392b;
-        border-radius: 18px;
-        pointer-events: none;
-    }
-
-    .input-label {
-        font-weight: bold;
-        color: #800000;
-        margin-bottom: 8px;
-        display: block;
-        font-size: 1.1em;
+    /* 內框線 */
+    .card-box::after {
+        content: ""; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
+        border: 1px solid #e0c0a0; border-radius: 15px; pointer-events: none;
     }
 
     .input-field {
         width: 100%;
         padding: 16px;
-        border: 2px solid #e0e0e0;
+        border: 2px solid #ddd;
         border-radius: 12px;
         font-size: 1.2em;
         text-align: center;
         box-sizing: border-box;
-        margin-bottom: 20px;
+        margin-top: 15px;
         background: #fff;
         color: #333;
         font-weight: bold;
         letter-spacing: 1px;
-        box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
         transition: 0.3s;
+        position: relative; z-index: 2;
     }
     .input-field:focus {
         outline: none;
-        border-color: #c0392b;
+        border-color: var(--btn-red);
         box-shadow: 0 0 0 4px rgba(192, 57, 43, 0.15);
     }
 
-    /* 通用按鈕 */
+    /* 通用按鈕樣式 */
     .btn {
         width: 100%;
         padding: 18px;
@@ -209,19 +184,28 @@
         font-size: 1.2em;
         font-weight: bold;
         cursor: pointer;
-        transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+        transition: all 0.2s;
+        margin-bottom: 15px;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-        z-index: 2; /* 確保在裝飾線上層 */
-    }
-    .btn:active { transform: scale(0.98); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-
-    .btn-start {
-        background: linear-gradient(to bottom, #ff5f5f, #c0392b);
+        box-shadow: 0 6px 0 rgba(0,0,0,0.15);
+        z-index: 2;
         color: white;
-        border-bottom: 4px solid #922b21;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+    .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.15); }
+
+    /* 啟用狀態 (紅色) */
+    .btn-active {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white !important; /* 強制白色 */
+    }
+    /* 禁用狀態 (灰色) */
+    .btn-disabled {
+        background: #e0e0e0 !important;
+        color: #999 !important; /* 強制深灰 */
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none !important;
     }
 
     .btn-rank-link {
@@ -231,24 +215,23 @@
         padding: 10px 20px;
         border-radius: 30px;
         font-size: 0.95em;
-        margin-top: 20px;
+        margin-top: 15px;
         backdrop-filter: blur(5px);
         display: inline-flex;
         align-items: center;
         gap: 8px;
+        cursor: pointer;
+        text-decoration: none;
     }
-    .btn-rank-link:hover { background: rgba(255,255,255,0.25); }
 
-    /* ============================
-       2. 選單頁面
-       ============================ */
+    /* === 2. 選單頁面 === */
     .menu-header {
         background: #fff;
-        padding: 50px 20px 30px;
+        padding: 40px 20px 20px;
         text-align: center;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid #f0f0f0;
     }
-    .menu-title { font-size: 1.8em; font-weight: 900; color: #800000; letter-spacing: 1px; }
+    .menu-title { font-size: 1.6em; font-weight: 900; color: var(--btn-red); }
     .menu-welcome { color: #666; font-size: 1.1em; margin-top: 5px; }
 
     .menu-content { flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center; gap: 20px; }
@@ -262,20 +245,18 @@
         font-size: 1.4em;
         border-radius: 20px;
         color: white;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        text-shadow: 0 2px 3px rgba(0,0,0,0.2);
         border: 2px solid rgba(255,255,255,0.2);
     }
-    .btn-large i { margin-right: 15px; font-size: 1.6em; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
+    .btn-large i { margin-right: 15px; font-size: 1.5em; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
     
-    .btn-boutique { background: linear-gradient(135deg, #2c3e50, #4ca1af); box-shadow: 0 10px 25px rgba(44, 62, 80, 0.3); }
-    .btn-domestic { background: linear-gradient(135deg, #d35400, #e67e22); box-shadow: 0 10px 25px rgba(211, 84, 0, 0.3); }
+    .btn-boutique { background: linear-gradient(135deg, #2c3e50, #4ca1af); }
+    .btn-domestic { background: linear-gradient(135deg, #d35400, #e67e22); }
 
-    /* ============================
-       3. 測驗頁面
-       ============================ */
+    /* === 3. 測驗頁面 === */
     .quiz-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: #fff; }
-    .progress-bar { height: 8px; background: #eee; width: 100%; }
-    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold-main), var(--btn-gradient-end)); width: 0%; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .progress-bar { height: 8px; background: #f0f0f0; width: 100%; }
+    .progress-fill { height: 100%; background: var(--btn-red); width: 0%; transition: width 0.3s ease; }
     
     .question-box { padding: 30px 25px; font-size: 1.3em; font-weight: bold; line-height: 1.5; color: #333; }
     
@@ -295,22 +276,13 @@
     .option-circle { width: 24px; height: 24px; border: 2px solid #ccc; border-radius: 50%; margin-right: 15px; flex-shrink: 0; transition: 0.2s; }
     .option-item.selected .option-circle { background: #c0392b; border-color: #c0392b; box-shadow: 0 0 0 3px #fff inset; }
 
-    /* ============================
-       4. 結果與排行榜
-       ============================ */
+    /* === 4. 結果與排行榜 === */
     .result-banner {
         background: linear-gradient(135deg, #c0392b, #800000);
         color: white; padding: 40px 20px; text-align: center;
         border-radius: 0 0 40px 40px; margin-bottom: 20px;
         box-shadow: 0 10px 30px rgba(146, 43, 33, 0.4);
-        position: relative;
     }
-    /* 金色彩帶裝飾 */
-    .result-banner::after {
-        content: ""; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
-        width: 60px; height: 4px; background: var(--gold-main); border-radius: 4px;
-    }
-
     .score-display { font-size: 6em; font-weight: 900; line-height: 1; margin: 10px 0; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
     
     /* 排行榜表格 */
@@ -333,12 +305,11 @@
     #leaderboardView { 
         background: #f9f9f9; 
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-        z-index: 999; 
+        z-index: 9999; 
         display: none; 
         flex-direction: column; 
     }
 </style>
-<!-- Firebase Compat (最穩定的版本) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -349,17 +320,65 @@
     
     <!-- 1. 首頁 (登入) -->
     <div id="loginView" style="display:flex; height: 100vh; flex-direction: column;">
+        <div class="cloud-deco"></div>
         <div class="header-section">
             <div class="year-tag">2026 丙午年</div>
             
-            <!-- 金馬獻瑞 Badge (使用 FontAwesome 組合) -->
-            <div class="horse-badge-container">
-                <div class="badge-ring"></div>
-                <!-- 裝飾雲 -->
-                <i class="fa-solid fa-cloud decor-cloud cloud-left"></i>
-                <i class="fa-solid fa-cloud decor-cloud cloud-right"></i>
-                <!-- 主馬圖標 -->
-                <i class="fa-solid fa-horse main-horse-icon"></i>
+            <!-- 招財胖唐馬 SVG (完全重繪) -->
+            <div class="horse-icon-wrapper">
+                <svg class="tang-horse-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="goldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#B8860B;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    
+                    <!-- 祥雲底座 -->
+                    <path d="M40,160 Q60,140 80,160 Q100,140 120,160 Q140,140 160,160" stroke="#fff" stroke-width="5" fill="none" opacity="0.3" stroke-linecap="round"/>
+
+                    <!-- 馬身 (肥圓飽滿) -->
+                    <ellipse cx="100" cy="110" rx="60" ry="45" class="horse-skin" />
+                    
+                    <!-- 頭 (大圓頭，福氣) -->
+                    <circle cx="50" cy="80" r="25" class="horse-skin" />
+                    <!-- 嘴巴 -->
+                    <path d="M35,85 Q40,95 50,90" fill="none" stroke="#a00" stroke-width="2" stroke-linecap="round"/>
+                    
+                    <!-- 耳朵 -->
+                    <path d="M40,60 L45,45 L55,60" class="horse-skin" />
+                    <path d="M55,60 L60,45 L65,60" class="horse-skin" />
+
+                    <!-- 鬃毛 (金色) -->
+                    <path d="M55,55 Q65,40 75,55" class="horse-mane" />
+                    <path d="M65,55 Q75,40 85,55" class="horse-mane" />
+                    <path d="M75,55 Q85,40 95,55" class="horse-mane" />
+
+                    <!-- 腿 (四條小短腿) -->
+                    <path d="M70,150 L70,170" stroke="#d63031" stroke-width="12" stroke-linecap="round"/>
+                    <path d="M130,150 L130,170" stroke="#d63031" stroke-width="12" stroke-linecap="round"/>
+                    <path d="M90,150 L90,170" stroke="#d63031" stroke-width="12" stroke-linecap="round"/>
+                    <path d="M110,150 L110,170" stroke="#d63031" stroke-width="12" stroke-linecap="round"/>
+                    
+                    <!-- 蹄 -->
+                    <rect x="64" y="170" width="12" height="6" rx="2" class="horse-hoof" />
+                    <rect x="84" y="170" width="12" height="6" rx="2" class="horse-hoof" />
+                    <rect x="104" y="170" width="12" height="6" rx="2" class="horse-hoof" />
+                    <rect x="124" y="170" width="12" height="6" rx="2" class="horse-hoof" />
+
+                    <!-- 馬鞍 (紫色顯貴氣) -->
+                    <path d="M80,80 Q100,70 120,80 L120,110 Q100,120 80,110 Z" class="horse-saddle" />
+                    
+                    <!-- 金元寶 (背上) -->
+                    <path d="M85,75 Q100,50 115,75 L115,80 Q100,90 85,80 Z" class="gold-ingot" />
+                    
+                    <!-- 尾巴 -->
+                    <path d="M155,100 Q170,90 175,110" stroke="#fdcb6e" stroke-width="8" fill="none" stroke-linecap="round"/>
+
+                    <!-- 眼睛 -->
+                    <circle cx="45" cy="75" r="3" fill="#2d3436" />
+                    <circle cx="47" cy="73" r="1" fill="#fff" />
+                </svg>
             </div>
 
             <h1 class="main-title">馬上 RICH<br>吉運來</h1>
@@ -368,12 +387,14 @@
 
         <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
             <div class="card-box">
-                <label class="input-label">
-                    <i class="fa-solid fa-id-card"></i> 請輸入工號
-                </label>
-                <input type="text" id="inputId" class="input-field" placeholder="Employee ID" inputmode="numeric">
-                <button class="btn btn-start" onclick="performLogin()">
-                    <i class="fa-solid fa-arrow-right-to-bracket"></i> 確認登入
+                <div style="font-size: 1.1em; font-weight: bold; margin-bottom: 10px; color: var(--btn-red);">
+                    <i class="fa-solid fa-id-card"></i> 同仁登入
+                </div>
+                <div style="color:#666; font-size:0.9em; margin-bottom:10px;">請輸入工號以開始</div>
+                <input type="text" id="inputId" class="input-field" placeholder="工號 (ID)" inputmode="numeric">
+                <!-- 登入按鈕 -->
+                <button class="btn btn-active btn-start" onclick="performLogin()">
+                    確認登入
                 </button>
             </div>
             
@@ -393,20 +414,20 @@
         </div>
 
         <div class="menu-content">
-            <button class="btn btn-large btn-boutique" onclick="startQuiz('boutique')">
+            <button class="btn btn btn-large btn-boutique" onclick="startQuiz('boutique')">
                 <i class="fa-solid fa-gem"></i> 
                 <div>精品重點測驗</div>
             </button>
 
-            <button class="btn btn-large btn-domestic" onclick="startQuiz('domestic')">
-                <!-- 中式陶壺 (使用 fa-jar) -->
+            <button class="btn btn btn-large btn-domestic" onclick="startQuiz('domestic')">
+                <!-- 中式陶壺圖示 -->
                 <i class="fa-solid fa-jar"></i> 
                 <div>國產食品測驗</div>
             </button>
         </div>
 
         <div style="padding: 20px;">
-            <button class="btn" style="background:#ddd; color:#666; border-radius:15px; padding:12px;" onclick="location.reload()">
+            <button class="btn" style="background:#ddd; color:#666;" onclick="location.reload()">
                 <i class="fa-solid fa-right-from-bracket"></i> 返回登入
             </button>
         </div>
@@ -423,12 +444,13 @@
         <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
 
         <div style="flex:1; overflow-y:auto;">
-            <div class="question-box" id="qText">題目讀取中...</div>
+            <div class="question-box" id="qText">題目載入中...</div>
             <div id="optionsContainer"></div>
         </div>
 
         <div style="padding: 20px;">
-            <button id="nextBtn" class="btn" style="background:#ddd; color:#888;" disabled onclick="nextQuestion()">請選擇答案</button>
+            <!-- 按鈕狀態切換的核心 -->
+            <button id="nextBtn" class="btn btn-disabled" disabled onclick="nextQuestion()">請選擇答案</button>
         </div>
     </div>
 
@@ -455,14 +477,14 @@
                 <button class="btn" style="background: #333; color: white; margin-bottom: 0; flex: 1;" onclick="showLeaderboard()">
                     <i class="fa-solid fa-trophy"></i> 排行榜
                 </button>
-                <button class="btn" style="background: #eee; color: #555; margin-bottom: 0; flex: 1;" onclick="location.reload()">
+                <button class="btn" style="background: #f0f0f0; color: #555; margin-bottom: 0; flex: 1;" onclick="location.reload()">
                     <i class="fa-solid fa-house"></i> 首頁
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- 5. 獨立排行榜頁面 (Leaderboard Overlay) -->
+    <!-- 5. 獨立排行榜頁面 -->
     <div id="leaderboardView">
         <div class="result-banner" style="border-radius: 0 0 30px 30px; padding-bottom: 30px; flex-shrink: 0;">
             <h1 style="margin:0; font-size: 1.8em;">🏆 線上英雄榜</h1>
@@ -486,7 +508,7 @@
 </div>
 
 <script>
-    // --- 1. Firebase 初始化 (使用最穩定的 Compat 版) ---
+    // --- Firebase Init ---
     const firebaseConfig = {
       apiKey: "AIzaSyAk5ugWIjaeva-GNn54bbIJ4_V57mk__eo",
       authDomain: "quiz-2dce6.firebaseapp.com",
@@ -496,8 +518,6 @@
       appId: "1:1093040493998:web:932bda3c48fa38b7e6e43f",
       measurementId: "G-Q5D52QGSSF"
     };
-    
-    // 初始化 Firebase 並匿名登入 (解決權限問題)
     try {
         firebase.initializeApp(firebaseConfig);
         firebase.auth().signInAnonymously().catch(err => console.error("Auth Fail:", err));
@@ -505,7 +525,6 @@
 
     const db = firebase.firestore();
 
-    // --- 2. 變數與狀態 ---
     let userInfo = { id: "" };
     let currentQuestions = [];
     let currentIdx = 0;
@@ -513,11 +532,9 @@
     let userAnswers = [];
     let selectedIdx = null;
     let quizType = "";
-    // 記錄排行榜來源，用於返回
-    let previousViewId = "loginView"; 
+    let previousViewId = "loginView"; // 導航記錄
 
-    // --- 3. 題庫資料 ---
-    // A. 共同題
+    // --- 題庫 (答案已校對) ---
     const commonQs = [
         { q: "1/10 第一波會員來店禮是？", options: ["(A) 馬年紅包袋", "(B) 馬年轉運貼紙", "(C) 1元賀卡"], a: 1 },
         { q: "2/1 第二波會員來店禮是？", options: ["(A) 馬年紅包袋", "(B) 掛繩包", "(C) 香盅禮盒"], a: 0 },
@@ -535,7 +552,6 @@
         { q: "台新銀行 2026 Q1 單日累積滿 68,000 贈送？", options: ["(A) 香氛禮盒", "(B) 25吋上掀旅行箱"], a: 1 }
     ];
 
-    // B. 精品專屬
     const boutiqueQs = [
         { q: "03.04.05.06 大類（皮件/眼鏡/珠寶/錶）的基本現抵門檻是？", options: ["(A) $5,000", "(B) $8,000", "(C) $18,000"], a: 1 },
         { q: "03.04.05.06 大類滿 $8,000 現抵多少？", options: ["(A) $400", "(B) $650", "(C) $800"], a: 1 },
@@ -545,7 +561,6 @@
         { q: "03.04.05.06 大類單筆滿 $32,800 贈品為何？", options: ["(A) 掛繩包", "(B) 香盅禮盒", "(C) 旅行組"], a: 0 }
     ];
 
-    // C. 國產食品專屬 (答案已再次校對)
     const domesticQs = [
         { q: "國產滿額現抵：單筆滿 $1,880 可以現抵多少？", options: ["(A) $100", "(B) $200", "(C) $150"], a: 2 },
         { q: "國產單筆滿額 $3,000 可以現抵回饋多少？", options: ["(A) $150", "(B) $250", "(C) $300"], a: 1 },
@@ -553,9 +568,6 @@
         { q: "2/1 開跑活動，單筆滿 $1,000 可獲得？", options: ["(A) 抽獎券乙張", "(B) 抵用券乙張", "(C) 紅包袋"], a: 0 }
     ];
 
-    // --- 4. 核心邏輯函式 ---
-
-    // 登入
     function performLogin() {
         const id = document.getElementById('inputId').value.trim();
         if (!id) { alert("請輸入工號！"); return; }
@@ -566,12 +578,11 @@
         document.getElementById('menuView').style.display = 'flex';
     }
 
-    // 開始測驗
     function startQuiz(type) {
         quizType = type;
         const specificQs = (type === 'boutique') ? boutiqueQs : domesticQs;
         const fullSet = [...commonQs, ...specificQs];
-        // 隨機抽 20 題 (若不足 20 則全取)
+        // 隨機抽題
         currentQuestions = shuffle(fullSet).slice(0, 20);
         
         currentIdx = 0;
@@ -587,7 +598,6 @@
         renderQuestion();
     }
 
-    // 渲染題目
     function renderQuestion() {
         const q = currentQuestions[currentIdx];
         document.getElementById('currentQ').innerText = currentIdx + 1;
@@ -598,10 +608,10 @@
         container.innerHTML = "";
         selectedIdx = null;
         
+        // 重置按鈕狀態
         const btn = document.getElementById('nextBtn');
         btn.disabled = true;
-        btn.style.background = "#ddd";
-        btn.style.color = "#888";
+        btn.className = "btn btn-disabled"; // 使用 CSS Class 控制
         btn.innerText = (currentIdx === currentQuestions.length - 1) ? "送出試卷" : "下一題";
 
         q.options.forEach((opt, idx) => {
@@ -618,10 +628,10 @@
         el.classList.add('selected');
         selectedIdx = idx;
         
+        // 啟用按鈕
         const btn = document.getElementById('nextBtn');
         btn.disabled = false;
-        btn.style.background = "var(--btn-red)"; // 使用 CSS 變數
-        btn.style.color = "white";
+        btn.className = "btn btn-active"; // 切換為紅色
     }
 
     function nextQuestion() {
@@ -646,12 +656,11 @@
         }
     }
 
-    // 顯示結果
     function showResult() {
         document.getElementById('quizView').style.display = 'none';
         document.getElementById('resultView').style.display = 'flex';
         
-        // 分數計算：確保動態分母
+        // 計分修正：(答對 / 總題數) * 100
         const finalScore = Math.round((score / currentQuestions.length) * 100);
         document.getElementById('finalScore').innerText = finalScore;
         
@@ -672,16 +681,14 @@
             `).join('');
         }
 
-        // 上傳成績到 Firebase
+        // 上傳
         db.collection("quiz_leaderboard_2026").add({
             name: userInfo.id,
             score: finalScore,
-            dept: "-", // 不記錄部門
+            dept: "-",
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
     }
-
-    // --- 5. 排行榜邏輯 (獨立視窗 + 自動切換) ---
 
     async function loadLeaderboardData() {
         const tbody = document.getElementById('rankBody');
@@ -692,7 +699,6 @@
             let data = [];
             snap.forEach(doc => data.push(doc.data()));
             
-            // 前端排序：分數高->低，時間舊->新
             data.sort((a, b) => {
                 if (b.score !== a.score) return b.score - a.score;
                 return (a.timestamp?.seconds || 0) - (b.timestamp?.seconds || 0);
@@ -718,24 +724,22 @@
         }
     }
 
-    // 打開排行榜
+    // 排行榜導航
     window.showLeaderboard = function() {
-        // 判斷來源
+        // 紀錄來源
         if (document.getElementById('loginView').style.display === 'flex') previousViewId = 'loginView';
         else if (document.getElementById('menuView').style.display === 'flex') previousViewId = 'menuView';
         else if (document.getElementById('resultView').style.display === 'flex') previousViewId = 'resultView';
         
-        // 隱藏所有
+        // 隱藏其他
         document.querySelectorAll('.app-container > div').forEach(div => {
-            if (div.id !== 'leaderboardView') div.style.display = 'none';
+            if(div.id !== 'leaderboardView') div.style.display = 'none';
         });
         
-        // 顯示排行榜
         document.getElementById('leaderboardView').style.display = 'flex';
         loadLeaderboardData();
     }
 
-    // 關閉排行榜
     window.closeLeaderboard = function() {
         document.getElementById('leaderboardView').style.display = 'none';
         document.getElementById(previousViewId).style.display = 'flex';
